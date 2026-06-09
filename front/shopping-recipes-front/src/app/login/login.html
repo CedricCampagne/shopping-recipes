@@ -1,6 +1,6 @@
 <main class="min-h-screen flex flex-col items-center justify-center gap-6 p-4">
 
-  <h2 class="text-2xl font-bold">Créer un compte</h2>
+  <h2 class="text-2xl font-bold">Connectez-Vous</h2>
 
   <form
     [formGroup]="form"
@@ -41,8 +41,14 @@
         formControlName="password"
         class="border border-gray-300 rounded p-2"
       >
-      @if (form.controls.password.touched && form.controls.password.invalid) {
+      @if (form.controls.password.touched && form.controls.password.hasError('required')) {
         <p class="text-orange-500 text-sm">Le mot de passe est obligatoire</p>
+      }
+      @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+        <p class="text-orange-500 text-sm">Le mot de passe doit contenier au moins 12 caractères</p>
+      }
+      @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
+        <p class="text-orange-500 text-sm">Le mot de passe doit contenir au moins un caractère spécial</p>
       }
     </div>
 
