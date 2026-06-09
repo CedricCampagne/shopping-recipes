@@ -1,0 +1,56 @@
+<main class="min-h-screen flex flex-col items-center justify-center gap-6 p-4">
+
+  <h2 class="text-2xl font-bold">Créer un compte</h2>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-4 w-full max-w-sm"
+  >
+
+    <div class="flex flex-col gap-1">
+      <label class="font-medium">Nom d'utilisateur</label>
+      <input
+        type="text"
+        formControlName="username"
+        class="border border-gray-300 rounded p-2"
+      >
+      @if (form.controls.username.touched && form.controls.username.invalid) {
+        <p class="text-orange-500 text-sm h-4">Le nom est obligatoire</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="font-medium">Email</label>
+      <input
+        type="email"
+        formControlName="email"
+        class="border border-gray-300 rounded p-2"
+      >
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <p class="text-orange-500 text-sm">L'email est obligatoire</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="font-medium">Mot de passe</label>
+      <input
+        type="password"
+        formControlName="password"
+        class="border border-gray-300 rounded p-2"
+      >
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <p class="text-orange-500 text-sm">Le mot de passe est obligatoire</p>
+      }
+    </div>
+
+    <button
+      type="submit"
+      class="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
+    >
+      S'inscrire
+    </button>
+
+  </form>
+
+</main>
