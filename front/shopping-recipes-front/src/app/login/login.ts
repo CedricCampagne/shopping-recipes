@@ -14,7 +14,7 @@ export class Login {
   form = new FormGroup({
     username: new FormControl('', { validators: Validators.required }),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', { validators: Validators.required })
+    password: new FormControl('', [Validators.required, Validators.minLength(12), Validators.pattern(/[^A-Za-z0-9]/)]),
   });
 
   onSubmit() {
