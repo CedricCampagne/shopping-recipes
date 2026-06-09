@@ -27,8 +27,10 @@
         formControlName="email"
         class="border border-gray-300 rounded p-2"
       >
-      @if (form.controls.email.touched && form.controls.email.invalid) {
+      @if (form.controls.email.touched && form.controls.email.hasError('required')) {
         <p class="text-orange-500 text-sm">L'email est obligatoire</p>
+      } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+        <p class="text-orange-500 text-sm">Le format de l'email est invalide</p>
       }
     </div>
 

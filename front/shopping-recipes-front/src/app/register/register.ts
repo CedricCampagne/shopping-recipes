@@ -14,7 +14,7 @@ export class Register {
   
   form = new FormGroup({
     username: new FormControl('', { validators: Validators.required }),
-    email: new FormControl('', { validators: Validators.required }),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', { validators: Validators.required })
   });
 

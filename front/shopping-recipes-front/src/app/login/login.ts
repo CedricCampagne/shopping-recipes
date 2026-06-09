@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -12,9 +12,9 @@ import { RouterModule } from '@angular/router';
 export class Login {
 
   form = new FormGroup({
-    username: new FormControl(''),   
-    email: new FormControl(''),
-    password: new FormControl(''),
+    username: new FormControl('', { validators: Validators.required }),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', { validators: Validators.required })
   });
 
   onSubmit() {
