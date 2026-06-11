@@ -1,0 +1,19 @@
+.env
+.env.*
+!.env.example
+
+# IntelliJ
+.idea/
+
+# VS Code
+.vscode/
+
+# Java
+target/
+
+# Node
+node_modules/
+dist/
+
+# OS
+.DS_Store
