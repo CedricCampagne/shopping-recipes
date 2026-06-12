@@ -1,14 +1,18 @@
-package com.cedric.shoppingrecipes.user;
+package com.cedric.shoppingrecipes.auth;
 
+import com.cedric.shoppingrecipes.user.User;
+import com.cedric.shoppingrecipes.user.UserRepository;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class AuthService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User register(UserRegisterRequest request) {
         // Verification email déjà présent
@@ -16,10 +20,12 @@ public class UserService {
             throw new RuntimeException("Email dèjà utilisé");
         }
 
+        String hashed = passwordEncoder.encode(request.password());
+
         User user = new User();
         user.setUsername(request.username());
         user.setEmail(request.email());
-        user.setPassword(request.password());
+        user.setPassword(hashed);
 
         return userRepository.save(user);
     }
@@ -30,7 +36,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Email inconnu")) ;
 
         // Vérifier le mot de pass
-        if(!user.getPassword().equals(request.password())){
+        if(!passwordEncoder.matches(request.password(), user.getPassword())){
             throw new RuntimeException("Mot de passe incorrect");
         }
 
