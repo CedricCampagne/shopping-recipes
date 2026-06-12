@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { LoginRequest } from '../auth/models/loginRequest';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,20 +14,38 @@ import { RouterModule } from '@angular/router';
 })
 export class Login {
 
+  authService = inject(AuthService);
+  router = inject(Router);
+
+  isFetching = signal(false);
+
   form = new FormGroup({
-    username: new FormControl('', { validators: Validators.required }),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(12), Validators.pattern(/[^A-Za-z0-9]/)]),
+    email: new FormControl('', {nonNullable: true, validators:[Validators.required, Validators.email]}),
+    password: new FormControl('', {nonNullable: true, validators:[Validators.required, Validators.minLength(12), Validators.pattern(/[^A-Za-z0-9]/)]}),
   });
 
   onSubmit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      console.log('form invalid');
-      return;
-    }
+    if (this.form.invalid) return;
+    
+    this.isFetching.set(true);
 
-    console.log('form valid');
-    console.log(this.form.value);
+    const raw = this.form.getRawValue();
+    
+        const data: LoginRequest = {
+          email: raw.email,
+          password: raw.password
+        };
+    
+        this.authService.login(data).subscribe({
+          next: res => {
+            console.log('LOGIN OK', res)
+            setTimeout(() => {
+              this.isFetching.set(false);
+              this.router.navigate(['/']);
+            }, 2000);
+          },
+          error: err => console.log('LOGIN ERROR', err)
+        });
+   
   }
 }

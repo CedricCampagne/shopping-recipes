@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { RegisterRequest } from '../auth/models/registerRequest';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,24 +15,37 @@ import { RouterModule } from '@angular/router';
 })
 export class Register {
   
+  authService = inject(AuthService);
+  router = inject(Router);
+
   form = new FormGroup({
-    username: new FormControl('', { validators: Validators.required }),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(12), Validators.pattern(/[^A-Za-z0-9]/)]),
-    confirm: new FormControl('', [Validators.required])
+    username: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
+    password: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.minLength(12), Validators.pattern(/[^A-Za-z0-9]/)]}),
+    confirm: new FormControl('', {nonNullable: true, validators: [Validators.required]})
     },
     { validators: this.passwordsMatchValidator }
 );
 
   onSubmit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      console.log('form invalid');
-      return;
-    }
+    if (this.form.invalid) return;
+    
+    const raw = this.form.getRawValue();
 
-    console.log('form valid');
-    console.log(this.form.value);
+    const data: RegisterRequest = {
+      username: raw.username,
+      email: raw.email,
+      password: raw.password
+    };
+
+    this.authService.register(data).subscribe({
+      next: res => {
+        console.log('REGISTER OK', res)
+        this.router.navigate(['/login']);
+      },
+      error: err => console.log('REGISTER ERROR', err)
+    });
+
   }
 
   passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {

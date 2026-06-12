@@ -2,6 +2,7 @@ package com.cedric.shoppingrecipes.user;
 
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public User register(@RequestBody UserRegisterRequest request) {
+    public User register(@Valid @RequestBody UserRegisterRequest request) {
         return userService.register(request);
     }
 

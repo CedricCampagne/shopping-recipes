@@ -2,23 +2,14 @@
 
   <h2 class="text-2xl font-bold">Connectez-Vous</h2>
 
+  @if (isFetching()) {
+    <p class="bg-green-700 text-white p-1 rounded-2xl"> Connexion en cours ...</p>
+  }
   <form
     [formGroup]="form"
     (ngSubmit)="onSubmit()"
     class="flex flex-col gap-4 w-full max-w-sm"
   >
-
-    <div class="flex flex-col gap-1">
-      <label class="font-medium">Nom d'utilisateur</label>
-      <input
-        type="text"
-        formControlName="username"
-        class="border border-gray-300 rounded p-2"
-      >
-      @if (form.controls.username.touched && form.controls.username.invalid) {
-        <p class="text-orange-500 text-sm h-4">Le nom est obligatoire</p>
-      }
-    </div>
 
     <div class="flex flex-col gap-1">
       <label class="font-medium">Email</label>
