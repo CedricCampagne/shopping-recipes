@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LoginRequest } from '../auth/models/loginRequest';
@@ -17,6 +17,8 @@ export class Login {
   authService = inject(AuthService);
   router = inject(Router);
 
+  isFetching = signal(false);
+
   form = new FormGroup({
     email: new FormControl('', {nonNullable: true, validators:[Validators.required, Validators.email]}),
     password: new FormControl('', {nonNullable: true, validators:[Validators.required, Validators.minLength(12), Validators.pattern(/[^A-Za-z0-9]/)]}),
@@ -25,6 +27,8 @@ export class Login {
   onSubmit() {
     if (this.form.invalid) return;
     
+    this.isFetching.set(true);
+
     const raw = this.form.getRawValue();
     
         const data: LoginRequest = {
@@ -36,6 +40,7 @@ export class Login {
           next: res => {
             console.log('LOGIN OK', res)
             setTimeout(() => {
+              this.isFetching.set(false);
               this.router.navigate(['/']);
             }, 2000);
           },
