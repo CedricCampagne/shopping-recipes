@@ -1,6 +1,6 @@
 package com.cedric.shoppingrecipes.auth;
 
-import com.cedric.shoppingrecipes.user.User;
+import com.cedric.shoppingrecipes.user.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -24,10 +24,10 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService {
 
-    @Value("${application.security.jwt.secret-key}")
+    @Value("${spring.security.jwt.secret-key}")
     private String secretKey;
 
-    @Value("${application.security.jwt.expiration}")
+    @Value("${spring.security.jwt.expiration}")
     private long jwtExpiration;
 
     private Claims extracAllClaims (String token) {
@@ -45,7 +45,7 @@ public class JwtService {
 
     // username en SpringSecurity = identifiant du user (nous c'est email dans notre token)
     // extractUsername lit le subject
-    private String extractUsername(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 

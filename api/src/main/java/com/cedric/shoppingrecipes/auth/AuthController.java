@@ -1,6 +1,6 @@
 package com.cedric.shoppingrecipes.auth;
 
-import com.cedric.shoppingrecipes.user.User;
+import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
 import jakarta.validation.Valid;

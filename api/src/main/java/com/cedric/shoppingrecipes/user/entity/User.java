@@ -1,4 +1,4 @@
-package com.cedric.shoppingrecipes.user;
+package com.cedric.shoppingrecipes.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
