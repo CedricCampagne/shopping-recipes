@@ -3,7 +3,10 @@
   <h2 class="text-2xl font-bold">Connectez-Vous</h2>
 
   @if (isFetching()) {
-    <p class="bg-green-700 text-white p-1 rounded-2xl"> Connexion en cours ...</p>
+    <p class="bg-green-700 text-white px-2 py-1 rounded-2xl"> Connexion en cours ...</p>
+  }
+  @if (loginErr()) {
+    <p class="bg-red-700 text-white px-2 py-1 rounded-2xl"> Erreur lors de la Connexion ...</p>
   }
   <form
     [formGroup]="form"

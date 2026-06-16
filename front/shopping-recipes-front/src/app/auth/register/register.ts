@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { RegisterRequest } from '../auth/models/registerRequest';
-import { AuthService } from '../auth/auth.service';
+import { RegisterRequest } from '../models/register-request';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
