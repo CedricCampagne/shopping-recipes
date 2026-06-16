@@ -1,7 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { RegisterRequest } from "./models/registerRequest";
-import { LoginRequest } from "./models/loginRequest";
+import { RegisterRequest } from "../models/register-request";
+import { LoginRequest } from "../models/login-request";
+import { AuthenticationResponse } from "../models/authentication-response";
 
 
 
@@ -19,6 +20,6 @@ export class AuthService {
     }
 
     login(data: LoginRequest) {
-        return this.http.post(`${this.apiUrl}/login`, data);
+        return this.http.post<AuthenticationResponse>(`${this.apiUrl}/login`, data);
     }
 }

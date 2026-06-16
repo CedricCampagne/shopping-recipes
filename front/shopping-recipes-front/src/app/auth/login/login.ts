@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { LoginRequest } from '../auth/models/loginRequest';
-import { AuthService } from '../auth/auth.service';
+import { LoginRequest } from '../models/login-request';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,6 +18,7 @@ export class Login {
   router = inject(Router);
 
   isFetching = signal(false);
+  loginErr = signal(false);
 
   form = new FormGroup({
     email: new FormControl('', {nonNullable: true, validators:[Validators.required, Validators.email]}),
@@ -38,14 +39,20 @@ export class Login {
     
         this.authService.login(data).subscribe({
           next: res => {
-            console.log('LOGIN OK', res)
+            console.log('LOGIN OK', res);
+            localStorage.setItem('token', res.token);
             setTimeout(() => {
               this.isFetching.set(false);
-              this.router.navigate(['/']);
+              this.router.navigate(['/app']);
             }, 2000);
           },
-          error: err => console.log('LOGIN ERROR', err)
+          error: err => {
+            console.log('LOGIN ERROR', err);
+            setTimeout(() => {
+              this.isFetching.set(false);
+              this.loginErr.set(true);
+            }, 2000);
+          }
         });
-   
   }
 }

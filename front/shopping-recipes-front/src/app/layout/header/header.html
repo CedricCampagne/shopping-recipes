@@ -1,0 +1,23 @@
+<header class="bg-white shadow p-4 flex justify-around items-center">
+    <h1 class="text-xl font-semibold">Shopping Recipes</h1>
+
+    <nav class="flex">
+        <a
+            routerLink="/app/recipes"
+            class="text-blue-600 font-medium px-2 py-1 hover:underline"
+        >
+            Recettes
+        </a>
+
+        @if (isFetching()) {
+            <p class="bg-green-700 font-medium text-white px-2 py-1 rounded-2xl">Déconnexion en cours ...</p>
+        } @else {
+            <button
+                class="text-red-600 font-medium px-2 py-1 rounded-lg hover:cursor-pointer hover:bg-red-600 hover:text-white transition-all duration-300"
+                (click)="logout()"
+            >
+                Logout
+            </button>
+        }
+    </nav>
+</header>
