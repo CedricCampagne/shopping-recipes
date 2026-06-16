@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.auth;
 
+import com.cedric.shoppingrecipes.auth.dto.AuthenticationResponse;
 import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
@@ -19,7 +20,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public  User login(@RequestBody UserLoginRequest request) {
+    public AuthenticationResponse login(
+            @RequestBody UserLoginRequest request
+    ) {
         return authService.login(request);
     }
 }

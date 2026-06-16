@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.auth;
 
+import com.cedric.shoppingrecipes.auth.dto.AuthenticationResponse;
 import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.repository.UserRepository;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public User register(UserRegisterRequest request) {
         // Verification email déjà présent
@@ -30,7 +32,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public User login(UserLoginRequest request) {
+    public AuthenticationResponse login(UserLoginRequest request) {
         // Vérifier si le user existe
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("Email inconnu")) ;
@@ -40,6 +42,9 @@ public class AuthService {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        return  user;
+        String token = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(token)
+                .build();
     }
 }
