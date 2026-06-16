@@ -1,5 +1,7 @@
-package com.cedric.shoppingrecipes.user;
+package com.cedric.shoppingrecipes.auth;
 
+import com.cedric.shoppingrecipes.auth.dto.AuthenticationResponse;
+import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
 import jakarta.validation.Valid;
@@ -9,16 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
+public class AuthController {
+    private final AuthService authService;
 
     @PostMapping("/register")
     public User register(@Valid @RequestBody UserRegisterRequest request) {
-        return userService.register(request);
+        return authService.register(request);
     }
 
     @PostMapping("/login")
-    public  User login(@RequestBody UserLoginRequest request) {
-        return userService.login(request);
+    public AuthenticationResponse login(
+            @RequestBody UserLoginRequest request
+    ) {
+        return authService.login(request);
     }
 }

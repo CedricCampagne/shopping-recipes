@@ -2,6 +2,11 @@ spring:
   application:
     name: shopping-recipes
 
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
