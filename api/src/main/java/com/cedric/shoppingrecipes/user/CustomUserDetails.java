@@ -17,7 +17,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return  user.getUsername(); // Subject du toke
+        return  user.getEmail(); // Subject du token
     }
 
     @Override

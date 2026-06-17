@@ -1,0 +1,16 @@
+INSERT INTO ingredient (name, unit) VALUES
+('Pâtes', 'g'),
+('Chorizo', 'g'),
+('Oignon blanc', 'pièce'),
+('Crème fraîche', 'ml'),
+('Cheddar râpé', 'g'),
+('Riz', 'g'),
+('Bœuf haché', 'g'),
+('Épices coréennes', 'g'),
+('Sucre', 'g'),
+('Sauce soja', 'ml'),
+('Pommes de terre', 'g'),
+('Thon en boîte', 'g'),
+('Oignon rouge', 'pièce'),
+('Cornichons', 'g'),
+('Mayonnaise', 'g');
