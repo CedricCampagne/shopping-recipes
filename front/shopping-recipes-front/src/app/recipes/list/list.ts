@@ -1,24 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { RecipesServices } from '../services/recipes.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-list',
+  standalone: true,
   imports: [],
   templateUrl: './list.html',
   styleUrl: './list.css',
 })
 export class List {
 
-  constructor(
-    private router: Router 
-  ){}
-
-  data = [
-    { id: 1, title: 'Recette 1', description: 'Description 1' },
-    { id: 2, title: 'Recette 2', description: 'Description 2' },
-    { id: 3, title: 'Recette 3', description: 'Description 3' }
-  ];
-
+  private router = inject(Router);
+  private recipesService = inject(RecipesServices);
+  
+  recipes = toSignal(this.recipesService.getAll(), {initialValue: []});
+  
   goToRecipe(id: number) {
     this.router.navigate([`/app/recipes/${id}`])
   }

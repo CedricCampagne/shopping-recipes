@@ -30,6 +30,10 @@ export const routes: Routes = [
                 path: 'recipes/:id',
                 loadComponent: () => import('./recipes/detail/detail').then(m => m.Detail)
             },
+            {
+                path: 'shopping-list',
+                loadComponent: () => import ('./shopping-list/shopping-list').then(m => m.ShoppingList)
+            },
             // redirect auto pour pas avoir un /app vide
             { path: '', redirectTo: 'recipes', pathMatch: 'full' }
         ]
