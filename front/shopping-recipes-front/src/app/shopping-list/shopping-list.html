@@ -1,0 +1,23 @@
+<h1 class="text-2xl font-bold mb-4">Liste de courses</h1>
+
+@if (items().length > 0) {
+
+  <ul class="space-y-2">
+    @for (item of items(); track item.id) {
+      <li class="border p-2 rounded">
+        <strong>{{ item.ingredient.name }}</strong> :
+        {{ item.total }} {{ item.unit }} 
+      </li>
+    }
+  </ul>
+
+  <button class="mt-4 px-4 py-2 bg-red-600 text-white rounded"
+          (click)="clear()">
+    Vider la liste
+  </button>
+
+} @else {
+
+  <p class="text-gray-600">Votre liste de courses est vide.</p>
+
+}

@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { AuthStateService } from '../../auth/services/auth-state.service';
 import { Router, RouterLink } from '@angular/router';
+import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 
 @Component({
   selector: 'app-header',
@@ -11,6 +12,10 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class Header {
 
+  private shoppingListService = inject(shoppingListService);
+
+  shoppingList = this.shoppingListService.mergedItems;
+  
   isFetching = signal(false);
 
   constructor(
