@@ -38,7 +38,7 @@ public class ShoppingList {
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShoppingListItem> items = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ShoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShoppingListRecipe> recipes = new ArrayList<>();
 
 }
