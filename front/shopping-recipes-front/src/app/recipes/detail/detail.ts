@@ -59,5 +59,28 @@ export class Detail {
   addToShoppingList() {
     const items = this.ingredientsWithTotal();
     this.shoppingListService.addItems(items);
+    this.shoppingListService.addRecipe(
+      this.id,
+      this.servings(),
+      this.recipe()!.name
+    );
+  }
+
+  createShoppingList() {
+    // creation objet request
+    const request = {
+      recipes: [
+        {
+          recipeId: this.id,
+          servings: this.servings()
+        }
+      ]
+    };
+
+    this.shoppingListService.createShoppingList(request).subscribe({
+      next: (response) => {
+        console.log("Liste créée :", response);
+      }
+    });
   }
 }

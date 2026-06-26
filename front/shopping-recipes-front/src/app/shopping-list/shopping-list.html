@@ -1,23 +1,54 @@
-<h1 class="text-2xl font-bold mb-4">Liste de courses</h1>
+<h1 class="text-2xl font-bold mb-4">Votre liste de courses</h1>
 
-@if (items().length > 0) {
+<div class="grid grid-cols-2 gap-6">
 
-  <ul class="space-y-2">
-    @for (item of items(); track item.id) {
-      <li class="border p-2 rounded">
-        <strong>{{ item.ingredient.name }}</strong> :
-        {{ item.total }} {{ item.unit }} 
-      </li>
+  <!-- Colonne gauche : ingrédients fusionnés -->
+  <div>
+    <h2 class="text-xl font-semibold mb-2">Ingrédients</h2>
+
+    @if (items().length > 0) {
+      <ul class="space-y-2">
+        @for (item of items(); track $index) {
+          <li class="border p-2 rounded">
+            <strong>{{ item.ingredient.name }}</strong> :
+            {{ item.total }} {{ item.unit }}
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="text-gray-600">Aucun ingrédient pour le moment.</p>
     }
-  </ul>
+  </div>
 
-  <button class="mt-4 px-4 py-2 bg-red-600 text-white rounded"
+  <!-- Colonne droite : recettes ajoutées -->
+  <div>
+    <h2 class="text-xl font-semibold mb-2">Recettes ajoutées</h2>
+
+    @if (recipes().length > 0) {
+      <ul class="space-y-2">
+        @for (r of recipes(); track $index) {
+          <li class="border p-2 rounded">
+            <strong>{{ r.name }}</strong> — {{ r.servings }} pers.
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="text-gray-600">Aucune recette ajoutée.</p>
+    }
+  </div>
+
+</div>
+
+<!-- 🟩 Boutons -->
+<div class="mt-6 flex gap-4">
+  <button class="px-4 py-2 bg-red-600 text-white rounded"
           (click)="clear()">
     Vider la liste
   </button>
 
-} @else {
+  <button class="px-4 py-2 bg-blue-600 text-white rounded"
+          (click)="saveList()">
+    Sauvegarder la liste
+  </button>
+</div>
 
-  <p class="text-gray-600">Votre liste de courses est vide.</p>
-
-}
