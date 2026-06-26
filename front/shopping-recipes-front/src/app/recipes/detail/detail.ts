@@ -61,13 +61,13 @@ export class Detail {
 
   addToShoppingList() {
     const items = this.ingredientsWithTotal();
-    this.shoppingListService.addItems(items);
     this.shoppingListService.addRecipe(
       this.id,
       this.servings(),
-      this.recipe()!.name
+      this.recipe()!.name,
+      items
     );
-
+    
     this.added.set(true);
     setTimeout(()=> {
       this.added.set(false), 

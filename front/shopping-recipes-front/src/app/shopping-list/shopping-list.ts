@@ -46,8 +46,9 @@ export class ShoppingList {
     });
   }
 
-  deleteRecipe() {
+  deleteRecipe(uid:number) {
     console.log("Supprimer la recette de la liste");
+    this.shoppingListService.deleteRecipeAndItems(uid);
   }
 
   clear() {

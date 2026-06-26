@@ -9,12 +9,13 @@ export class shoppingListService {
 
     constructor(private http: HttpClient) {};
     private apiUrl = 'http://localhost:8080/shopping-lists';
+    private uidCounter = 0;
 
     // Panier local : ingredients
     items = signal<RecipeIngredient[]>([]);
 
     // Panier local : recettes
-    recipes = signal<{recipeId: number; servings: number;name: string}[]>([]);
+    recipes = signal<{uid: number,recipeId: number; servings: number;name: string}[]>([]);
 
     // fusion des ingredients
     mergedItems = computed(() => {
@@ -35,18 +36,25 @@ export class shoppingListService {
 
     });
 
-    // ajout des ingredietns au panier
-    addItems(newItems: RecipeIngredient[]){
-        this.items.update(list => [...list, ...newItems]);
-    }
-
     // ajout des recettes au panier
-    addRecipe(recipeId: number, servings: number, name: string){
+    addRecipe(recipeId: number, servings: number, name: string, ingredients: RecipeIngredient[]) {
+        const uid = ++this.uidCounter;
+
+        // 1) Ajouter la recette
         this.recipes.update(list => [
             ...list,
-            { recipeId, servings, name}
+            { uid, recipeId, servings, name }
         ]);
+
+        // 2) Ajouter les ingrédients avec le même UID
+        const itemsWithUid = ingredients.map(i => ({
+            ...i,
+            recipeAddUid: uid
+        }));
+
+        this.items.update(list => [...list, ...itemsWithUid]);
     }
+
 
     // vider le panier
     clear(){
@@ -63,4 +71,26 @@ export class shoppingListService {
 
         return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, request, { headers });
     }
+
+    deleteRecipeById(recipeId: number) {
+        let removed = false;
+        this.recipes.update(list =>
+            list.filter(r => {
+            if (!removed && r.recipeId === recipeId) {
+                removed = true;
+                return false;
+            }
+            return true;
+            })
+        );
+    }
+
+    deleteRecipeAndItems(uid: number) {
+        // 1) supprimer la recette
+        this.recipes.update(list => list.filter(r => r.uid !== uid));
+
+        // 2) supprimer les ingrédients associés
+        this.items.update(list => list.filter(i => i.recipeAddUid !== uid));
+    }
+
 }

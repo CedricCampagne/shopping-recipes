@@ -7,5 +7,7 @@ export interface RecipeIngredient {
   ingredient: Ingredient;
   quantityPerPerson: number;
   unit: string;
-  total: number
+  total: number;
+
+  recipeAddUid?: number;
 }
