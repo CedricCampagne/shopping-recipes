@@ -5,7 +5,14 @@
         class=" border-2 border-white p-4 bg-white shadow rounded hover:cursor-pointer hover:border-blue-600 transition-all duration-300"
         (click)="goToRecipe(recipe.id)"
     >
-      <h2 class="text-lg font-semibold">{{ recipe.name }}</h2>
+      <div class="flex justify-between">
+        <h2 class="text-lg font-semibold">{{ recipe.name }}</h2>
+        @if (isAdded(recipe.id)) {
+          <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">
+            Déjà Ajoutée pour : {{ addedServing(recipe.id) }} pers
+          </span>
+        }
+      </div>
       <p class="text-gray-600">{{ recipe.description }}</p>
     </div>
   }

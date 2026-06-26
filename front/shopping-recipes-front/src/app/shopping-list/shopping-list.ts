@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { shoppingListService } from './services/shopping-list.service';
+import { CreateShoppingRequest } from './models/create-shopping-list-request';
 
 @Component({
   selector: 'app-shopping-list',
+  standalone: true,
   imports: [],
   templateUrl: './shopping-list.html',
   styleUrl: './shopping-list.css',
@@ -17,15 +19,39 @@ export class ShoppingList {
   // recetttes ajoutées
   recipes = this.shoppingListService.recipes;
 
+  saved = signal(false);
+
   // sauvegarder la list
   saveList(){
+    const request: CreateShoppingRequest = {
+      recipes: this.recipes().map(r=> ({
+        recipeId: r.recipeId,
+        servings: r.servings
+      }))
+    };
 
+    this.shoppingListService.createShoppingList(request).subscribe({
+      next:(res) => {
+        console.log("Liste sauvegardée :", res);
+        this.saved.set(true);
+        
+        setTimeout(() =>{
+          this.saved.set(false);
+          this.shoppingListService.clear();
+        } , 2000);
+      },
+      error: (err) => {
+        console.error("Erreur lors de la sauvegarde :", err);
+      }
+    });
   }
 
-  
+  deleteRecipe() {
+    console.log("Supprimer la recette de la liste");
+  }
+
   clear() {
     this.shoppingListService.clear();
   }
-
 
 }

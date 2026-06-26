@@ -8,7 +8,7 @@ import { ShoppingListResponse } from "../models/shoppin-list-response";
 export class shoppingListService {
 
     constructor(private http: HttpClient) {};
-    private apiUrl = 'http://localhost:8080/shopping-list';
+    private apiUrl = 'http://localhost:8080/shopping-lists';
 
     // Panier local : ingredients
     items = signal<RecipeIngredient[]>([]);
@@ -61,6 +61,6 @@ export class shoppingListService {
             Authorization: `Bearer ${token}`
         });
 
-        return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, { headers });
+        return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, request, { headers });
     }
 }

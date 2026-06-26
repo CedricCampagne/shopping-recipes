@@ -27,28 +27,49 @@
     @if (recipes().length > 0) {
       <ul class="space-y-2">
         @for (r of recipes(); track $index) {
-          <li class="border p-2 rounded">
-            <strong>{{ r.name }}</strong> — {{ r.servings }} pers.
+          <li class="border p-2 rounded flex justify-between items-center">
+            <div>
+              <strong>{{ r.name }}</strong> — {{ r.servings }} pers.
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button class="px-3 py-1 bg-gray-200 rounded border-2 border-blue-600 hover:scale-110 transition-all duration-300">
+                -
+              </button>
+              <span class="text-lg font-semibold">{{ r.servings }}</span>
+              <button class="px-3 py-1 bg-gray-200 rounded border-2 border-blue-600 hover:scale-110 transition-all duration-300"
+              >+
+              </button>
+            </div>
+
+            <button class="px-4 py-2 bg-red-600 text-white rounded"
+                    (click)="deleteRecipe()">
+              X
+            </button>
           </li>
         }
       </ul>
+
+      <!-- Boutons -->
+      <div class="mt-6 flex gap-4">
+        <button class="px-4 py-2 bg-red-600 text-white rounded hover:cursor-pointer"
+                (click)="clear()">
+          Vider la liste
+        </button>
+
+        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer"
+                (click)="saveList()">
+          Sauvegarder la liste
+        </button>
+      </div>
+
+      <!-- @if (saved()) { -->
+        <div class="my-4 p-3 bg-green-600 text-white rounded shadow w-1/2 text-center">
+          Liste sauvegardée !
+        </div>
+      <!-- } -->
     } @else {
       <p class="text-gray-600">Aucune recette ajoutée.</p>
     }
   </div>
-
 </div>
-
-<!-- 🟩 Boutons -->
-<div class="mt-6 flex gap-4">
-  <button class="px-4 py-2 bg-red-600 text-white rounded"
-          (click)="clear()">
-    Vider la liste
-  </button>
-
-  <button class="px-4 py-2 bg-blue-600 text-white rounded"
-          (click)="saveList()">
-    Sauvegarder la liste
-  </button>
-</div>
-

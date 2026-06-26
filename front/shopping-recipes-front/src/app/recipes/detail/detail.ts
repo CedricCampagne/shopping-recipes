@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RecipesServices } from '../services/recipes.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
@@ -17,6 +17,7 @@ import { shoppingListService } from '../../shopping-list/services/shopping-list.
 export class Detail {
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private recipeService = inject(RecipesServices);
   private recipeIngredientSerivce = inject(RecipeIgredientService);
   private shoppingListService = inject(shoppingListService);
@@ -31,13 +32,15 @@ export class Detail {
 
   // Ingredients
   recipeIngredient = toSignal(
-  this.recipeIngredientSerivce.getByRecipeId(this.id),
-  { initialValue: [] as RecipeIngredient[] }
-);
-
+    this.recipeIngredientSerivce.getByRecipeId(this.id),
+    { initialValue: [] as RecipeIngredient[] }
+  );
 
   // Portions modifables par le user
   servings = signal(4);
+
+  // si recette deja ajoutée
+  added = signal(false);
 
   // Quantités recalculées si changement de serving
   ingredientsWithTotal = computed(()=>{
@@ -64,6 +67,12 @@ export class Detail {
       this.servings(),
       this.recipe()!.name
     );
+
+    this.added.set(true);
+    setTimeout(()=> {
+      this.added.set(false), 
+      this.router.navigate(['/app/recipes']);
+    }, 1000 );
   }
 
   createShoppingList() {
