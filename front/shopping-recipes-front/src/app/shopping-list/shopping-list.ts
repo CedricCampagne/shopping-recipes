@@ -14,7 +14,8 @@ export class ShoppingList {
   private shoppingListService = inject(shoppingListService);
 
   // ingredients fussionnés
-  items = this.shoppingListService.mergedItems;
+  //items = this.shoppingListService.mergedItems;
+  items = this.shoppingListService.sortedMergedItems;
 
   // recetttes ajoutées
   recipes = this.shoppingListService.recipes;
@@ -67,5 +68,5 @@ export class ShoppingList {
     const newValue = recipe.servings > 1 ? recipe.servings - 1 : 1;
     this.shoppingListService.updateServings(uid, newValue);
   }
-  
+
 }

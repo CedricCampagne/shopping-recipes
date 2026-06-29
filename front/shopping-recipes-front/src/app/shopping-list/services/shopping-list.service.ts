@@ -36,6 +36,11 @@ export class shoppingListService {
 
     });
 
+    sortedMergedItems = computed(() => {
+        return [...this.mergedItems()].sort((a, b) =>
+            a.ingredient.name.localeCompare(b.ingredient.name)
+        );
+    });
     // ajout des recettes au panier
     addRecipe(recipeId: number, servings: number, name: string, ingredients: RecipeIngredient[]) {
         const uid = ++this.uidCounter;
