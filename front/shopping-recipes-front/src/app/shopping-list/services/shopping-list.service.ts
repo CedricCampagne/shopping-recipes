@@ -93,4 +93,27 @@ export class shoppingListService {
         this.items.update(list => list.filter(i => i.recipeAddUid !== uid));
     }
 
+    updateServings(uid: number, newServings: number) {
+        // 1. mettre a jour la recette
+        this.recipes.update(list =>
+            list.map(r =>
+                r.uid === uid ? {...r, servings: newServings } : r
+            )
+        );
+
+        // 2. recalculer les ingredietns liés a cette recette
+        this.items.update(list =>
+            list.map(i => {
+                if (i.recipeAddUid === uid) {
+                    const quantityPerPerson = i.quantityPerPerson;
+                    return {
+                        ...i,
+                        total: quantityPerPerson * newServings
+                    };
+            }
+            return i;
+                }
+            )
+        );
+    }
 }

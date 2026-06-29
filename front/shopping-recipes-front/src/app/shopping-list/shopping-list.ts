@@ -55,4 +55,17 @@ export class ShoppingList {
     this.shoppingListService.clear();
   }
 
+  increaseServing(uid: number) {
+    const recipe = this.recipes().find(r => r.uid === uid);
+    if(!recipe) return;
+    this.shoppingListService.updateServings(uid, recipe.servings + 1 );
+  }
+
+  decreaseServings(uid: number) {
+    const recipe = this.recipes().find(r => r.uid === uid);
+    if(!recipe) return;
+    const newValue = recipe.servings > 1 ? recipe.servings - 1 : 1;
+    this.shoppingListService.updateServings(uid, newValue);
+  }
+  
 }
