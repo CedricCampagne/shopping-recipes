@@ -41,6 +41,7 @@ export class shoppingListService {
             a.ingredient.name.localeCompare(b.ingredient.name)
         );
     });
+    
     // ajout des recettes au panier
     addRecipe(recipeId: number, servings: number, name: string, ingredients: RecipeIngredient[]) {
         const uid = ++this.uidCounter;
@@ -60,21 +61,10 @@ export class shoppingListService {
         this.items.update(list => [...list, ...itemsWithUid]);
     }
 
-
     // vider le panier
     clear(){
         this.items.set([]);
         this.recipes.set([]);
-    }
-
-    // appel backend : creation de la liste de course
-    createShoppingList(request: CreateShoppingRequest) {
-        const token  = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
-
-        return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, request, { headers });
     }
 
     deleteRecipeById(recipeId: number) {
@@ -120,5 +110,35 @@ export class shoppingListService {
                 }
             )
         );
+    }
+
+    // appel backend : creation de la liste de course
+    createShoppingList(request: CreateShoppingRequest) {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, request, { headers });
+    }
+
+    // Recuperer toutes les list saved
+    getAllSavedList() {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.get<ShoppingListResponse[]>(`${this.apiUrl}`, { headers });
+    }
+
+    // Recuperer list saved by id
+    getSavedListById(id: number) {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.get<ShoppingListResponse>(`${this.apiUrl}/${id}`, { headers });
     }
 }

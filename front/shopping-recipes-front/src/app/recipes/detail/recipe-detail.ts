@@ -8,13 +8,13 @@ import { RecipeIngredient } from '../models/recipe-ingredient';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 
 @Component({
-  selector: 'app-detail',
+  selector: 'app-recipe-detail',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './detail.html',
-  styleUrl: './detail.css',
+  templateUrl: './recipe-detail.html',
+  styleUrl: './recipe-detail.css',
 })
-export class Detail {
+export class RecipeDetail {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);

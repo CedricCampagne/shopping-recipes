@@ -1,0 +1,10 @@
+@for (list of lists(); track list.id) {
+  <div class="border p-4 rounded mb-4 shadow">
+    <p><strong>ID :</strong> {{ list.id }}</p>
+    <p><strong>Status :</strong> {{ list.status }}</p>
+
+    <button (click)="openDetail(list.id)">
+      Voir détail
+    </button>
+  </div>
+}

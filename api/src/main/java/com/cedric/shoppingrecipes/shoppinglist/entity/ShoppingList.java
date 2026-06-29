@@ -2,6 +2,7 @@ package com.cedric.shoppingrecipes.shoppinglist.entity;
 
 
 import com.cedric.shoppingrecipes.shoppinglist.ShoppingListStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,9 +37,11 @@ public class ShoppingList {
     private ShoppingListStatus status = ShoppingListStatus.EN_COURS;
 
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ShoppingListItem> items = new ArrayList<>();
 
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ShoppingListRecipe> recipes = new ArrayList<>();
 
 }
