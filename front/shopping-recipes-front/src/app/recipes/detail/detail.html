@@ -27,10 +27,19 @@
             }
         </ul>
 
-        <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-            (click)="addToShoppingList()">
-            Ajouter à la liste de courses
-        </button>
+        <div class="flex h-20 items-center gap-4">
+          <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded"
+              (click)="addToShoppingList()">
+              Ajouter à la liste de courses
+          </button>
+  
+          @if (added()) {
+            <p class="mt-4 px-4 py-2 bg-green-600 text-white rounded">
+              Recette ajoutée à la liste !
+            </p>
+          }
+        </div>
+
 
     } @else {
       <p>Aucun ingrédient trouvé</p>
