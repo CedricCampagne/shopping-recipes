@@ -15,15 +15,8 @@ export class ShoppingListSavedList {
   private shoppingListService = inject(shoppingListService);
   private router = inject(Router);
 
-  lists = signal<ShoppingListResponse[]>([]);
-
-  constructor() {
-    this.shoppingListService.getAllSavedList().subscribe({
-      next: (res) => this.lists.set(res),
-      error: (err) => console.error("Erreur lors de récupération des listes", err)
-    });
-  }
-
+  lists =this.shoppingListService.savedLists;
+  
   openDetail(id:number) {
     this.router.navigate(['/app/shopping-list-saved', id])
   }

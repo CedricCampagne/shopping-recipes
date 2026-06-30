@@ -36,6 +36,9 @@ export class ShoppingList {
         console.log("Liste sauvegardée :", res);
         this.saved.set(true);
         
+        // refresh des listes sauvegardées
+        this.shoppingListService.refreshSavedLists();
+        
         setTimeout(() =>{
           this.saved.set(false);
           this.shoppingListService.clear();

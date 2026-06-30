@@ -17,6 +17,8 @@ export class shoppingListService {
     // Panier local : recettes
     recipes = signal<{uid: number,recipeId: number; servings: number;name: string}[]>([]);
 
+    savedLists = signal<ShoppingListResponse[]>([]);
+
     // fusion des ingredients
     mergedItems = computed(() => {
         const list = this.items();
@@ -132,6 +134,13 @@ export class shoppingListService {
         return this.http.get<ShoppingListResponse[]>(`${this.apiUrl}`, { headers });
     }
 
+    // rafraichir les lsites sauvegardées
+    refreshSavedLists() {
+        this.getAllSavedList().subscribe({
+            next : (res) => this.savedLists.set(res)
+        });
+    }
+
     // Recuperer list saved by id
     getSavedListById(id: number) {
         const token  = localStorage.getItem('token');
@@ -141,4 +150,6 @@ export class shoppingListService {
 
         return this.http.get<ShoppingListResponse>(`${this.apiUrl}/${id}`, { headers });
     }
+
+
 }

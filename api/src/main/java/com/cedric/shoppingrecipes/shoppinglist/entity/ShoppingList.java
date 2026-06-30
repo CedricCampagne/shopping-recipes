@@ -40,7 +40,12 @@ public class ShoppingList {
     @JsonIgnore
     private List<ShoppingListItem> items = new ArrayList<>();
 
-    @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "shoppingList",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+            //fetch = FetchType.EAGER
+    )
     @JsonIgnore
     private List<ShoppingListRecipe> recipes = new ArrayList<>();
 

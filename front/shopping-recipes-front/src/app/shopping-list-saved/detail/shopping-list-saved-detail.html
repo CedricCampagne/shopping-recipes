@@ -1,1 +1,53 @@
-<p>detail works!</p>
+@if (list()) {
+
+  <h1 class="text-2xl font-bold mb-4">
+    Liste #{{ list()!.id }}
+  </h1>
+
+  <p class="mb-6">
+    <strong>Status :</strong> {{ list()!.status }}
+  </p>
+ 
+  <div class="grid grid-cols-2 gap-6">
+
+    <!-- Colonne gauche : ingrédients -->
+    <div>
+      <h2 class="text-xl font-semibold mb-2">Ingrédients</h2>
+
+      @if (list()!.items.length > 0) {
+        <ul class="space-y-2">
+          @for (item of sortedItems(); track item.ingredientId) {
+            <li class="border p-2 rounded">
+              <strong>{{ item.ingredientName }}</strong> :
+              {{ item.totalQuantity }} {{ item.unit }}
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-gray-600">Aucun ingrédient.</p>
+      }
+    </div>
+
+    <!-- Colonne droite : recettes -->
+    <div>
+      <h2 class="text-xl font-semibold mb-2">Recettes</h2>
+
+      @if (list()!.recipes.length > 0) {
+        <ul class="space-y-2">
+          @for (r of list()!.recipes; track $index) {
+            <li class="border p-2 rounded flex justify-between items-center">
+              <div>
+                <strong>{{ r.recipeName }}</strong>
+                — {{ r.servings }} pers.
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-gray-600">Aucune recette.</p>
+      }
+    </div>
+
+  </div>
+
+}

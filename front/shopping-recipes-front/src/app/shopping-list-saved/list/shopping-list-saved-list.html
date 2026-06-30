@@ -1,9 +1,12 @@
 @for (list of lists(); track list.id) {
-  <div class="border p-4 rounded mb-4 shadow">
-    <p><strong>ID :</strong> {{ list.id }}</p>
+  <div class="border p-4 rounded mb-4 shadow flex flex-col items-start gap-2">
+    <p><strong>Liste ID :</strong> {{ list.id }}</p>
     <p><strong>Status :</strong> {{ list.status }}</p>
 
-    <button (click)="openDetail(list.id)">
+    <button
+      class="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer"
+      (click)="openDetail(list.id)"
+    >
       Voir détail
     </button>
   </div>

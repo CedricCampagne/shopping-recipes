@@ -15,7 +15,8 @@ export class Header {
   private shoppingListService = inject(shoppingListService);
 
   shoppingList = this.shoppingListService.mergedItems;
-  
+  savedLists = this.shoppingListService.savedLists;
+
   isFetching = signal(false);
 
   constructor(

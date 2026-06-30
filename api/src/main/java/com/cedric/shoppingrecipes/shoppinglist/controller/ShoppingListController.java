@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/shopping-lists")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
@@ -33,6 +32,7 @@ public class ShoppingListController {
         return shoppingListMapper.toResponse(list);
     }
 
+    @Transactional(readOnly = true)
     @GetMapping
     public List<ShoppingListResponse> getAll() {
 
@@ -42,6 +42,7 @@ public class ShoppingListController {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/{id}")
     public ShoppingListResponse getById(@PathVariable Long id) {
         ShoppingList list = shoppingListService.getById(id);
