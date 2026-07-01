@@ -1,5 +1,5 @@
 import { Component,  inject, computed } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 
 @Component({
@@ -12,6 +12,7 @@ import { shoppingListService } from '../../shopping-list/services/shopping-list.
 export class ShoppingListSavedDetail {
   private shoppingListService = inject(shoppingListService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   id = Number(this.route.snapshot.paramMap.get("id"));
   
@@ -27,4 +28,18 @@ export class ShoppingListSavedDetail {
     this.savedLists().find(l => l.id === this.id)
   );
 
+  updateStatus(newStatus: string) {
+    this.shoppingListService.updateStatus(this.id, newStatus).subscribe({
+      next: () => this.shoppingListService.refreshSavedLists()
+    });
+  }
+
+  deleteList() {
+    this.shoppingListService.deleteList(this.id).subscribe({
+      next : () => {
+        this.shoppingListService.refreshSavedLists();
+        this.router.navigate(['/app/shopping-list-saved']);
+      }
+    });
+  }
 }

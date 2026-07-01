@@ -124,6 +124,16 @@ export class shoppingListService {
         return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, request, { headers });
     }
 
+    // supprimmer une liste
+    deleteList(id: number) {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.delete(`${this.apiUrl}/${id}`, { headers });
+    }
+    
     // Recuperer toutes les list saved
     getAllSavedList() {
         const token  = localStorage.getItem('token');
@@ -151,5 +161,11 @@ export class shoppingListService {
         return this.http.get<ShoppingListResponse>(`${this.apiUrl}/${id}`, { headers });
     }
 
+    updateStatus(id: number, status: string) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+        return this.http.put(`${this.apiUrl}/${id}/status`, { status }, { headers });
+    }
 
 }
