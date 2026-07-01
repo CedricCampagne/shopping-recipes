@@ -17,6 +17,8 @@ export class shoppingListService {
     // Panier local : recettes
     recipes = signal<{uid: number,recipeId: number; servings: number;name: string}[]>([]);
 
+    savedLists = signal<ShoppingListResponse[]>([]);
+
     // fusion des ingredients
     mergedItems = computed(() => {
         const list = this.items();
@@ -41,6 +43,7 @@ export class shoppingListService {
             a.ingredient.name.localeCompare(b.ingredient.name)
         );
     });
+    
     // ajout des recettes au panier
     addRecipe(recipeId: number, servings: number, name: string, ingredients: RecipeIngredient[]) {
         const uid = ++this.uidCounter;
@@ -60,21 +63,10 @@ export class shoppingListService {
         this.items.update(list => [...list, ...itemsWithUid]);
     }
 
-
     // vider le panier
     clear(){
         this.items.set([]);
         this.recipes.set([]);
-    }
-
-    // appel backend : creation de la liste de course
-    createShoppingList(request: CreateShoppingRequest) {
-        const token  = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
-
-        return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, request, { headers });
     }
 
     deleteRecipeById(recipeId: number) {
@@ -121,4 +113,59 @@ export class shoppingListService {
             )
         );
     }
+
+    // appel backend : creation de la liste de course
+    createShoppingList(request: CreateShoppingRequest) {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.post<ShoppingListResponse>(`${this.apiUrl}`, request, { headers });
+    }
+
+    // supprimmer une liste
+    deleteList(id: number) {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.delete(`${this.apiUrl}/${id}`, { headers });
+    }
+    
+    // Recuperer toutes les list saved
+    getAllSavedList() {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.get<ShoppingListResponse[]>(`${this.apiUrl}`, { headers });
+    }
+
+    // rafraichir les lsites sauvegardées
+    refreshSavedLists() {
+        this.getAllSavedList().subscribe({
+            next : (res) => this.savedLists.set(res)
+        });
+    }
+
+    // Recuperer list saved by id
+    getSavedListById(id: number) {
+        const token  = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+
+        return this.http.get<ShoppingListResponse>(`${this.apiUrl}/${id}`, { headers });
+    }
+
+    updateStatus(id: number, status: string) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+        return this.http.put(`${this.apiUrl}/${id}/status`, { status }, { headers });
+    }
+
 }

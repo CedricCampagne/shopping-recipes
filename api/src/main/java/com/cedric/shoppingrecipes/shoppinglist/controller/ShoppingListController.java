@@ -11,10 +11,10 @@ import com.cedric.shoppingrecipes.shoppinglist.service.ShoppingListService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/shopping-lists")
@@ -26,9 +26,27 @@ public class ShoppingListController {
 
     @PostMapping
     public ShoppingListResponse create(@RequestBody CreateShoppingListRequest request) {
-        System.out.println("RECIPES = " + request.recipes());
+        // System.out.println("RECIPES = " + request.recipes());
         ShoppingList list = shoppingListService.createShoppingList(request);
 
         return shoppingListMapper.toResponse(list);
     }
+
+    @Transactional(readOnly = true)
+    @GetMapping
+    public List<ShoppingListResponse> getAll() {
+
+        return shoppingListService.getAll()
+                .stream()
+                .map(shoppingListMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{id}")
+    public ShoppingListResponse getById(@PathVariable Long id) {
+        ShoppingList list = shoppingListService.getById(id);
+        return shoppingListMapper.toResponse(list);
+    }
+
 }

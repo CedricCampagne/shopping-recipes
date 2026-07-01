@@ -20,6 +20,7 @@ import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,4 +89,16 @@ public class ShoppingListService {
 
         return shoppingListRepository.save(shoppingList);
     }
+
+    @Transactional(readOnly = true)
+    public List<ShoppingList> getAll() {
+        return shoppingListRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public ShoppingList getById(Long id) {
+        return shoppingListRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Shopping list non trouvée"));
+    }
+
 }

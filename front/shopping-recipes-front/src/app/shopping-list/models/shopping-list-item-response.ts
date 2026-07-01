@@ -1,6 +1,6 @@
 export interface ShoppingListItemResponse {
     ingredientId: number;
-    ingredientName: number;
+    ingredientName: string;
     totalQuantity: number;
     unit: string;
 }
