@@ -1,4 +1,4 @@
-import { Component,  inject, computed } from '@angular/core';
+import { Component,  inject, computed, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 
@@ -14,8 +14,10 @@ export class ShoppingListSavedDetail {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
+  statusChange = signal(false);
+  statusError = signal(false);
+
   id = Number(this.route.snapshot.paramMap.get("id"));
-  
   savedLists = this.shoppingListService.savedLists;
 
   sortedItems = computed(() => {
@@ -30,9 +32,27 @@ export class ShoppingListSavedDetail {
 
   updateStatus(newStatus: string) {
     this.shoppingListService.updateStatus(this.id, newStatus).subscribe({
-      next: () => this.shoppingListService.refreshSavedLists()
+      next: () => {
+        this.statusError.set(false);
+        this.statusChange.set(true);
+
+        setTimeout(() => {
+          this.statusChange.set(false);
+        }, 2000);
+
+        this.shoppingListService.refreshSavedLists();
+      },
+      error: () => {
+        this.statusChange.set(false);
+        this.statusError.set(true);
+
+        setTimeout(() => {
+          this.statusError.set(false);
+        }, 2000);
+      }
     });
   }
+
 
   deleteList() {
     this.shoppingListService.deleteList(this.id).subscribe({

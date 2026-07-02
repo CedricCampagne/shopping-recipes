@@ -10,12 +10,12 @@ import com.cedric.shoppingrecipes.recipeingredient.repository.RecipeIngredientRe
 import com.cedric.shoppingrecipes.shoppinglist.ShoppingListStatus;
 import com.cedric.shoppingrecipes.shoppinglist.dto.CreateShoppingListRequest;
 
+import com.cedric.shoppingrecipes.shoppinglist.dto.ShoppingListResponse;
 import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingList;
 
 import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingListItem;
 import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingListRecipe;
-import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListItemRepository;
-import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRecipeRepository;
+import com.cedric.shoppingrecipes.shoppinglist.mapper.ShoppingListMapper;
 import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -33,10 +33,26 @@ public class ShoppingListService {
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final ShoppingListRepository shoppingListRepository;
-    private final ShoppingListItemRepository shoppingListItemRepository;
-    private final ShoppingListRecipeRepository shoppingListRecipeRepository;
+    private final ShoppingListMapper shoppingListMapper;
 
-    public ShoppingList createShoppingList(CreateShoppingListRequest request) {
+    @Transactional(readOnly = true)
+    public List<ShoppingListResponse> getAll() {
+        return shoppingListRepository.findAll()
+                .stream()
+                .map(shoppingListMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ShoppingListResponse getById(Long id) {
+        ShoppingList list = shoppingListRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Shopping list non trouvée"));
+
+        return shoppingListMapper.toResponse(list);
+    }
+
+    @Transactional
+    public ShoppingListResponse createShoppingList(CreateShoppingListRequest request) {
 
         if (request.recipes() == null || request.recipes().isEmpty()) {
             throw new IllegalArgumentException("La liste des recettes ne peut pas être vide.");
@@ -87,18 +103,27 @@ public class ShoppingListService {
             shoppingList.getItems().add(item);
         }
 
-        return shoppingListRepository.save(shoppingList);
+        ShoppingList saved = shoppingListRepository.save(shoppingList);
+        return shoppingListMapper.toResponse(saved);
     }
 
-    @Transactional(readOnly = true)
-    public List<ShoppingList> getAll() {
-        return shoppingListRepository.findAll();
+    @Transactional
+    public void deleteShoppingList(Long id) {
+        if (!shoppingListRepository.existsById(id)) {
+            throw new RuntimeException("Shopping list non trouvée");
+        }
+        shoppingListRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
-    public ShoppingList getById(Long id) {
-        return shoppingListRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shopping list non trouvée"));
-    }
+    @Transactional
+    public ShoppingListResponse updateStatus(Long id, ShoppingListStatus newStatus) {
+        ShoppingList list = shoppingListRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Shopping liste non trouvée"));
 
+        list.setStatus(newStatus);
+
+        ShoppingList saved = shoppingListRepository.save(list);
+
+        return shoppingListMapper.toResponse(saved);
+    }
 }
