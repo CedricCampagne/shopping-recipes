@@ -3,15 +3,10 @@
   <h1 class="text-2xl font-bold mb-4">
     Liste #{{ list()!.id }}
   </h1>
-
-  <p class="mb-6">
-    <strong>Status :</strong> {{ list()!.status }}
-  </p>
  
   <div class="mb-6 flex items-center justify-between">
     <div class="flex items-center gap-2">
       <label class="block text-lg font-semibold">Changer le statut :</label>
-
       <select #selectStatus
         class="border p-2 rounded bg-white shadow-sm cursor-pointer
               focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -22,22 +17,26 @@
         <option value="VALIDE">Validée</option>
         <option value="ARCHIVE">Archivée</option>
       </select>
+      @if (statusChange()) {
+        <p class="bg-green-700 text-white px-2 py-1 rounded-l">statut mis a jour</p>
+      }
+      @if (statusError()) {
+        <p class="bg-red-700 text-white px-2 py-1 rounded-l">
+          erreur lors de la mise à jour
+        </p>
+      }
     </div>
     <button
-      class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+      class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition hover:cursor-pointer"
       (click)="deleteList()"
     >
       Supprimer
     </button>
   </div>
-
-
   <div class="grid grid-cols-2 gap-6">
-
     <!-- Colonne gauche : ingrédients -->
     <div>
       <h2 class="text-xl font-semibold mb-2">Ingrédients</h2>
-
       @if (list()!.items.length > 0) {
         <ul class="space-y-2">
           @for (item of sortedItems(); track item.ingredientId) {
@@ -51,11 +50,9 @@
         <p class="text-gray-600">Aucun ingrédient.</p>
       }
     </div>
-
     <!-- Colonne droite : recettes -->
     <div>
       <h2 class="text-xl font-semibold mb-2">Recettes</h2>
-
       @if (list()!.recipes.length > 0) {
         <ul class="space-y-2">
           @for (r of list()!.recipes; track $index) {
@@ -71,7 +68,7 @@
         <p class="text-gray-600">Aucune recette.</p>
       }
     </div>
-
   </div>
-
+} @else {
+  <p>Erreur lors dela recupération des listes...</p>
 }
