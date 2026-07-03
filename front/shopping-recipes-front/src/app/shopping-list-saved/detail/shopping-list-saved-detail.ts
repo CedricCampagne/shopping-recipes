@@ -38,7 +38,7 @@ export class ShoppingListSavedDetail {
 
         setTimeout(() => {
           this.statusChange.set(false);
-        }, 2000);
+        }, 1000);
 
         this.shoppingListService.refreshSavedLists();
       },
