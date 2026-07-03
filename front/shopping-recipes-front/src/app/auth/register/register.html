@@ -7,7 +7,23 @@
     (ngSubmit)="onSubmit()"
     class="flex flex-col gap-4 w-full max-w-sm"
   >
+    @if (ui.isLoading()) {
+      <p class="bg-green-700 text-white text-center px-2 py-1 rounded-2xl">
+        Inscription en cours...
+      </p>
+    }
 
+    @if (ui.errorMessage()) {
+      <p class="bg-red-700 text-white text-center px-2 py-1 rounded-2xl">
+        {{ ui.errorMessage() }}
+      </p>
+    }
+
+    @if (ui.successMessage()) {
+      <p class="bg-green-700 text-white text-center px-2 py-1 rounded-2xl">
+        {{ ui.successMessage() }}
+      </p>
+    }
     <div class="flex flex-col gap-1">
       <label class="font-medium">Nom d'utilisateur</label>
       <input
@@ -68,6 +84,7 @@
     </div>
 
     <button
+      [disabled]="ui.isLoading()"
       type="submit"
       class="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
     >
