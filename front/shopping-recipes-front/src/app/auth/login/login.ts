@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { LoginRequest } from '../models/login-request';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { UIStore } from '../../shared/ui.store';
 
 @Component({
   selector: 'app-login',
@@ -16,9 +17,10 @@ export class Login {
 
   authService = inject(AuthService);
   router = inject(Router);
+  ui = inject(UIStore);
 
-  isFetching = signal(false);
-  loginErr = signal(false);
+  // isFetching = signal(false);
+  // loginErr = signal(false);
 
   form = new FormGroup({
     email: new FormControl('', {nonNullable: true, validators:[Validators.required, Validators.email]}),
@@ -28,8 +30,9 @@ export class Login {
   onSubmit() {
     if (this.form.invalid) return;
     
-    this.isFetching.set(true);
-
+    //this.isFetching.set(true);
+    this.ui.startLoading();
+    
     const raw = this.form.getRawValue();
     
         const data: LoginRequest = {
@@ -42,15 +45,14 @@ export class Login {
             console.log('LOGIN OK', res);
             localStorage.setItem('token', res.token);
             setTimeout(() => {
-              this.isFetching.set(false);
               this.router.navigate(['/app']);
             }, 2000);
           },
           error: err => {
             console.log('LOGIN ERROR', err);
-            setTimeout(() => {
-              this.isFetching.set(false);
-              this.loginErr.set(true);
+            this.ui.showError("Email ou mot de passe incorrect");
+            setTimeout(()=>{
+              this.ui.stopLoading();
             }, 2000);
           }
         });

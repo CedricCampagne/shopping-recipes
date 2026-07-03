@@ -1,7 +1,5 @@
 import { computed, Injectable, signal } from "@angular/core";
 
-
-
 @Injectable({ providedIn: 'root' })
 export class UIStore {
 
@@ -9,11 +7,11 @@ export class UIStore {
     isLoading = signal(false);
 
     // Messages globaux
-    succesMessage = signal<string | null>(null);
+    successMessage = signal<string | null>(null);
     errorMessage = signal<string | null>(null);
 
     // Etats dérivés
-    hasMessage = computed(() => this.succesMessage() !== null || this.errorMessage() !== null
+    hasMessage = computed(() => this.successMessage() !== null || this.errorMessage() !== null
     );
 
     // Méthodes loader
@@ -26,9 +24,9 @@ export class UIStore {
     }
 
     // Messages
-    showSucces(msg: string) {
-        this.succesMessage.set(msg),
-        setTimeout(() => this.succesMessage.set(null), 2000);
+    showSuccess(msg: string) {
+        this.successMessage.set(msg),
+        setTimeout(() => this.successMessage.set(null), 2000);
     }
 
     showError(msg: string) {
@@ -37,8 +35,8 @@ export class UIStore {
     }
 
     clearMessage() {
-        this.succesMessage.set(null);
+        this.successMessage.set(null);
         this.errorMessage.set(null);
     }
-    
+
 }
