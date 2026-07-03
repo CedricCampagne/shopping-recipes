@@ -2,6 +2,7 @@ package com.cedric.shoppingrecipes.shoppinglist.entity;
 
 
 import com.cedric.shoppingrecipes.shoppinglist.ShoppingListStatus;
+import com.cedric.shoppingrecipes.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -46,7 +47,12 @@ public class ShoppingList {
             orphanRemoval = true
             //fetch = FetchType.EAGER
     )
+
     @JsonIgnore
     private List<ShoppingListRecipe> recipes = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

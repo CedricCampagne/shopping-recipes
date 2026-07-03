@@ -18,7 +18,10 @@ import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingListRecipe;
 import com.cedric.shoppingrecipes.shoppinglist.mapper.ShoppingListMapper;
 import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
 
+import com.cedric.shoppingrecipes.user.entity.User;
+import com.cedric.shoppingrecipes.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +36,14 @@ public class ShoppingListService {
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final ShoppingListRepository shoppingListRepository;
+    private final UserRepository userRepository;
     private final ShoppingListMapper shoppingListMapper;
 
     @Transactional(readOnly = true)
     public List<ShoppingListResponse> getAll() {
-        return shoppingListRepository.findAll()
+        User user = getCurrentUser();
+
+        return shoppingListRepository.findByUserId(user.getId())
                 .stream()
                 .map(shoppingListMapper::toResponse)
                 .toList();
@@ -45,9 +51,9 @@ public class ShoppingListService {
 
     @Transactional(readOnly = true)
     public ShoppingListResponse getById(Long id) {
-        ShoppingList list = shoppingListRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shopping list non trouvée"));
-
+        User user = getCurrentUser();
+        ShoppingList list = shoppingListRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new RuntimeException("Liste non toruvée"));
         return shoppingListMapper.toResponse(list);
     }
 
@@ -58,9 +64,15 @@ public class ShoppingListService {
             throw new IllegalArgumentException("La liste des recettes ne peut pas être vide.");
         }
 
-        // Creation de la list
+        // Récupérer le user connecté
+        User user = getCurrentUser();
+
+        // Création de la list
         ShoppingList shoppingList = new ShoppingList();
         shoppingList.setStatus(ShoppingListStatus.EN_COURS);
+
+        // Associer la liste au user
+        shoppingList.setUser(user);
 
         // Les Maps pour fusionner
         Map<Long, Double> mergedQuantities = new HashMap<>();
@@ -109,21 +121,30 @@ public class ShoppingListService {
 
     @Transactional
     public void deleteShoppingList(Long id) {
-        if (!shoppingListRepository.existsById(id)) {
-            throw new RuntimeException("Shopping list non trouvée");
-        }
-        shoppingListRepository.deleteById(id);
+        User user = getCurrentUser();
+
+        ShoppingList list = shoppingListRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new RuntimeException("Liste non toruvée"));
+
+        shoppingListRepository.delete(list);
     }
 
     @Transactional
     public ShoppingListResponse updateStatus(Long id, ShoppingListStatus newStatus) {
-        ShoppingList list = shoppingListRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shopping liste non trouvée"));
+        User user = getCurrentUser();
+
+        ShoppingList list = shoppingListRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new RuntimeException(" Liste non trouvée"));
 
         list.setStatus(newStatus);
 
-        ShoppingList saved = shoppingListRepository.save(list);
-
-        return shoppingListMapper.toResponse(saved);
+        return shoppingListMapper.toResponse(list);
     }
+
+    private User getCurrentUser(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    }
+
 }
