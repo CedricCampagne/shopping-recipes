@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { RegisterRequest } from '../models/register-request';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { UIStore } from '../../shared/ui.store';
 
 @Component({
   selector: 'app-register',
@@ -17,6 +18,7 @@ export class Register {
   
   authService = inject(AuthService);
   router = inject(Router);
+  ui = inject(UIStore);
 
   form = new FormGroup({
     username: new FormControl('', { nonNullable: true, validators: Validators.required }),
@@ -30,6 +32,8 @@ export class Register {
   onSubmit() {
     if (this.form.invalid) return;
     
+    this.ui.startLoading();
+
     const raw = this.form.getRawValue();
 
     const data: RegisterRequest = {
@@ -41,9 +45,23 @@ export class Register {
     this.authService.register(data).subscribe({
       next: res => {
         console.log('REGISTER OK', res)
-        this.router.navigate(['/login']);
+
+        this.ui.showSuccess("Inscription réussie, redirection vers la connexion...")
+
+        setTimeout(() => {
+          this.ui.stopLoading();
+          this.router.navigate(['/login']);
+        }, 1500);
       },
-      error: err => console.log('REGISTER ERROR', err)
+      error: err => {
+        console.log('REGISTER ERROR', err);
+
+        this.ui.showError("Erreur lors de l'inscription");
+
+        setTimeout(()=> {
+          this.ui.stopLoading()
+        }, 1500);
+      }
     });
 
   }
