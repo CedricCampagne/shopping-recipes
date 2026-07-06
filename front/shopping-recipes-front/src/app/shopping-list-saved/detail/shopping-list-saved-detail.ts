@@ -1,6 +1,7 @@
 import { Component,  inject, computed, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
+import { UIStore } from '../../shared/ui.store';
 
 @Component({
   selector: 'app-shopping-list-saved-detail',
@@ -14,8 +15,7 @@ export class ShoppingListSavedDetail {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  statusChange = signal(false);
-  statusError = signal(false);
+  ui = inject(UIStore);
 
   id = Number(this.route.snapshot.paramMap.get("id"));
   savedLists = this.shoppingListService.savedLists;
@@ -31,34 +31,42 @@ export class ShoppingListSavedDetail {
   );
 
   updateStatus(newStatus: string) {
+    this.ui.startLoading();
     this.shoppingListService.updateStatus(this.id, newStatus).subscribe({
       next: () => {
-        this.statusError.set(false);
-        this.statusChange.set(true);
+        this.ui.showSuccess("Statut mis à jour !");
+        
+        this.shoppingListService.refreshSavedLists();
 
         setTimeout(() => {
-          this.statusChange.set(false);
-        }, 1000);
+          this.ui.stopLoading();
+        }, 1200);
 
-        this.shoppingListService.refreshSavedLists();
       },
       error: () => {
-        this.statusChange.set(false);
-        this.statusError.set(true);
-
+        this.ui.showError("Erreur lors de la mise à jour du Statut !");
         setTimeout(() => {
-          this.statusError.set(false);
-        }, 2000);
+          this.ui.stopLoading();
+        }, 1500);
       }
     });
   }
 
-
   deleteList() {
+    this.ui.startLoading();
+
     this.shoppingListService.deleteList(this.id).subscribe({
       next : () => {
-        this.shoppingListService.refreshSavedLists();
-        this.router.navigate(['/app/shopping-list-saved']);
+        this.ui.showSuccess("Liste supprimée !");
+        setTimeout(() => {
+          this.router.navigate(['/app/shopping-list-saved']);
+          this.shoppingListService.refreshSavedLists();
+          this.ui.stopLoading();
+        }, 1200);
+      },
+      error: () => {
+        this.ui.showError("Erreur lors de la suppression !");
+        this.ui.stopLoading();
       }
     });
   }
