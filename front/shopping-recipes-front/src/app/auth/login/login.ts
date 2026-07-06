@@ -45,6 +45,7 @@ export class Login {
             console.log('LOGIN OK', res);
             localStorage.setItem('token', res.token);
             setTimeout(() => {
+              this.ui.stopLoading();
               this.router.navigate(['/app']);
             }, 2000);
           },
