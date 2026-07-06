@@ -2,34 +2,8 @@
 
   <h2 class="text-2xl font-bold">Connectez-Vous</h2>
 
-  <!-- @if (isFetching()) {
-    <p class="bg-green-700 text-white px-2 py-1 rounded-2xl"> Connexion en cours ...</p>
-  }
-  @if (loginErr()) {
-    <p class="bg-red-700 text-white px-2 py-1 rounded-2xl"> Erreur lors de la Connexion ...</p>
-  } -->
-  
-  @if(ui.isLoading()){
-    <div class="flex flex-col gap-2">
-      @if (ui.isLoading()) {
-        <p class="bg-green-700 text-white text-center px-2 py-1 rounded-2xl">
-          Connexion en cours...
-        </p>
-      }
+  <app-ui-messages placement="default" />
 
-      @if (ui.successMessage()) {
-        <p class="bg-green-700 text-white px-2 py-1 rounded-2xl">
-          {{ ui.successMessage() }}
-        </p>
-      }
-
-      @if (ui.errorMessage()) {
-        <p class="bg-red-700 text-white px-2 py-1 rounded-2xl">
-          {{ ui.errorMessage() }}
-        </p>
-      }
-    </div>
-  }
   <form
     [formGroup]="form"
     (ngSubmit)="onSubmit()"

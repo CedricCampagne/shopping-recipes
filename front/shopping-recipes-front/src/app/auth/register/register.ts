@@ -6,11 +6,12 @@ import { RegisterRequest } from '../models/register-request';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { UIStore } from '../../shared/ui.store';
+import { UiMessages } from "../../shared/ui-messages/ui-messages";
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, UiMessages],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -45,7 +46,6 @@ export class Register {
     this.authService.register(data).subscribe({
       next: res => {
         console.log('REGISTER OK', res)
-
         this.ui.showSuccess("Inscription réussie, redirection vers la connexion...")
 
         setTimeout(() => {
@@ -54,13 +54,15 @@ export class Register {
         }, 1500);
       },
       error: err => {
-        console.log('REGISTER ERROR', err);
+        console.log('LOGIN ERROR', err);
 
-        this.ui.showError("Erreur lors de l'inscription");
-
-        setTimeout(()=> {
-          this.ui.stopLoading()
-        }, 1500);
+        setTimeout(()=>{
+          this.ui.stopLoading();
+        },1500);
+        
+        setTimeout(()=>{
+          this.ui.showError("Erreur lors de l'inscription");
+        },1500);
       }
     });
 
@@ -74,6 +76,5 @@ export class Register {
 
     return password === confirm ? null : { passwordMismatch: true };
   }
-
 
 }

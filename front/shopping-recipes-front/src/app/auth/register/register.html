@@ -7,23 +7,9 @@
     (ngSubmit)="onSubmit()"
     class="flex flex-col gap-4 w-full max-w-sm"
   >
-    @if (ui.isLoading()) {
-      <p class="bg-green-700 text-white text-center px-2 py-1 rounded-2xl">
-        Inscription en cours...
-      </p>
-    }
 
-    @if (ui.errorMessage()) {
-      <p class="bg-red-700 text-white text-center px-2 py-1 rounded-2xl">
-        {{ ui.errorMessage() }}
-      </p>
-    }
-
-    @if (ui.successMessage()) {
-      <p class="bg-green-700 text-white text-center px-2 py-1 rounded-2xl">
-        {{ ui.successMessage() }}
-      </p>
-    }
+  <app-ui-messages placement="default"/>
+      
     <div class="flex flex-col gap-1">
       <label class="font-medium">Nom d'utilisateur</label>
       <input
@@ -79,8 +65,6 @@
         @if (form.hasError('passwordMismatch') && form.controls.confirm.touched) {
             <p class="text-orange-500 text-sm">Les mots de passe ne correspondent pas</p>
         }
-
-
     </div>
 
     <button
@@ -92,7 +76,5 @@
     </button>
 
     <a routerLink="/" class="text-green-600 underline text-center hover:cursor-pointer">Retour à l'accueil</a>
-
   </form>
-
 </main>

@@ -1,0 +1,51 @@
+@if (placement === 'default') {
+
+  @if (ui.errorMessage()) {
+    <p class="bg-red-600 text-white px-3 py-1 rounded text-center">
+      {{ ui.errorMessage() }}
+    </p>
+  }
+  @else if (ui.successMessage()) {
+    <p class="bg-green-600 text-white px-3 py-1 rounded text-center">
+      {{ ui.successMessage() }}
+    </p>
+  }
+  @else if (ui.isLoading()) {
+    <p class="bg-blue-600 text-white px-3 py-1 rounded text-center">
+      Chargement...
+    </p>
+  }
+
+}
+
+@if (placement === 'status') {
+
+  @if (ui.errorMessage()?.includes('Statut')) {
+    <p class="bg-red-600 text-white px-3 py-1 rounded text-center">
+      {{ ui.errorMessage() }}
+    </p>
+  }
+  @else if (ui.successMessage()?.includes('Statut')) {
+    <p class="bg-green-600 text-white px-3 py-1 rounded text-center">
+      {{ ui.successMessage() }}
+    </p>
+  }
+}
+
+@if (placement === 'delete') {
+
+  @if (ui.errorMessage()?.includes('suppression')) {
+    <p class="bg-red-600 text-white px-3 py-1 rounded text-center">
+      {{ ui.errorMessage() }}
+    </p>
+  }
+  @else if (ui.successMessage()?.includes('supprimée')) {
+    <p class="bg-green-600 text-white px-3 py-1 rounded text-center">
+      {{ ui.successMessage() }}
+    </p>
+  }
+}
+
+
+
+
