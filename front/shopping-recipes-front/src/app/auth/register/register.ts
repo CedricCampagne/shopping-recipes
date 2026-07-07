@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { UIStore } from '../../shared/ui.store';
 import { UiMessages } from "../../shared/ui-messages/ui-messages";
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,17 @@ import { UiMessages } from "../../shared/ui-messages/ui-messages";
   imports: [CommonModule, ReactiveFormsModule, RouterModule, UiMessages],
   templateUrl: './register.html',
   styleUrl: './register.css',
+  animations: [
+    trigger('pageTransition', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(50px)' }),
+        animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))
+      ])
+    ])
+  ]
 })
 export class Register {
   

@@ -11,16 +11,6 @@ export class RecipeIgredientService {
     private apiUrl = "http://localhost:8080/recipe-ingredients/recipe";
 
     getByRecipeId(recipeId: number): Observable<RecipeIngredient[]> {
-
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
-
-        console.log('api url', `${this.apiUrl}${recipeId}`)
-        return this.http.get<RecipeIngredient[]>(
-            `${this.apiUrl}/${recipeId}`,
-            { headers }
-        );
+        return this.http.get<RecipeIngredient[]>(`${this.apiUrl}/${recipeId}`);
     }
 }
