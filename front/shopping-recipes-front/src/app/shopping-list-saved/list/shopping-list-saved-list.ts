@@ -16,6 +16,10 @@ export class ShoppingListSavedList {
   private shoppingListService = inject(shoppingListService);
   private router = inject(Router);
 
+  constructor() {
+    this.shoppingListService.getAllSavedList().subscribe
+  }
+
   lists: Signal<ShoppingListResponse[]> =this.shoppingListService.savedLists;
   
   openDetail(id:number) {

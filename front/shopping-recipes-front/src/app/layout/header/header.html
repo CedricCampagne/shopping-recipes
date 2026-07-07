@@ -3,8 +3,8 @@
 
     <nav class="flex gap-1">
         <a
-            routerLink="/app/recipes"
-            class="text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
+            (click)="goRecipes()"
+            class="cursor-pointer text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
         >
             Recettes
         </a>
@@ -17,8 +17,8 @@
         </a>
 
         <a
-            routerLink="/app/shopping-list-saved"
-            class="text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
+            (click)="goSavedLists()"
+            class="cursor-pointer text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
         >
             Mes listes
             <span>({{ savedLists().length }})</span>

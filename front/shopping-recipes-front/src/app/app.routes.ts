@@ -28,6 +28,7 @@ export const routes: Routes = [
         children: [
             {
                 path: 'recipes',
+                runGuardsAndResolvers: 'always',
                 data: { animation: 'RecipesPage' },
                 loadComponent: () => import('./recipes/list/list').then(m => m.List)
             },
