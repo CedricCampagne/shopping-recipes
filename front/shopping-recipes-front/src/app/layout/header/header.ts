@@ -2,6 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { AuthStateService } from '../../auth/services/auth-state.service';
 import { Router, RouterLink } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
+import { RecipesServices } from '../../recipes/services/recipes.service';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +14,7 @@ import { shoppingListService } from '../../shopping-list/services/shopping-list.
 export class Header {
 
   private shoppingListService = inject(shoppingListService);
+  private recipesService = inject(RecipesServices);
 
   shoppingList = this.shoppingListService.mergedItems;
   savedLists = this.shoppingListService.savedLists;
@@ -31,5 +33,23 @@ export class Header {
       this.authState.logout();
       this.router.navigate(['/login']);
     }, 2500)
+  }
+
+  goRecipes() {
+    this.recipesService.getAll().subscribe({
+      next: () => {
+        this.router.navigateByUrl('/app/recipes');
+      },
+      error: () => {
+        // l’interceptor gère déjà le redirect
+      }
+    });
+  }
+
+  goSavedLists() {
+    this.shoppingListService.getAllSavedList().subscribe({
+      next: () => this.router.navigate(['/app/shopping-list-saved']),
+      error: () => this.router.navigate(['/login'])
+    });
   }
 }

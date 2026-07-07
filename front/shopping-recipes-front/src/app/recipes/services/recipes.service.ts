@@ -12,20 +12,10 @@ export class RecipesServices {
     constructor(private http: HttpClient) {}
 
     getAll(): Observable<Recipe[]> {
-        const token  = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
-
-        return this.http.get<Recipe[]>(this.apiUrl, { headers });
+        return this.http.get<Recipe[]>(this.apiUrl);
     }
 
-    getById(id: number): Observable<Recipe> {
-        const token  = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
-
-        return this.http.get<Recipe>(`${this.apiUrl}/${id}`, { headers });
-  }
+    getById(id: number): Observable<Recipe> {   
+        return this.http.get<Recipe>(`${this.apiUrl}/${id}`);
+    }
 }
