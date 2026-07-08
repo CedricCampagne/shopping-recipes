@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,7 +30,11 @@ public class Recipe {
 
     private Integer servings;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JsonIgnore
-    private List<RecipeIngredient> ingredients;
+    private List<RecipeIngredient> ingredients =new ArrayList<>();
 }

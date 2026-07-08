@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.recipeingredient.controller;
 
+import com.cedric.shoppingrecipes.recipeingredient.dto.RecipeIngredientResponse;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
 import com.cedric.shoppingrecipes.recipeingredient.service.RecipeIngredientService;
 
@@ -17,17 +18,17 @@ public class RecipeIngredientController {
     private final RecipeIngredientService recipeIngredientService;
 
     @GetMapping
-    public List<RecipeIngredient> findAll() {
+    public List<RecipeIngredientResponse> findAll() {
         return recipeIngredientService.findAll();
     }
 
     @GetMapping("/{id}")
-    public RecipeIngredient findById(@PathVariable Long id) {
+    public RecipeIngredientResponse findById(@PathVariable Long id) {
         return recipeIngredientService.findById(id);
     }
 
     @PostMapping
-    public RecipeIngredient create(@RequestBody RecipeIngredient recipeIngredient) {
+    public RecipeIngredientResponse create(@RequestBody RecipeIngredient recipeIngredient) {
         return recipeIngredientService.save(recipeIngredient);
     }
 
@@ -37,8 +38,7 @@ public class RecipeIngredientController {
     }
 
     @GetMapping("/recipe/{recipeId}")
-    public List<RecipeIngredient> findByRecipe(@PathVariable Long recipeId) {
+    public List<RecipeIngredientResponse> findByRecipe(@PathVariable Long recipeId) {
         return recipeIngredientService.findByRecipeId(recipeId);
     }
-
 }
