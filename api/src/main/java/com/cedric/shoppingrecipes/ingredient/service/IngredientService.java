@@ -1,7 +1,9 @@
 package com.cedric.shoppingrecipes.ingredient.service;
 
 
+import com.cedric.shoppingrecipes.ingredient.dto.CreateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
+import com.cedric.shoppingrecipes.ingredient.dto.UpdateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.mapper.IngredientMapper;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
@@ -47,5 +49,27 @@ public class IngredientService {
                 .stream()
                 .map(ingredientMapper::toResponse)
                 .toList();
+    }
+
+    public IngredientResponse create(CreateIngredientRequest request) {
+        Ingredient ingredient = ingredientMapper.toEntity(request);
+        Ingredient saved = ingredientRepository.save(ingredient);
+        return  ingredientMapper.toResponse(saved);
+    }
+
+    public IngredientResponse update(Long id, UpdateIngredientRequest request) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingredient not found : " + id));
+        ingredientMapper.updateEntity(ingredient, request);
+
+        Ingredient saved = ingredientRepository.save(ingredient);
+        return ingredientMapper.toResponse(saved);
+    }
+
+    public void delete(Long id) {
+        if(!ingredientRepository.existsById(id)){
+            throw new RuntimeException("Ingredient not found: " + id);
+        }
+        ingredientRepository.deleteById(id);
     }
 }
