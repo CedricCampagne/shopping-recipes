@@ -1,6 +1,7 @@
 package com.cedric.shoppingrecipes.recipeingredient.mapper;
 
 import com.cedric.shoppingrecipes.ingredient.mapper.IngredientMapper;
+import com.cedric.shoppingrecipes.recipeingredient.dto.CreateRecipeIngredientRequest;
 import com.cedric.shoppingrecipes.recipeingredient.dto.RecipeIngredientResponse;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
 import lombok.RequiredArgsConstructor;
