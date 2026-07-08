@@ -1,7 +1,10 @@
 package com.cedric.shoppingrecipes.recipe.service;
 
 
+import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
+import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
+import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,24 +14,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RecipeService {
+    private final RecipeRepository recipeRepository;
+    private final RecipeMapper recipeMapper;
 
-    private final RecipeRepository RecipeRepository;
+    public List<RecipeResponse> findAll() {
 
-    public List<Recipe> findAll() {
-        return  RecipeRepository.findAll();
+        return  recipeRepository.findAll()
+                .stream()
+                .map(recipeMapper::toResponse)
+                .toList();
     }
 
-    public Recipe findById(Long id) {
-        return RecipeRepository.findById(id)
+    public RecipeDetailResponse findById(Long id) {
+        Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+
+        return recipeMapper.toDetailResponse(recipe);
     }
 
-    public Recipe findByName(String name) {
-        return RecipeRepository.findByName(name)
+    public RecipeDetailResponse findByName(String name) {
+        Recipe recipe = recipeRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+
+        return recipeMapper.toDetailResponse(recipe);
     }
 
-    public List<Recipe> searchByDescription(String keyword) {
-        return RecipeRepository.searchByDescription(keyword);
+    public List<RecipeDetailResponse> searchByDescription(String keyword) {
+
+        return recipeRepository.searchByDescription(keyword)
+                .stream()
+                .map(recipeMapper::toDetailResponse)
+                .toList();
     }
 }

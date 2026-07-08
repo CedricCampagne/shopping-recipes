@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.ingredient.controller;
 
+import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.service.IngredientService;
 
@@ -18,22 +19,22 @@ public class IngredientController {
     private final IngredientService ingredientService;
 
     @GetMapping
-    public List<Ingredient> findAll() {
+    public List<IngredientResponse> findAll() {
         return ingredientService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Ingredient findById(@PathVariable Long id) {
+    public IngredientResponse findById(@PathVariable Long id) {
         return ingredientService.findById(id);
     }
 
     @GetMapping("/name/{name}")
-    public Optional<Ingredient> findByName(@PathVariable String name) {
+    public IngredientResponse findByName(@PathVariable String name) {
         return  ingredientService.findByName(name);
     }
 
     @GetMapping("/unit/{unit}")
-    public  List<Ingredient> findByUnit(@PathVariable String unit) {
+    public  List<IngredientResponse> findByUnit(@PathVariable String unit) {
         return  ingredientService.findByUnit(unit);
     }
 }

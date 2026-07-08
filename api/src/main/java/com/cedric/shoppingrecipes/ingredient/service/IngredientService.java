@@ -1,7 +1,9 @@
 package com.cedric.shoppingrecipes.ingredient.service;
 
 
+import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
+import com.cedric.shoppingrecipes.ingredient.mapper.IngredientMapper;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,26 +14,38 @@ import java.util.Optional;
 public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
+    private final IngredientMapper ingredientMapper;
 
-    public IngredientService(IngredientRepository ingredientRepository) {
+    public IngredientService(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper) {
         this.ingredientRepository = ingredientRepository;
+        this.ingredientMapper = ingredientMapper;
     }
 
-    public List<Ingredient> findAll() {
-        return  ingredientRepository.findAll();
+    public List<IngredientResponse> findAll() {
+        return  ingredientRepository.findAll()
+                .stream()
+                .map(ingredientMapper::toResponse)
+                .toList();
     }
 
-    public Ingredient findById(Long id) {
-        return ingredientRepository.findById(id)
+    public IngredientResponse findById(Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+
+        return ingredientMapper.toResponse(ingredient);
     }
 
-    public Optional<Ingredient> findByName(String name) {
-        return ingredientRepository.findByName(name);
+    public IngredientResponse findByName(String name) {
+        Ingredient ingredient = ingredientRepository.findByName(name)
+                .orElseThrow(() ->new RuntimeException("Ingredient not found"));
+
+        return ingredientMapper.toResponse(ingredient);
     }
 
-    public List<Ingredient> findByUnit(String unit) {
-        return ingredientRepository.findByUnit(unit);
+    public List<IngredientResponse> findByUnit(String unit) {
+        return ingredientRepository.findByUnit(unit)
+                .stream()
+                .map(ingredientMapper::toResponse)
+                .toList();
     }
-
 }
