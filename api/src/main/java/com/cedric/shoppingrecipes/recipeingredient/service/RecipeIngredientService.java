@@ -1,7 +1,9 @@
 package com.cedric.shoppingrecipes.recipeingredient.service;
 
 
+import com.cedric.shoppingrecipes.recipeingredient.dto.RecipeIngredientResponse;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
+import com.cedric.shoppingrecipes.recipeingredient.mapper.RecipeIngredientMapper;
 import com.cedric.shoppingrecipes.recipeingredient.repository.RecipeIngredientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,26 +15,38 @@ import java.util.List;
 public class RecipeIngredientService {
 
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeIngredientMapper recipeIngredientMapper;
 
-    public List<RecipeIngredient> findAll() {
-        return  recipeIngredientRepository.findAll();
+    public List<RecipeIngredientResponse> findAll() {
+
+        return  recipeIngredientRepository.findAll()
+                .stream()
+                .map(recipeIngredientMapper::toResponse)
+                .toList();
     }
 
-    public RecipeIngredient findById(Long id) {
-        return recipeIngredientRepository.findById(id)
+    public RecipeIngredientResponse findById(Long id) {
+        RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("RecipeIngredient non trouvé : " + id));
+
+        return recipeIngredientMapper.toResponse(recipeIngredient);
     }
 
-    public RecipeIngredient save(RecipeIngredient recipeIngredient) {
-        return recipeIngredientRepository.save(recipeIngredient);
+    public RecipeIngredientResponse save(RecipeIngredient recipeIngredient) {
+        RecipeIngredient saved = recipeIngredientRepository.save(recipeIngredient);
+
+        return recipeIngredientMapper.toResponse(saved);
     }
 
     public void delete(Long id) {
         recipeIngredientRepository.deleteById(id);
     }
 
-    public List<RecipeIngredient> findByRecipeId(Long recipeId) {
-        return recipeIngredientRepository.findByRecipeId(recipeId);
+    public List<RecipeIngredientResponse> findByRecipeId(Long recipeId) {
+        return recipeIngredientRepository.findByRecipeId(recipeId)
+                .stream()
+                .map(recipeIngredientMapper::toResponse)
+                .toList();
     }
 
     public List<RecipeIngredient> findByIngredientId(Long ingredientId) {

@@ -1,5 +1,7 @@
 package com.cedric.shoppingrecipes.recipe.controller;
 
+import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
+import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
 import com.cedric.shoppingrecipes.recipe.service.RecipeService;
 
@@ -19,22 +21,22 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping
-    public List<Recipe> findAll() {
+    public List<RecipeResponse> findAll() {
         return recipeService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Recipe findById(@PathVariable Long id) {
+    public RecipeDetailResponse findById(@PathVariable Long id) {
         return recipeService.findById(id);
     }
 
     @GetMapping("/name/{name}")
-    public Recipe findByName(@PathVariable String name) {
+    public RecipeDetailResponse findByName(@PathVariable String name) {
         return recipeService.findByName(name);
     }
 
     @GetMapping("/search/{keyword}")
-    public List<Recipe> searchByDescription(@PathVariable String keyword) {
+    public List<RecipeDetailResponse> searchByDescription(@PathVariable String keyword) {
         return recipeService.searchByDescription(keyword);
     }
 }
