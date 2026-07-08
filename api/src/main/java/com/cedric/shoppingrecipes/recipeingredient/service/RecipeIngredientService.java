@@ -32,16 +32,6 @@ public class RecipeIngredientService {
         return recipeIngredientMapper.toResponse(recipeIngredient);
     }
 
-    public RecipeIngredientResponse save(RecipeIngredient recipeIngredient) {
-        RecipeIngredient saved = recipeIngredientRepository.save(recipeIngredient);
-
-        return recipeIngredientMapper.toResponse(saved);
-    }
-
-    public void delete(Long id) {
-        recipeIngredientRepository.deleteById(id);
-    }
-
     public List<RecipeIngredientResponse> findByRecipeId(Long recipeId) {
         return recipeIngredientRepository.findByRecipeId(recipeId)
                 .stream()
@@ -53,5 +43,7 @@ public class RecipeIngredientService {
         return recipeIngredientRepository.findByIngredientId(ingredientId);
     }
 
-
+    public void delete(Long id) {
+        recipeIngredientRepository.deleteById(id);
+    }
 }

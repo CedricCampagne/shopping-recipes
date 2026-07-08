@@ -27,11 +27,6 @@ public class RecipeIngredientController {
         return recipeIngredientService.findById(id);
     }
 
-    @PostMapping
-    public RecipeIngredientResponse create(@RequestBody RecipeIngredient recipeIngredient) {
-        return recipeIngredientService.save(recipeIngredient);
-    }
-
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         recipeIngredientService.delete(id);
