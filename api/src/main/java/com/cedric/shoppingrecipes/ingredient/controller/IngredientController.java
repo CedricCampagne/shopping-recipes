@@ -1,6 +1,8 @@
 package com.cedric.shoppingrecipes.ingredient.controller;
 
+import com.cedric.shoppingrecipes.ingredient.dto.CreateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
+import com.cedric.shoppingrecipes.ingredient.dto.UpdateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.service.IngredientService;
 
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,5 +39,27 @@ public class IngredientController {
     @GetMapping("/unit/{unit}")
     public  List<IngredientResponse> findByUnit(@PathVariable String unit) {
         return  ingredientService.findByUnit(unit);
+    }
+
+    @PostMapping
+    public IngredientResponse create(
+            @RequestBody CreateIngredientRequest request
+            )
+    {
+        return ingredientService.create(request);
+    }
+
+    @PutMapping("/{id}")
+    public IngredientResponse update(
+            @PathVariable Long id,
+            @RequestBody UpdateIngredientRequest request
+            )
+    {
+        return ingredientService.update(id, request);
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable Long id){
+        ingredientService.delete(id);
     }
 }
