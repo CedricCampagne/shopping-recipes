@@ -1,15 +1,14 @@
 package com.cedric.shoppingrecipes.recipe.controller;
 
+import com.cedric.shoppingrecipes.recipe.dto.CreateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
+import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
 import com.cedric.shoppingrecipes.recipe.service.RecipeService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,5 +37,24 @@ public class RecipeController {
     @GetMapping("/search/{keyword}")
     public List<RecipeDetailResponse> searchByDescription(@PathVariable String keyword) {
         return recipeService.searchByDescription(keyword);
+    }
+
+    @PostMapping
+    public RecipeDetailResponse create(@RequestBody CreateRecipeRequest request) {
+        return recipeService.create(request);
+    }
+
+    @PutMapping("/{id}")
+    public RecipeDetailResponse update(
+            @PathVariable Long id,
+            @RequestBody UpdateRecipeRequest request
+            )
+    {
+        return recipeService.update(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        recipeService.delete(id);
     }
 }
