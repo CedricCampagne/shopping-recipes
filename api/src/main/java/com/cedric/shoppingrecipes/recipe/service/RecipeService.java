@@ -87,16 +87,10 @@ public class RecipeService {
     }
 
     public RecipeDetailResponse update(Long id, UpdateRecipeRequest request) {
-        // // 1) Charger la recette en base
-        //    - Vérifier qu’elle existe
-        //    - On va modifier cette entité directement
+
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Recipe not found : " + id));
 
-        // 2) Mettre à jour les champs simples de la recette
-        //    - name
-        //    - description
-        //    - servings
         recipe.setName(request.name());
         recipe.setDescription(request.description());
         recipe.setServings(request.servings());
@@ -168,5 +162,12 @@ public class RecipeService {
         // 7) Retourner le DTO complet
         return recipeMapper.toDetailResponse(saved);
 
+    }
+
+    public void delete(Long id) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recipe not found : " + id));
+
+        recipeRepository.delete(recipe);
     }
 }

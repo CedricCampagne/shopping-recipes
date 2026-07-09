@@ -3,6 +3,7 @@ package com.cedric.shoppingrecipes.recipe.controller;
 import com.cedric.shoppingrecipes.recipe.dto.CreateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
+import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
 import com.cedric.shoppingrecipes.recipe.service.RecipeService;
 
@@ -43,4 +44,17 @@ public class RecipeController {
         return recipeService.create(request);
     }
 
+    @PutMapping("/{id}")
+    public RecipeDetailResponse update(
+            @PathVariable Long id,
+            @RequestBody UpdateRecipeRequest request
+            )
+    {
+        return recipeService.update(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        recipeService.delete(id);
+    }
 }
