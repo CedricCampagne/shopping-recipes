@@ -1,7 +1,7 @@
 import { computed, Injectable, signal } from "@angular/core";
 import { RecipeIngredient } from "../../recipes/models/recipe-ingredient";
 import { CreateShoppingRequest } from "../models/create-shopping-list-request";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { ShoppingListResponse } from "../models/shoppin-list-response";
 
 @Injectable({ providedIn:'root' })

@@ -3,6 +3,7 @@ import { Home } from './home/home';
 import { Register } from './auth/register/register';
 import { Login } from './auth/login/login';
 import { AuthGuard } from './auth/guard/auth.guard';
+import { animationFrameProvider } from 'rxjs/internal/scheduler/animationFrameProvider';
 
 export const routes: Routes = [
     {
@@ -53,6 +54,17 @@ export const routes: Routes = [
                 loadComponent: () =>
                     import('./shopping-list-saved/detail/shopping-list-saved-detail')
                         .then(m => m.ShoppingListSavedDetail)
+            },
+            {
+                path: 'ingredients',
+                data: { animation: 'IngredientsPage' },
+                loadComponent: () =>
+                    import('./ingredient/ingredient-list/ingredient-list').then(m => m.IngredientList)
+            },
+            {
+                path: 'ingredients/create',
+                data: { animation: 'IngredientCreatePage'},
+                loadComponent: () => import('./ingredient/ingredient-form/ingredient-form').then(m => m.IngredientForm)
             },
             // redirect auto pour pas avoir un /app vide
             { path: '', redirectTo: 'recipes', pathMatch: 'full' }

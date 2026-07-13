@@ -1,0 +1,36 @@
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-2xl font-bold">Ingrédients</h1>
+
+  <button
+    class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300"
+    (click)="goCreate()"
+  >
+    + Ajouter un ingrédient
+  </button>
+</div>
+
+<div class="space-y-4">
+  @for (i of sortedIngredients(); track i.id) {
+
+    <div 
+      class="flex justify-between items-center border-2 border-white p-4 bg-white shadow rounded hover:cursor-pointer hover:border-blue-600 transition-all duration-300"
+      (click)="goUpdate(i.id)"
+    >
+      <div class="flex flex-col justify-between">
+        <h2 class="text-lg font-semibold">{{ i.name }}</h2>
+
+        <p class="text-gray-600">
+          Unité : {{ i.unit.toLocaleLowerCase() }}
+        </p>
+      </div>
+
+
+      <button
+        class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 h-1/2"
+        (click)="delete(i.id); $event.stopImmediatePropagation()"
+      >
+        X
+      </button>
+    </div>
+  }
+</div>

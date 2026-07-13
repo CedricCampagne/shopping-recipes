@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.ingredient.entity;
 
+import com.cedric.shoppingrecipes.ingredient.Unit;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,8 +26,8 @@ public class Ingredient {
     @Column(nullable = false, unique = true, length = 50)
     private String name;
 
-    @Column(nullable = false, length = 20)
-    private String unit;
+    @Enumerated(EnumType.STRING)
+    private Unit unit;
 
     @OneToMany(mappedBy = "ingredient")
     @JsonIgnore

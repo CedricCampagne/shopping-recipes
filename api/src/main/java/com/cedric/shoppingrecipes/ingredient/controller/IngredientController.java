@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.ingredient.controller;
 
+import com.cedric.shoppingrecipes.ingredient.Unit;
 import com.cedric.shoppingrecipes.ingredient.dto.CreateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
 import com.cedric.shoppingrecipes.ingredient.dto.UpdateIngredientRequest;
@@ -39,6 +40,11 @@ public class IngredientController {
     @GetMapping("/unit/{unit}")
     public  List<IngredientResponse> findByUnit(@PathVariable String unit) {
         return  ingredientService.findByUnit(unit);
+    }
+
+    @GetMapping("/units")
+    public Unit[] getUnits(){
+        return ingredientService.getUnits();
     }
 
     @PostMapping
