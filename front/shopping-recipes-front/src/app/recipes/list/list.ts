@@ -33,4 +33,8 @@ export class List {
     const found = this.shoppingList.recipes().filter(r => r.recipeId === recipeId);
     return found.length > 0 ? found[found.length - 1].servings : null;
   }
+
+  goCreate(){
+    
+  }
 }

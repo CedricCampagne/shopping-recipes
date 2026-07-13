@@ -1,10 +1,12 @@
 package com.cedric.shoppingrecipes.ingredient.service;
 
 
+import com.cedric.shoppingrecipes.ingredient.Unit;
 import com.cedric.shoppingrecipes.ingredient.dto.CreateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
 import com.cedric.shoppingrecipes.ingredient.dto.UpdateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
+import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 import com.cedric.shoppingrecipes.ingredient.mapper.IngredientMapper;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,11 @@ public class IngredientService {
     }
 
     public IngredientResponse create(CreateIngredientRequest request) {
+        Optional<Ingredient> existing = ingredientRepository.findByName(request.name());
+        if (existing.isPresent()) {
+            throw new IngredientConflictException("Ingredient name already exists");
+        }
+
         Ingredient ingredient = ingredientMapper.toEntity(request);
         Ingredient saved = ingredientRepository.save(ingredient);
         return  ingredientMapper.toResponse(saved);
@@ -71,5 +78,9 @@ public class IngredientService {
             throw new RuntimeException("Ingredient not found: " + id);
         }
         ingredientRepository.deleteById(id);
+    }
+
+    public Unit[] getUnits(){
+        return  Unit.values();
     }
 }
