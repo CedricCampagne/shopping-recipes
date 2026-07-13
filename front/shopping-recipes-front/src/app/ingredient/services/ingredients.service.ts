@@ -2,6 +2,7 @@ import { Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { IngredientResponse } from "../models/ingredient-response";
 import { CreateIngredientRequest } from "../models/create-ingredient-request";
+import { UpdateIngredientRequest } from "../models/update-ingredient.request";
 
 
 
@@ -21,6 +22,10 @@ export class IngredientsService {
 
     createIngredient(request: CreateIngredientRequest){
         return this.http.post(`${this.apiUrl}`, request);
+    }
+
+    updateIngredient(id:number, request: UpdateIngredientRequest ){
+        return this.http.put(`${this.apiUrl}/${id}`, request);
     }
 
     deleteIngredient(id: number){
