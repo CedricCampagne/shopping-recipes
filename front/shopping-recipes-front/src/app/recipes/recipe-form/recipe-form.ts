@@ -17,9 +17,9 @@ import { CreateRecipeRequest } from '../models/create-recipe-request';
 })
 export class RecipeForm {
 
-  router = inject(Router) ;
-  recipesService = inject(RecipesServices);
-  ingredientsService = inject(IngredientsService);
+  private router = inject(Router) ;
+  private recipesService = inject(RecipesServices);
+  private ingredientsService = inject(IngredientsService);
   ui = inject(UIStore);
 
   ingredients = signal<IngredientResponse[]>([]);

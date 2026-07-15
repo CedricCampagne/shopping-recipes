@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { RecipesServices } from '../services/recipes.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
+import { Recipe } from '../models/recipe';
+import { UIStore } from '../../shared/ui.store';
 
 @Component({
   selector: 'app-list',
@@ -16,9 +18,16 @@ export class List {
   private router = inject(Router);
   private recipesService = inject(RecipesServices);
   private shoppingList = inject(shoppingListService);
+  ui = inject(UIStore);
   
-  recipes = toSignal(this.recipesService.getAll(), {initialValue: []});
+  recipes = signal<Recipe[]>([]);
   
+  ngOnInit(): void {
+    this.recipesService.getAll().subscribe(res =>{
+      this.recipes.set(res);
+    });
+  }
+
   goToRecipe(id: number) {
     this.router.navigate([`/app/recipes/${id}`])
   }
@@ -36,5 +45,17 @@ export class List {
 
   goCreate(){
     this.router.navigateByUrl('/app/recipes/create');
+  }
+
+  delete(id: number){
+    console.log('DELETE', id)
+    this.recipesService.deleteRecipe(id).subscribe({
+      next: () => {
+        this.recipes.update(list => list.filter(r => r.id != id));
+      },
+      error : () => {
+        
+      }
+    });
   }
 }

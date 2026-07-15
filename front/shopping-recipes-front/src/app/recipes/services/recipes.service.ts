@@ -23,4 +23,8 @@ export class RecipesServices {
     createRecipe(payload: CreateRecipeRequest) {
         return this.http.post(`${this.apiUrl}`, payload);
     }
+
+    deleteRecipe(id: number){
+        return this.http.delete(`${this.apiUrl}/${id}`);
+    }
 }
