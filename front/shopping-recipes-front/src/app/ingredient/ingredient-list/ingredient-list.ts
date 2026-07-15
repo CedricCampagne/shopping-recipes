@@ -27,7 +27,7 @@ export class IngredientList {
   // Formulaire edition inline
   editForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    unit: new FormControl('', [Validators.required])
+    unit: new FormControl('', [Validators.required]),
   });
 
   sortedIngredients = computed(()=>
@@ -37,7 +37,7 @@ export class IngredientList {
   );
 
   constructor(){
-    this.loadIngredietns();
+    this.loadIngredients();
   }
 
   ngOnInit() {
@@ -46,7 +46,7 @@ export class IngredientList {
     });
   }
 
-  loadIngredietns() {
+  loadIngredients() {
     this.ingredientService.getAllIngredients().subscribe(res => {
       this.ingredients.set(res);
     });
@@ -87,18 +87,15 @@ export class IngredientList {
 
     this.ingredientService.updateIngredient(id, request).subscribe({
       next: () => {
-        // 🔵 On laisse le loader s'afficher un petit moment
-      setTimeout(() => {
-        this.ui.stopLoading(); // 🔵 Fin du chargement
-        this.ui.showSuccess("Ingrédient mis à jour !"); // 🟢 Succès
-
-        // 🟢 On laisse le message succès visible avant refresh
         setTimeout(() => {
-          this.editingId.set(null);
-          this.loadIngredietns(); // 🔄 Refresh après message succès
-        }, 1200);
+          this.ui.stopLoading();
+          this.ui.showSuccess("Ingrédient mis à jour !");
 
-      }, 1000); // ← délai pour afficher "Chargement..."
+          setTimeout(() => {
+            this.editingId.set(null);
+            this.loadIngredients();
+          }, 1200);
+        }, 800);
       },
       error: (err) => {
         this.ui.stopLoading();
@@ -112,7 +109,7 @@ export class IngredientList {
     console.log("DELETE", id)
     this.ingredientService.deleteIngredient(id).subscribe({
       next: () => {
-        this.loadIngredietns();
+        this.loadIngredients();
       },
       error: (err) => {
         console.error("Erreur lors de la suppression", err);

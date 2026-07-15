@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Recipe } from "../models/recipe";
+import { CreateRecipeRequest } from "../models/create-recipe-request";
 
 
 
@@ -17,5 +18,13 @@ export class RecipesServices {
 
     getById(id: number): Observable<Recipe> {   
         return this.http.get<Recipe>(`${this.apiUrl}/${id}`);
+    }
+
+    createRecipe(payload: CreateRecipeRequest) {
+        return this.http.post(`${this.apiUrl}`, payload);
+    }
+
+    deleteRecipe(id: number){
+        return this.http.delete(`${this.apiUrl}/${id}`);
     }
 }
