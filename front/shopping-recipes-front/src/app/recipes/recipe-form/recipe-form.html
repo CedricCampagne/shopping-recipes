@@ -52,7 +52,17 @@
 
     <!-- SECTION INGREDIENTS -->
     <div class="pt-4 border-t">
-      <h3 class="font-medium mb-2">Ajouter un ingrédient</h3>
+      <div class="flex justify-between">
+        <h3 class="font-medium mb-2">Ajouter un ingrédient pour la recette</h3>
+  
+        <h3 class="font-medium mb-2 flex items-center gap-2">
+          Créer un ingrédient
+          <button type="button" class="bg-blue-600 text-white px-2 rounded"
+                  (click)="showIngredientModal.set(true)">
+            +
+          </button>
+        </h3>
+      </div>
 
       <div class="flex flex-col gap-2 items-stretch">
         <!-- Select scrollable -->
@@ -119,3 +129,13 @@
     </div>
   </form>
 </div>
+
+@if(showIngredientModal()) {
+  <app-ingredient-modal
+    (closeModal)="showIngredientModal.set(false)"
+    (ingredientCreated)="onCreatedIngredient($event)"
+  ></app-ingredient-modal>
+}
+
+
+ 
