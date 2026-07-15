@@ -170,9 +170,9 @@ export class RecipeForm {
 
   onCreatedIngredient(newIngredient: IngredientResponse) {
     this.ingredients.update(list => [...list, newIngredient]);
-
     this.form.controls.ingredientSelect.setValue(newIngredient.id);
     this.selectedUnit.set(newIngredient.unit);
     this.form.controls.ingredientQuantityPerPerson.setValue(null);
   }
+
 }
