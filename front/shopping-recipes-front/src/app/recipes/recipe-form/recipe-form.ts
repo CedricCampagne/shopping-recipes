@@ -29,11 +29,11 @@ export class RecipeForm {
   selectedUnit = signal('');
 
   form = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(5)]),
-    description: new FormControl('', [Validators.required, Validators.minLength(15)]),
+    name: new FormControl('', [Validators.required, Validators.minLength(5), Validators.pattern(/^\S.*$/)]),
+    description: new FormControl('', [Validators.required, Validators.minLength(15), Validators.pattern(/^\S.*$/)]),
     servings: new FormControl(4,[Validators.required,Validators.min(1)]),
     ingredientSelect: new FormControl<number | null>(null),
-    ingredientQuantityPerPerson: new FormControl(null, [Validators.required, Validators.min(0.01)])
+    ingredientQuantityPerPerson: new FormControl(null, [Validators.min(1)])
   });
 
   constructor(){
@@ -66,9 +66,23 @@ export class RecipeForm {
   }
 
   onSubmit() {
+    if(this.form.invalid) {
+      this.ui.showError("Le formulaire est incomplet ou invalide.");
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    if (this.recipeIngredients().length === 0) {
+      this.ui.showError("Ajoute au moins un ingrédient à la recette.");
+      return;
+    }
+
+    const name = this.form.controls.name.value!.trim();
+    const description = this.form.controls.description.value!.trim();
+
     const request: CreateRecipeRequest = {
-      name: this.form.controls.name.value!,
-      description: this.form.controls.description.value!,
+      name,
+      description,
       servings: this.form.controls.servings.value!,
       ingredients: this.recipeIngredients().map(ri => ({
         ingredientId: ri.ingredientId,
@@ -114,13 +128,23 @@ export class RecipeForm {
     const ingreduentId = this.form.value.ingredientSelect;
     const quantity = this.form.value.ingredientQuantityPerPerson;
 
-    if(!ingreduentId || !quantity) {
-      this.ui.showError("Sélectionne un ingrédient et une quantité.");
+    if(!ingreduentId) {
+      this.ui.showError("Sélectionne un ingrédient.");
+      return;
+    }
+
+    if(!quantity) {
+      this.ui.showError("Sélectionne une quantité.");
       return;
     }
 
     const ingredient = this.ingredients().find(i => i.id === ingreduentId);
     if(!ingredient) return;
+
+    if(this.recipeIngredients().some(ri => ri.ingredientId === ingredient.id)){
+      this.ui.showError("Cet ingrédient est déjà ajouté.");
+      return;
+    }
 
     this.recipeIngredients.update(list => [
       ...list,

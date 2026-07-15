@@ -22,7 +22,7 @@
             @for (ing of ingredientsWithTotal(); track ing.id) {
             <li>
                 <strong>{{ ing.ingredient.name }}</strong> :
-                {{ ing.total }} {{ ing.unit }}
+                {{ ing.total }} {{ ing.unit.toLocaleLowerCase() }}
             </li>
             }
         </ul>

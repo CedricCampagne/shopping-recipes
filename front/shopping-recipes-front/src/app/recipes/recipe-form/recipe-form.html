@@ -6,7 +6,6 @@
     (ngSubmit)="onSubmit()"
     class="space-y-4 w-full max-w-xl bg-white p-6 rounded-lg shadow"
   >
-
     <!-- Nom -->
     <div>
       <label class="font-medium">Nom</label>
@@ -15,8 +14,14 @@
         formControlName="name"
         class="border p-2 rounded w-full"
       />
+      @if(form.controls.name.touched && form.controls.name.hasError('required')){
+        <p class="text-orange-500 text-sm">Le nom de la recette est obligatoire</p>
+      } @else if (form.controls.name.touched && form.controls.name.hasError('minlength')) {
+        <p class="text-orange-500 text-sm">Le nom de la recette doit avoir au moins 5 caractères</p>
+      } @else if(form.controls.name.touched && form.controls.name.hasError('pattern')){
+        <p class="text-orange-500 text-sm">Le nom ne doit pas commencer par un espace.</p>
+      }
     </div>
-
     <!-- Description -->
     <div>
       <label class="font-medium">Description</label>
@@ -25,13 +30,21 @@
         formControlName="description"
         class="border p-2 rounded w-full"
       />
-    </div>
+      @if(form.controls.description.touched && form.controls.description.hasError('required')){
+        <p class="text-orange-500 text-sm">La description de la recette est obligatoire</p>
+      } @else if (form.controls.description.touched && form.controls.description.hasError('minlength')) {
+        <p class="text-orange-500 text-sm">La description de la recette doit avoir au moins 15 caractères</p>
+      } @else if(form.controls.description.touched && form.controls.description.hasError('pattern')){
+        <p class="text-orange-500 text-sm">La description ne doit pas commencer par un espace.</p>
+      }
 
+    </div>
     <!-- Portions -->
     <div>
       <label class="font-medium">Portions</label>
       <input
         type="number"
+        min="1"
         formControlName="servings"
         class="border p-2 rounded w-full"
       />
@@ -55,6 +68,8 @@
         <div class="flex gap-2">
             <input
               type="number"
+              min="0"
+              step="0.5"
               class="border p-2 rounded w-48"
               formControlName="ingredientQuantityPerPerson"
               placeholder="Qté pour une portion"
@@ -66,7 +81,7 @@
     
             <button
               type="button"
-              class="bg-green-600 text-white px-3 rounded hover:bg-green-700"
+              class="bg-green-600 text-white px-3 rounded hover:bg-green-700 cursor-pointer"
               (click)="addIngredient()"
             >
               +
@@ -81,7 +96,7 @@
             <span>{{ ri.name }} — {{ ri.quantityPerPerson }} {{ ri.unit }}</span>
             <button
               type="button"
-              class="text-red-600"
+              class="text-red-600 cursor-pointer"
               (click)="removeIngredient(ri.index)"
             >
               Supprimer
@@ -97,7 +112,7 @@
       <button
         type="submit"
         [disabled]="ui.isLoading()"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all duration-300 w-full"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all duration-300 w-full cursor-pointer"
       >
         Créer la recette
       </button>
