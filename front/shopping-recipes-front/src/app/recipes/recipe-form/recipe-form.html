@@ -1,0 +1,106 @@
+<h1 class="text-2xl font-bold mb-6 text-center">Créer une recette</h1>
+
+<div class="flex justify-center">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="space-y-4 w-full max-w-xl bg-white p-6 rounded-lg shadow"
+  >
+
+    <!-- Nom -->
+    <div>
+      <label class="font-medium">Nom</label>
+      <input
+        type="text"
+        formControlName="name"
+        class="border p-2 rounded w-full"
+      />
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="font-medium">Description</label>
+      <input
+        type="text"
+        formControlName="description"
+        class="border p-2 rounded w-full"
+      />
+    </div>
+
+    <!-- Portions -->
+    <div>
+      <label class="font-medium">Portions</label>
+      <input
+        type="number"
+        formControlName="servings"
+        class="border p-2 rounded w-full"
+      />
+    </div>
+
+    <!-- SECTION INGREDIENTS -->
+    <div class="pt-4 border-t">
+      <h3 class="font-medium mb-2">Ajouter un ingrédient</h3>
+
+      <div class="flex flex-col gap-2 items-stretch">
+        <!-- Select scrollable -->
+        <select
+          class="border p-2 rounded w-full max-h-48 overflow-y-auto"
+          formControlName="ingredientSelect"
+        >
+          @for (i of ingredients(); track i.id) {
+            <option [ngValue]="i.id">{{ i.name }}</option>
+          }
+        </select>
+
+        <div class="flex gap-2">
+            <input
+              type="number"
+              class="border p-2 rounded w-48"
+              formControlName="ingredientQuantityPerPerson"
+              placeholder="Qté pour une portion"
+            />
+    
+            <span class="text-gray-600 self-center">
+                {{ selectedUnit().toLocaleLowerCase() }}
+            </span>
+    
+            <button
+              type="button"
+              class="bg-green-600 text-white px-3 rounded hover:bg-green-700"
+              (click)="addIngredient()"
+            >
+              +
+            </button>
+        </div>
+      </div>
+
+      <!-- Liste des ingrédients ajoutés -->
+      <div class="mt-4 space-y-2">
+        @for (ri of recipeIngredients(); track ri.index) {
+          <div class="flex justify-between items-center border p-2 rounded">
+            <span>{{ ri.name }} — {{ ri.quantityPerPerson }} {{ ri.unit }}</span>
+            <button
+              type="button"
+              class="text-red-600"
+              (click)="removeIngredient(ri.index)"
+            >
+              Supprimer
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="w-1/2 flex flex-col gap-2">  
+      <app-ui-messages></app-ui-messages>
+
+      <button
+        type="submit"
+        [disabled]="ui.isLoading()"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all duration-300 w-full"
+      >
+        Créer la recette
+      </button>
+    </div>
+  </form>
+</div>

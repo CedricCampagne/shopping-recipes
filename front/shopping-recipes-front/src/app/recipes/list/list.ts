@@ -35,6 +35,6 @@ export class List {
   }
 
   goCreate(){
-    
+    this.router.navigateByUrl('/app/recipes/create');
   }
 }
