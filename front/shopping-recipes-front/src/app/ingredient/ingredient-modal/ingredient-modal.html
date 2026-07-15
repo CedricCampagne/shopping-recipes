@@ -1,0 +1,86 @@
+<!-- MODAL OVERLAY -->
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  
+  <!-- MODAL CONTAINER -->
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-semibold">Créer un ingrédient</h2>
+      <button
+        type="button"
+        class="text-gray-500 hover:text-gray-700 cursor-pointer"
+        (click)="close()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- FORM -->
+    <form [formGroup]="ingredientForm" class="space-y-4">
+
+      <!-- Nom -->
+      <div>
+        <label class="font-medium">Nom</label>
+        <input
+          type="text"
+          formControlName="name"
+          class="border p-2 rounded w-full"
+        />
+
+        @if(ingredientForm.controls.name.touched && ingredientForm.controls.name.hasError('required')){
+          <p class="text-orange-500 text-sm">Le nom est obligatoire.</p>
+        } @else if(ingredientForm.controls.name.touched && ingredientForm.controls.name.hasError('minlength')){
+          <p class="text-orange-500 text-sm">Le nom doit avoir au moins 3 caractères.</p>
+        } @else if(ingredientForm.controls.name.touched && ingredientForm.controls.name.hasError('pattern')){
+          <p class="text-orange-500 text-sm">Le nom ne doit pas commencer par un espace.</p>
+        }
+      </div>
+
+      <!-- Unité -->
+      <div>
+      <label class="font-medium">Unité</label>
+
+        @if (units().length > 0) {
+            <select formControlName="unit" class="border p-2 rounded w-full">
+                @for (u of units(); track u) {
+                <option [value]="u">{{ u.toLowerCase() }}</option>
+                }
+            </select>
+        } @else {
+        <p class="text-gray-500 text-sm">Chargement des unités...</p>
+        }
+
+        @if (ingredientForm.controls.unit.touched && ingredientForm.controls.unit.invalid) {
+            <p class="text-red-600 text-sm">
+            L’unité est obligatoire.
+            </p>
+        }
+    </div>
+
+      <!-- UI MESSAGES -->
+      
+      <!-- ACTIONS -->
+      <div class="flex justify-end gap-2">
+          <app-ui-messages></app-ui-messages>
+        <button
+          type="button"
+          class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 cursor-pointer"
+          (click)="close()"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+          (click)="createIngredient()"
+        >
+          Créer
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+

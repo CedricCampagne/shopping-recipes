@@ -8,10 +8,11 @@ import { RecipeIngredientFront } from '../models/recipe-ingredient-front';
 import { UIStore } from '../../shared/ui.store';
 import { UiMessages } from "../../shared/ui-messages/ui-messages";
 import { CreateRecipeRequest } from '../models/create-recipe-request';
+import { IngredientModal } from '../../ingredient/ingredient-modal/ingredient-modal';
 
 @Component({
   selector: 'app-recipe-form',
-  imports: [ReactiveFormsModule, UiMessages],
+  imports: [ReactiveFormsModule, UiMessages, IngredientModal],
   templateUrl: './recipe-form.html',
   styleUrl: './recipe-form.css',
 })
@@ -27,6 +28,7 @@ export class RecipeForm {
   recipeIngredients = signal<RecipeIngredientFront[]>([]);
 
   selectedUnit = signal('');
+  showIngredientModal = signal(false);
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(5), Validators.pattern(/^\S.*$/)]),
@@ -166,4 +168,11 @@ export class RecipeForm {
     );
   }
 
+  onCreatedIngredient(newIngredient: IngredientResponse) {
+    this.ingredients.update(list => [...list, newIngredient]);
+
+    this.form.controls.ingredientSelect.setValue(newIngredient.id);
+    this.selectedUnit.set(newIngredient.unit);
+    this.form.controls.ingredientQuantityPerPerson.setValue(null);
+  }
 }
