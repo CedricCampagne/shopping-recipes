@@ -1,7 +1,7 @@
 export interface UpdateRecipeIngredientRequest {
-    id: number;
+    id: number | null;
     ingredientId: number;
     ingredientName: string;
-    quantityPerPerson: number;
+    quantityPerPerson: number | null;
     unit: string;
 }

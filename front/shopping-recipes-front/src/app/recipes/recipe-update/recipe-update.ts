@@ -11,6 +11,9 @@ import { UpdateRecipeIngredientRequest } from '../models/update-recipe-ingredien
 import { Validators } from '@angular/forms';
 import { UpdateRecipeRequest } from '../models/update-recipe-request';
 import { UiMessages } from "../../shared/ui-messages/ui-messages";
+import { Ingredient } from '../models/ingredient';
+import { IngredientsService } from '../../ingredient/services/ingredients.service';
+import { UIStore } from '../../shared/ui.store';
 
 @Component({
   selector: 'app-recipe-update',
@@ -24,10 +27,16 @@ export class RecipeUpdate {
   private router = inject(Router);
   private recipesService = inject(RecipesServices);
   private recipeIngredientService = inject(RecipeIgredientService);
+  private ingredientsService = inject(IngredientsService);
+
+  ui = inject(UIStore);
 
   recipeToUpdate = signal<Recipe | null>(null);
   recipeIngredients = signal<RecipeIngredient[]>([]);
   updateIngredients = signal<UpdateRecipeIngredientRequest[]>([]);
+  
+  allIngredients = signal<Ingredient[]>([]);
+  selectedIngredient = signal<number | null>(null);
 
   id = 0;
 
@@ -46,10 +55,15 @@ export class RecipeUpdate {
       this.patchFormRecipe(res);
     });
 
-    //Charge les ingrédients
+    //Charge les ingrédients de la recette
     this.recipeIngredientService.getByRecipeId(this.id).subscribe(res =>{
       this.recipeIngredients.set(res);
       this.patchFormIngredients(res);
+    });
+
+    //Charge tousles ingrédients dela bdd (pour pouvoir les ajouter)
+    this.ingredientsService.getAllIngredients().subscribe(res =>{
+      this.allIngredients.set(res);
     });
   }
 
@@ -89,6 +103,7 @@ export class RecipeUpdate {
 
   // Envoi du PUT au backend
   onSubmit() {
+    this.ui.startLoading()
     const request: UpdateRecipeRequest = {
       name: this.form.value.name!,
       description: this.form.value.description!,
@@ -98,8 +113,53 @@ export class RecipeUpdate {
 
     this.recipesService.updateRecipe(this.id, request).subscribe({
       next: () => {
-        this.router.navigate(['/app/recipes']);
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showSuccess("Recette mise a jour avec succès !");
+
+          setTimeout(()=>{
+            this.router.navigate(['/app/recipes']);
+          }, 1200)
+        }, 800);
       }
     });
+  }
+
+  onSelectIngredient(event: Event){
+    const value = Number((event.target as HTMLSelectElement).value);
+    // console.log("SELECTED", event.target);
+    // console.log("VALUE", value);
+    this.selectedIngredient.set(value);
+  }
+
+  addIngredientFromDb(){
+    const id = this.selectedIngredient();
+    if (!id) return;
+
+    const ing = this.allIngredients().find(i => i.id === id);
+    if(!ing) return;
+
+    this.updateIngredients.update(list => [
+      ...list,
+      {
+        id: null,
+        ingredientId: ing.id,
+        ingredientName: ing.name,
+        quantityPerPerson: null,
+        unit: ing.unit
+      }
+    ]);
+
+    this.selectedIngredient.set(null);
+  }
+
+  removeIngredient(id: number){
+    this.updateIngredients.update(list =>
+      list.filter(ing => ing.id != id)
+    );
+  }
+
+  goToRecipe(){
+    this.router.navigateByUrl("/app/recipes");
   }
 }
