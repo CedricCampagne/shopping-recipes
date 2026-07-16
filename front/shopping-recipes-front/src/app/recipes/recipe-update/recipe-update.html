@@ -1,0 +1,83 @@
+<div class="flex justify-center py-6">
+  <div class="w-full max-w-3xl bg-white p-6 rounded-lg shadow">
+
+    <!-- Titre -->
+    <h1 class="text-2xl font-bold mb-6 text-center">
+      Modifier la recette : {{ form.get('name')?.value }}
+    </h1>
+
+    <!-- Formulaire -->
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="space-y-6"
+    >
+
+      <!-- Nom -->
+      <div>
+        <label class="font-semibold">Nom</label>
+        <input 
+          type="text" 
+          formControlName="name"
+          class="border p-2 w-full rounded"
+        >
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="font-semibold">Description</label>
+        <textarea 
+          formControlName="description"
+          class="border p-2 w-full rounded"
+        ></textarea>
+      </div>
+
+      <!-- Portions -->
+      <div>
+        <label class="font-semibold">Portions</label>
+        <input 
+          type="number" 
+          formControlName="servings"
+          class="border p-2 w-full rounded"
+        >
+      </div>
+
+      <!-- Ingrédients -->
+      <h2 class="text-xl font-bold mt-8 mb-4">Ingrédients</h2>
+
+      @for (ing of updateIngredients(); track ing.id) {
+        <div class="flex items-center gap-2 border p-4 rounded mb-3">
+
+          <!-- Nom + ID -->
+          <div class="font-semibold">
+            {{ ing.ingredientName }}  
+            <span class="text-gray-500 text-sm">(#{{ ing.ingredientId }})</span>
+          </div>
+
+          <!-- Quantité -->
+          <input 
+            type="number"
+            class="border p-2 w-24 rounded"
+            [value]="ing.quantityPerPerson"
+            (input)="onQuantityChange(ing.id!, $event)"
+          >
+
+          <!-- Unité -->
+          <span class="text-gray-700">{{ ing.unit }}</span>
+        </div>
+      }
+
+      <div>
+          <!-- Bouton de mise à jour -->
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-1/3 transition"
+          >
+            Mettre à jour
+          </button>
+          <app-ui-messages></app-ui-messages>
+      </div>
+
+    </form>
+  </div>
+</div>

@@ -58,4 +58,9 @@ export class List {
       }
     });
   }
+
+  update(id: number){
+    console.log('UPDATE', id)
+    this.router.navigate(['/app/recipes/update', id]);
+  }
 }

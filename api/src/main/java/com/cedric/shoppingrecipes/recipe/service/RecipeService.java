@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -88,10 +89,10 @@ public class RecipeService {
         return recipeMapper.toDetailResponse(saved);
     }
 
+    @Transactional
     public RecipeDetailResponse update(Long id, UpdateRecipeRequest request) {
 
-        Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recipe not found : " + id));
+        Recipe recipe = recipeRepository.findByIdWithIngredients(id);
 
         recipe.setName(request.name());
         recipe.setDescription(request.description());
@@ -104,66 +105,71 @@ public class RecipeService {
         //      - créer ou mettre à jour un RecipeIngredient
         //      - lui donner : recipe, ingredient, quantityPerPerson, unit
         //    → Ajouter chaque RecipeIngredient dans une nouvelle liste
-        List<RecipeIngredient> recipeIngredients = request.ingredients().stream()
-                .map(riRequest -> {
-                    Ingredient ingredient = ingredientRepository.findById(riRequest.ingredientId())
-                            .orElseThrow(()-> new RuntimeException("Ingredient not found : " + riRequest.ingredientId()));
+        List<RecipeIngredient> recipeIngredients = new ArrayList<>(
+                request.ingredients().stream()
+                        .map(riRequest -> {
 
-                    //SI id du RecipeIngredient existe = c’est une mise à jour
-                    if (riRequest.id() != null) {
-                        RecipeIngredient existing = recipe.getIngredients().stream()
-                                .filter(ri -> ri.getId().equals(riRequest.id()))
-                                .findFirst()
-                                .orElseThrow(() -> new RuntimeException("RecipeIngredient not found: " + riRequest.id()));
-                        // mise à jour quantité + unité
-                        existing.setQuantityPerPerson(riRequest.quantityPerPerson());
-                        existing.setUnit(riRequest.unit());
+                            // Charger l’ingrédient en base
+                            Ingredient ingredient = ingredientRepository.findById(riRequest.ingredientId())
+                                    .orElseThrow(() -> new RuntimeException("Ingredient not found : " + riRequest.ingredientId()));
 
-                        // vérifier si l’ingrédient a changé
-                        if (!existing.getIngredient().getId().equals(riRequest.ingredientId())) {
-                            // récupérer le nouvel ingrédient en base
-                            Ingredient newIngredient = ingredientRepository.findById(riRequest.ingredientId())
-                                    .orElseThrow(() -> new RuntimeException("Ingredient not found: " + riRequest.ingredientId()));
+                            // 🔥 Cas 1 : mise à jour d’un ingrédient existant
+                            if (riRequest.id() != null) {
 
-                            // remplacer l’ingrédient
-                            existing.setIngredient(newIngredient);
-                        }
+                                RecipeIngredient existing = recipe.getIngredients().stream()
+                                        .filter(ri -> ri.getId().equals(riRequest.id()))
+                                        .findFirst()
+                                        .orElseThrow(() -> new RuntimeException("RecipeIngredient not found: " + riRequest.id()));
 
-                        return existing;
-                    }else {
-                        RecipeIngredient ri = new RecipeIngredient();
+                                // Mettre à jour quantité + unité
+                                existing.setQuantityPerPerson(riRequest.quantityPerPerson());
+                                existing.setUnit(riRequest.unit());
 
-                        ri.setRecipe(recipe);
-                        ri.setIngredient(ingredient);
-                        ri.setQuantityPerPerson(riRequest.quantityPerPerson());
-                        ri.setUnit(riRequest.unit());
+                                // Si l’ingrédient a changé → remplacer
+                                if (!existing.getIngredient().getId().equals(riRequest.ingredientId())) {
+                                    existing.setIngredient(ingredient);
+                                }
 
-                        return  ri;
-                    }
-                })
-                .toList();
+                                return existing;
+                            }
+
+                            // 🔥 Cas 2 : nouvel ingrédient ajouté
+                            RecipeIngredient ri = new RecipeIngredient();
+                            ri.setRecipe(recipe);
+                            ri.setIngredient(ingredient);
+                            ri.setQuantityPerPerson(riRequest.quantityPerPerson());
+                            ri.setUnit(riRequest.unit());
+
+                            return ri;
+                        })
+                        .toList() // OK car on enveloppe dans new ArrayList<>(...)
+        );
 
         // 4) Supprimer les anciens RecipeIngredient
         List<RecipeIngredient> oldList = recipe.getIngredients();
 
-        List<RecipeIngredient> toRemove = oldList.stream()
-                .filter(oldRi -> recipeIngredients.stream().noneMatch(newRi ->
-                        newRi.getId() != null && newRi.getId().equals(oldRi.getId())
-                ))
-                .toList();
+        List<RecipeIngredient> toRemove = new ArrayList<>(
+                oldList.stream()
+                        .filter(oldRi -> recipeIngredients.stream().noneMatch(newRi ->
+                                newRi.getId() != null && newRi.getId().equals(oldRi.getId())
+                        ))
+                        .toList()
+        );
 
         // retirer les anciens → orphanRemoval = true les supprimera en base
         toRemove.forEach(oldList::remove);
 
         // 5) Remplacer la liste dans la recette
-        recipe.setIngredients(recipeIngredients);
+        //recipe.setIngredients(recipeIngredients);
+        recipe.getIngredients().clear();        // vider la liste existante
+        recipe.getIngredients().addAll(recipeIngredients); // ajouter les nouvelles valeurs
+
 
         // 6) Sauvegarder
         Recipe saved = recipeRepository.save(recipe);
 
         // 7) Retourner le DTO complet
         return recipeMapper.toDetailResponse(saved);
-
     }
 
     public void delete(Long id) {

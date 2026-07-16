@@ -174,5 +174,4 @@ export class RecipeForm {
     this.selectedUnit.set(newIngredient.unit);
     this.form.controls.ingredientQuantityPerPerson.setValue(null);
   }
-
 }
