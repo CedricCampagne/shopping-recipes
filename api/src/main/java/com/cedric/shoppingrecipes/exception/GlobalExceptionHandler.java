@@ -2,6 +2,7 @@ package com.cedric.shoppingrecipes.exception;
 
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 
+import com.cedric.shoppingrecipes.recipe.execption.RecipConflictException;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -17,4 +18,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
+    @ExceptionHandler(RecipConflictException.class)
+    public  ResponseEntity<String> handleRecipeConflict(RecipConflictException ex) {
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 }

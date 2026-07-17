@@ -12,4 +12,6 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, Long
     List<ShoppingList> findByUserId(Long userId);
 
     Optional<ShoppingList> findByIdAndUserId(Long id, Long userId);
+
+    boolean existsByRecipes_Id(Long recipeId);
 }

@@ -1,15 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipesServices } from '../services/recipes.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { Recipe } from '../models/recipe';
 import { UIStore } from '../../shared/ui.store';
+import { UiMessages } from "../../shared/ui-messages/ui-messages";
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [],
+  imports: [UiMessages],
   templateUrl: './list.html',
   styleUrl: './list.css',
 })
@@ -53,8 +53,22 @@ export class List {
       next: () => {
         this.recipes.update(list => list.filter(r => r.id != id));
       },
-      error : () => {
+      error : (err) => {
+        const status =
+        err.status ??
+        err.error?.status ??
+        err.error?.code ??
+        err.error?.error;
         
+        if (status === 409) {
+          this.ui.showError("Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée.");
+          return;
+        }
+
+        console.log("err.status", err.status);
+        console.log("status", status);
+
+        this.ui.showError("Erreur lors de la suppression.");
       }
     });
   }

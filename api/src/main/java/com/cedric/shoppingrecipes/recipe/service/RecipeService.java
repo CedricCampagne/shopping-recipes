@@ -8,12 +8,16 @@ import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
 import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
+import com.cedric.shoppingrecipes.recipe.execption.RecipConflictException;
 import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
+import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
     private final IngredientRepository ingredientRepository;
+    private final ShoppingListRepository shoppingListRepository;
 
     public List<RecipeResponse> findAll() {
 
@@ -173,9 +178,18 @@ public class RecipeService {
     }
 
     public void delete(Long id) {
+        boolean usedShoppingList = shoppingListRepository.existsByRecipes_Id(id);
+
+        if (usedShoppingList) {
+            throw new RecipConflictException(
+                    "Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée."
+            );
+        }
+
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Recipe not found : " + id));
 
+        recipe.getIngredients().clear(); // orphanRemoval
         recipeRepository.delete(recipe);
     }
 }
