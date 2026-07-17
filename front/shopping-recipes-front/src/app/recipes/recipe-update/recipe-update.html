@@ -35,7 +35,8 @@
             <div>
                 <label class="font-semibold">Portions</label>
                 <input 
-                    type="number" 
+                    type="number"
+                    min="1"
                     formControlName="servings"
                     class="border p-2 w-full rounded"
                 >
@@ -44,9 +45,12 @@
                 <div class="flex justify-between">
                     <!-- Ingrédients -->
                     <div>
-                        <h2 class="text-xl font-bold mt-8 mb-4">Ingrédients de la recette</h2>
+                        <h2 class="text-xl font-bold mt-8">
+                            Ingrédients de la recette
+                        </h2>
+                        <span class="text-gray-500 text-sm">(quantité pour 1 personne)</span>
                         <div>
-                            @for (ing of updateIngredients(); track ing.id) {
+                            @for (ing of updateIngredients(); track $index) {
                             <div class="flex items-center justify-between gap-2 border p-4 rounded mb-3">
                                 <div class="flex gap-2 items-center">
                                     <!-- Nom + ID -->
@@ -59,7 +63,7 @@
                                         type="number"
                                         class="border p-2 w-24 rounded"
                                         [value]="ing.quantityPerPerson"
-                                        (input)="onQuantityChange(ing.id!, $event)"
+                                        (input)="onQuantityChange($index, $event)"
                                     >
 
                                     <!-- Unité -->
@@ -88,7 +92,7 @@
                             >
                                 <option value="">-- Choisir un ingrédient --</option>
 
-                                @for (ing of allIngredients(); track ing.id) {
+                                @for (ing of allIngredients(); track $index) {
                                     <option [value]="ing.id">
                                         {{ ing.name }} ({{ ing.unit }})
                                     </option>

@@ -89,12 +89,12 @@ export class RecipeUpdate {
     );
   }
 
-  onQuantityChange(id: number, event: Event) {
+  onQuantityChange(index: number, event: Event) {
     const value = Number((event.target as HTMLInputElement).value);
 
     this.updateIngredients.update(list =>
-      list.map(ing =>
-        ing.id === id
+      list.map((ing, i) =>
+        i === index
           ? { ...ing, quantityPerPerson: value }
           : ing
       )
@@ -104,6 +104,32 @@ export class RecipeUpdate {
   // Envoi du PUT au backend
   onSubmit() {
     this.ui.startLoading()
+
+    //Validation du form
+    if(this.form.invalid) {
+      this.ui.showError("Le formulaire est incomplet ou invalide.");
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    //Validation liste de RI non vide
+    const emptyList = this.updateIngredients().length === 0;
+
+    //validations des quantiés
+    const invalidQuantity = this.updateIngredients().some(ing =>
+      ing.quantityPerPerson === null || ing.quantityPerPerson <= 0
+    );
+
+    const invalid = emptyList || invalidQuantity;
+
+    if(invalid) {
+      setTimeout(()=> {
+        this.ui.stopLoading();
+        this.ui.showError("Veuillez remplir une quantité valide (> 0) et ajouter au moins un ingrédient.");
+      },800);
+      return;
+    }
+
     const request: UpdateRecipeRequest = {
       name: this.form.value.name!,
       description: this.form.value.description!,
@@ -121,6 +147,10 @@ export class RecipeUpdate {
             this.router.navigate(['/app/recipes']);
           }, 1200)
         }, 800);
+      },
+      error: (err) =>{
+        this.ui.showError("Erreur lors de la mise à jour.");
+        console.error(err);
       }
     });
   }
