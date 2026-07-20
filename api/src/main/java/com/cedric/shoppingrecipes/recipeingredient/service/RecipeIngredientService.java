@@ -3,6 +3,7 @@ package com.cedric.shoppingrecipes.recipeingredient.service;
 
 import com.cedric.shoppingrecipes.recipeingredient.dto.RecipeIngredientResponse;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
+import com.cedric.shoppingrecipes.recipeingredient.exception.RecipeIngredientNotFoundException;
 import com.cedric.shoppingrecipes.recipeingredient.mapper.RecipeIngredientMapper;
 import com.cedric.shoppingrecipes.recipeingredient.repository.RecipeIngredientRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class RecipeIngredientService {
 
     public RecipeIngredientResponse findById(Long id) {
         RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("RecipeIngredient non trouvé : " + id));
+                .orElseThrow(() -> new RecipeIngredientNotFoundException(id));
 
         return recipeIngredientMapper.toResponse(recipeIngredient);
     }

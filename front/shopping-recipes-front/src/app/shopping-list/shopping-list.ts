@@ -60,7 +60,7 @@ export class ShoppingList {
         setTimeout(()=>{
           this.ui.stopLoading();
           if(err.status === 403 || err.status === 404) {
-            const recipeId = err.error.recipeId;       
+            const recipeId = err.error.resourceId;       
             const recipe = this.recipes().find(r => r.recipeId === recipeId);
 
             if (recipe) {

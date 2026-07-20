@@ -7,6 +7,7 @@ import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
 import com.cedric.shoppingrecipes.ingredient.dto.UpdateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
+import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.mapper.IngredientMapper;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,14 @@ public class IngredientService {
 
     public IngredientResponse findById(Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+                .orElseThrow(() -> new IngredientNotFoundException(id));
 
         return ingredientMapper.toResponse(ingredient);
     }
 
     public IngredientResponse findByName(String name) {
         Ingredient ingredient = ingredientRepository.findByName(name)
-                .orElseThrow(() ->new RuntimeException("Ingredient not found"));
+                .orElseThrow(() ->new IngredientNotFoundException(name));
 
         return ingredientMapper.toResponse(ingredient);
     }
@@ -56,7 +57,7 @@ public class IngredientService {
     public IngredientResponse create(CreateIngredientRequest request) {
         Optional<Ingredient> existing = ingredientRepository.findByName(request.name());
         if (existing.isPresent()) {
-            throw new IngredientConflictException("Ingredient name already exists");
+            throw new IngredientConflictException(request.name());
         }
 
         Ingredient ingredient = ingredientMapper.toEntity(request);
@@ -66,7 +67,7 @@ public class IngredientService {
 
     public IngredientResponse update(Long id, UpdateIngredientRequest request) {
         Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ingredient not found : " + id));
+                .orElseThrow(() -> new IngredientNotFoundException(id));
         ingredientMapper.updateEntity(ingredient, request);
 
         Ingredient saved = ingredientRepository.save(ingredient);
@@ -75,7 +76,7 @@ public class IngredientService {
 
     public void delete(Long id) {
         if(!ingredientRepository.existsById(id)){
-            throw new RuntimeException("Ingredient not found: " + id);
+            throw new IngredientNotFoundException(id);
         }
         ingredientRepository.deleteById(id);
     }
