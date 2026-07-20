@@ -9,5 +9,5 @@ export interface RecipeIngredient {
   unit: string;
   total: number;
 
-  recipeAddUid?: number;
+  recipeAddUid: number;
 }

@@ -60,7 +60,7 @@ export class List {
         err.error?.code ??
         err.error?.error;
         
-        if (status === 409) {
+        if (status === 403) {
           this.ui.showError("Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée.");
           return;
         }

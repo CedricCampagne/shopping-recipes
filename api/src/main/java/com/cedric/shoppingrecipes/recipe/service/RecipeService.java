@@ -177,6 +177,7 @@ public class RecipeService {
         return recipeMapper.toDetailResponse(saved);
     }
 
+    @Transactional
     public void delete(Long id) {
         boolean usedShoppingList = shoppingListRepository.existsByRecipes_Id(id);
 

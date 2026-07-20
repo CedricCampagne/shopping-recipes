@@ -1,17 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
 import { shoppingListService } from './services/shopping-list.service';
 import { CreateShoppingRequest } from './models/create-shopping-list-request';
+import { UIStore } from '../shared/ui.store';
+import { UiMessages } from "../shared/ui-messages/ui-messages";
 
 @Component({
   selector: 'app-shopping-list',
   standalone: true,
-  imports: [],
+  imports: [UiMessages],
   templateUrl: './shopping-list.html',
   styleUrl: './shopping-list.css',
 })
 export class ShoppingList {
 
   private shoppingListService = inject(shoppingListService);
+  ui = inject(UIStore);
 
   // ingredients fussionnés
   //items = this.shoppingListService.mergedItems;
@@ -24,6 +27,7 @@ export class ShoppingList {
 
   // sauvegarder la list
   saveList(){
+    this.ui.startLoading();
     const request: CreateShoppingRequest = {
       recipes: this.recipes().map(r=> ({
         recipeId: r.recipeId,
@@ -33,19 +37,38 @@ export class ShoppingList {
 
     this.shoppingListService.createShoppingList(request).subscribe({
       next:(res) => {
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showSuccess("Liste sauvegardée avec succès.");
+          // this.saved.set(true);
+          
+          // refresh des listes sauvegardées
+          this.shoppingListService.refreshSavedLists();
+
+          setTimeout(()=>{
+            // this.saved.set(false);
+            this.shoppingListService.clear();
+          },3000)
+        },800);
         console.log("Liste sauvegardée :", res);
-        this.saved.set(true);
-        
-        // refresh des listes sauvegardées
-        this.shoppingListService.refreshSavedLists();
         
         setTimeout(() =>{
-          this.saved.set(false);
-          this.shoppingListService.clear();
         } , 2000);
       },
       error: (err) => {
         console.error("Erreur lors de la sauvegarde :", err);
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          if(err.status === 403 || err.status === 404) {
+            
+            this.ui.showError("Une recette n'existe plus. La liste a été nettoyée.");
+            // Nettoyage de la liste locale
+          }
+          setTimeout(()=>{
+            this.shoppingListService.clear(); // ou removeRecipe(uid) si tu veux juste retirer la recette
+          },3000);
+        },800);
+        return;
       }
     });
   }
