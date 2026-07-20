@@ -40,7 +40,7 @@ export class IngredientForm {
 
     const request: CreateIngredientRequest = {
       name: this.form.controls.name.value!,
-      unit: this.form.controls.unit.value!
+      unit: this.normalizeUnit(this.form.controls.unit.value!)
     }
 
     
@@ -61,4 +61,14 @@ export class IngredientForm {
       }
     });
   }
+
+  private normalizeUnit(u: string): string {
+    const lower = u.toLowerCase();
+
+    if (lower === 'piece') return 'pièce';
+    if (lower === 'tranche') return 'tranche';
+
+    return lower;
+  }
+
 }

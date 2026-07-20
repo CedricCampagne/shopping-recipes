@@ -1,10 +1,10 @@
 package com.cedric.shoppingrecipes.ingredient;
 
 public enum Unit {
-    G,
-    KG,
-    ML,
-    L,
-    PIECE,
-    TRANCHE
+    g,
+    kg,
+    ml,
+    l,
+    pièce,
+    tranche
 }
