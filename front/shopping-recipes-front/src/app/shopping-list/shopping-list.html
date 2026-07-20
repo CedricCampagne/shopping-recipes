@@ -53,7 +53,7 @@
               X
             </button>
           </li>
-        }
+        } 
       </ul>
 
       <!-- Boutons -->
@@ -68,14 +68,13 @@
           Sauvegarder la liste
         </button>
       </div>
-
-      @if (saved()) {
-        <div class="my-4 p-3 bg-green-600 text-white rounded shadow w-1/2 text-center">
-          Liste sauvegardée !
-        </div>
-      }
     } @else {
-      <p class="text-gray-600">Aucune recette ajoutée.</p>
+      <p class="text-gray-600">Aucune recette pour le moment.</p>
     }
   </div>
 </div>
+
+<div class="fixed top-22 left-1/2 -translate-x-1/2 z-50">
+  <app-ui-messages></app-ui-messages>
+</div>
+

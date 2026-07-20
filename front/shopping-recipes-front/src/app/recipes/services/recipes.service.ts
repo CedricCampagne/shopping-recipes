@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Recipe } from "../models/recipe";
 import { CreateRecipeRequest } from "../models/create-recipe-request";
+import { UpdateRecipeRequest } from "../models/update-recipe-request";
 
 
 
@@ -26,5 +27,9 @@ export class RecipesServices {
 
     deleteRecipe(id: number){
         return this.http.delete(`${this.apiUrl}/${id}`);
+    }
+
+    updateRecipe(id: number, request: UpdateRecipeRequest){
+        return this.http.put(`${this.apiUrl}/${id}`, request);
     }
 }

@@ -26,12 +26,24 @@
         </div>
         <p class="text-gray-600">{{ recipe.description }}</p>
       </div>
+      <div class="flex gap-2">
+        <button
+                class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 self-center"
+                (click)="update(recipe.id); $event.stopPropagation()"
+              >
+                update
+        </button>
         <button
               class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 self-center"
               (click)="delete(recipe.id); $event.stopPropagation()"
             >
               X
         </button>
+      </div>
     </div>
   }
+  <div class="fixed top-22 left-1/2 -translate-x-1/2 z-50">
+    <app-ui-messages></app-ui-messages>
+  </div>
+
 </div>

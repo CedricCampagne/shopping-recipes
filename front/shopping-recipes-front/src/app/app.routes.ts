@@ -33,6 +33,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./recipes/recipe-form/recipe-form').then(m => m.RecipeForm)
             },
             {
+                path: 'recipes/update/:id',
+                loadComponent: () => import('./recipes/recipe-update/recipe-update').then(m => m.RecipeUpdate)
+            },
+            {
                 path: 'recipes/:id',
                 loadComponent: () => import('./recipes/detail/recipe-detail').then(m => m.RecipeDetail)
             },

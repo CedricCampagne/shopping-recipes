@@ -25,4 +25,13 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     )
     List<Recipe> searchByDescription(String keyword);
 
+    @Query("""
+        select r
+        from Recipe r
+        left join fetch r.ingredients ri
+        left join fetch ri.ingredient ing
+        where r.id = :id
+        """
+    )
+    Recipe findByIdWithIngredients(Long id);
 }

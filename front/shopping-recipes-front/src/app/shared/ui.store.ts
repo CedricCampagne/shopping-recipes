@@ -26,12 +26,12 @@ export class UIStore {
     // Messages
     showSuccess(msg: string) {
         this.successMessage.set(msg),
-        setTimeout(() => this.successMessage.set(null), 2000);
+        setTimeout(() => this.successMessage.set(null), 3800);
     }
 
     showError(msg: string) {
         this.errorMessage.set(msg),
-        setTimeout(() => this.errorMessage.set(null), 3000);
+        setTimeout(() => this.errorMessage.set(null), 3800);
     }
 
     clearMessage() {

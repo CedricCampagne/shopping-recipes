@@ -51,7 +51,7 @@ export class shoppingListService {
         // 1) Ajouter la recette
         this.recipes.update(list => [
             ...list,
-            { uid, recipeId, servings, name }
+            { uid, recipeId, servings, name, exist: true }
         ]);
 
         // 2) Ajouter les ingrédients avec le même UID
