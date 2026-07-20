@@ -89,7 +89,7 @@ export class RecipeForm {
       ingredients: this.recipeIngredients().map(ri => ({
         ingredientId: ri.ingredientId,
         quantityPerPerson: ri.quantityPerPerson,
-        unit: ri.unit
+        unit: this.normalizeUnit(ri.unit)
       }))
     };
     console.log(request);
@@ -154,7 +154,7 @@ export class RecipeForm {
         index: list.length,
         ingredientId: ingredient.id,
         name: ingredient.name,
-        unit: ingredient.unit,
+        unit: this.normalizeUnit(ingredient.unit),
         quantityPerPerson: quantity
       }
     ]);
@@ -174,4 +174,15 @@ export class RecipeForm {
     this.selectedUnit.set(newIngredient.unit);
     this.form.controls.ingredientQuantityPerPerson.setValue(null);
   }
+
+  // normalisation des units
+  private normalizeUnit(u: string): string {
+    const lower = u.toLowerCase();
+
+    if (lower === 'piece') return 'pièce';
+    if (lower === 'tranche') return 'tranche';
+
+    return lower;
+  }
+
 }

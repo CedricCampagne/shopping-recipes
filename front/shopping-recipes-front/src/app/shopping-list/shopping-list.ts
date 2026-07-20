@@ -62,7 +62,11 @@ export class ShoppingList {
           if(err.status === 403 || err.status === 404) {
             const recipeId = err.error.recipeId;       
             const recipe = this.recipes().find(r => r.recipeId === recipeId);
-                                    
+
+            if (recipe) {
+              this.shoppingListService.deleteRecipeAndItems(recipe.uid);
+            }
+            
             this.ui.showError(`La recette (${recipe?.name}) n'existe plus. Elle a été retirée de la liste`);
           }
         },800);
