@@ -15,11 +15,13 @@ import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingList;
 
 import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingListItem;
 import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingListRecipe;
-import com.cedric.shoppingrecipes.shoppinglist.exception.RecipeNotFoundException;
+import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
+import com.cedric.shoppingrecipes.shoppinglist.exception.ShoppingListNotFoundException;
 import com.cedric.shoppingrecipes.shoppinglist.mapper.ShoppingListMapper;
 import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
 
 import com.cedric.shoppingrecipes.user.entity.User;
+import com.cedric.shoppingrecipes.user.exception.UserNotFoundException;
 import com.cedric.shoppingrecipes.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,7 +56,7 @@ public class ShoppingListService {
     public ShoppingListResponse getById(Long id) {
         User user = getCurrentUser();
         ShoppingList list = shoppingListRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new RuntimeException("Liste non toruvée"));
+                .orElseThrow(() -> new ShoppingListNotFoundException(id));
         return shoppingListMapper.toResponse(list);
     }
 
@@ -125,7 +127,7 @@ public class ShoppingListService {
         User user = getCurrentUser();
 
         ShoppingList list = shoppingListRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new RuntimeException("Liste non trouvée"));
+                .orElseThrow(() -> new ShoppingListNotFoundException(id));
 
         shoppingListRepository.delete(list);
     }
@@ -135,7 +137,7 @@ public class ShoppingListService {
         User user = getCurrentUser();
 
         ShoppingList list = shoppingListRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new RuntimeException(" Liste non trouvée"));
+                .orElseThrow(() -> new ShoppingListNotFoundException(id));
 
         list.setStatus(newStatus);
 
@@ -145,7 +147,7 @@ public class ShoppingListService {
     private User getCurrentUser(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new UserNotFoundException(email));
     }
 
 }
