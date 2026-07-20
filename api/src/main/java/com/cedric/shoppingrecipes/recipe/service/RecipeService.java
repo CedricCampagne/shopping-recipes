@@ -2,22 +2,23 @@ package com.cedric.shoppingrecipes.recipe.service;
 
 
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
+import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
 import com.cedric.shoppingrecipes.recipe.dto.CreateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
 import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
-import com.cedric.shoppingrecipes.recipe.execption.RecipConflictException;
+import com.cedric.shoppingrecipes.recipe.exception.RecipConflictException;
+import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
+import com.cedric.shoppingrecipes.recipeingredient.exception.RecipeIngredientNotFoundException;
 import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +42,14 @@ public class RecipeService {
     @Transactional(readOnly = true)
     public RecipeDetailResponse findById(Long id) {
         Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+                .orElseThrow(() -> new RecipeNotFoundException(id));
 
         return recipeMapper.toDetailResponse(recipe);
     }
 
     public RecipeDetailResponse findByName(String name) {
         Recipe recipe = recipeRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+                .orElseThrow(() -> new RecipeNotFoundException(name));
 
         return recipeMapper.toDetailResponse(recipe);
     }
@@ -72,7 +73,8 @@ public class RecipeService {
         List<RecipeIngredient> recipeIngredients = request.ingredients().stream()
                 .map(riRequest -> {
                     Ingredient ingredient = ingredientRepository.findById(riRequest.ingredientId())
-                            .orElseThrow(()-> new RuntimeException("Ingredient not found : " + riRequest.ingredientId()));
+                            //.orElseThrow(()-> new RuntimeException("Ingredient not found : " + riRequest.ingredientId()));
+                            .orElseThrow(()-> new IngredientNotFoundException(riRequest.ingredientId()));
 
                     RecipeIngredient ri = new RecipeIngredient();
                     ri.setRecipe(recipe);
@@ -116,15 +118,15 @@ public class RecipeService {
 
                             // Charger l’ingrédient en base
                             Ingredient ingredient = ingredientRepository.findById(riRequest.ingredientId())
-                                    .orElseThrow(() -> new RuntimeException("Ingredient not found : " + riRequest.ingredientId()));
-
+                                    //.orElseThrow(() -> new RuntimeException("Ingredient not found : " + riRequest.ingredientId()));
+                                    .orElseThrow(()-> new IngredientNotFoundException(riRequest.ingredientId()));
                             // 🔥 Cas 1 : mise à jour d’un ingrédient existant
                             if (riRequest.id() != null) {
 
                                 RecipeIngredient existing = recipe.getIngredients().stream()
                                         .filter(ri -> ri.getId().equals(riRequest.id()))
                                         .findFirst()
-                                        .orElseThrow(() -> new RuntimeException("RecipeIngredient not found: " + riRequest.id()));
+                                        .orElseThrow(() -> new RecipeIngredientNotFoundException(riRequest.id()));
 
                                 // Mettre à jour quantité + unité
                                 existing.setQuantityPerPerson(riRequest.quantityPerPerson());
@@ -188,7 +190,7 @@ public class RecipeService {
         }
 
         Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recipe not found : " + id));
+                .orElseThrow(() -> new RecipeNotFoundException(id));
 
         recipe.getIngredients().clear(); // orphanRemoval
         recipeRepository.delete(recipe);

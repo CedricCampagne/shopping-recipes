@@ -3,7 +3,8 @@ package com.cedric.shoppingrecipes.exception;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
-import com.cedric.shoppingrecipes.recipe.execption.RecipConflictException;
+import com.cedric.shoppingrecipes.recipe.exception.RecipConflictException;
+import com.cedric.shoppingrecipes.recipeingredient.exception.RecipeIngredientNotFoundException;
 import com.cedric.shoppingrecipes.shoppinglist.exception.RecipeNotFoundException;
 import org.springframework.http.HttpStatus;
 
@@ -36,8 +37,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RecipConflictException.class)
-    public  ResponseEntity<String> handleRecipeConflict(RecipConflictException ex) {
-        return  ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public  ResponseEntity<ErrorResponse> handleRecipeConflict(RecipConflictException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                null
+        );
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(RecipeNotFoundException.class)
@@ -48,5 +54,17 @@ public class GlobalExceptionHandler {
                 ex.getRecipeId()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(RecipeIngredientNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerRecipeIngredientNotFoundException(
+            RecipeIngredientNotFoundException ex
+    ) {
+       ErrorResponse error = new ErrorResponse(
+               HttpStatus.NOT_FOUND.value(),
+               ex.getMessage(),
+               ex.getRecipeIngredientId()
+       );
+       return   ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }

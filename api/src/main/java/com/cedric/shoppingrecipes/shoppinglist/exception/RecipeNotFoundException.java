@@ -1,7 +1,5 @@
 package com.cedric.shoppingrecipes.shoppinglist.exception;
 
-import com.cedric.shoppingrecipes.recipe.execption.RecipConflictException;
-
 public class RecipeNotFoundException extends RuntimeException{
     private final Long recipeId;
 

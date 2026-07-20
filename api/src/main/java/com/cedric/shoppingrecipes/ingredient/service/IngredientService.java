@@ -57,7 +57,7 @@ public class IngredientService {
     public IngredientResponse create(CreateIngredientRequest request) {
         Optional<Ingredient> existing = ingredientRepository.findByName(request.name());
         if (existing.isPresent()) {
-            throw new IngredientConflictException("Ingredient name already exists");
+            throw new IngredientConflictException(request.name());
         }
 
         Ingredient ingredient = ingredientMapper.toEntity(request);
