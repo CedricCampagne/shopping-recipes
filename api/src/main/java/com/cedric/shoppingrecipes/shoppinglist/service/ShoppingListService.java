@@ -15,6 +15,7 @@ import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingList;
 
 import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingListItem;
 import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingListRecipe;
+import com.cedric.shoppingrecipes.shoppinglist.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.shoppinglist.mapper.ShoppingListMapper;
 import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
 
@@ -83,7 +84,7 @@ public class ShoppingListService {
         for (CreateShoppingListRequest.RecipeSelection selection : request.recipes()) {
 
             Recipe recipe = recipeRepository.findById(selection.recipeId())
-                    .orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+                    .orElseThrow(() -> new RecipeNotFoundException(selection.recipeId()));
 
             ShoppingListRecipe slr = new ShoppingListRecipe();
             slr.setRecipe(recipe);
@@ -124,7 +125,7 @@ public class ShoppingListService {
         User user = getCurrentUser();
 
         ShoppingList list = shoppingListRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new RuntimeException("Liste non toruvée"));
+                .orElseThrow(() -> new RuntimeException("Liste non trouvée"));
 
         shoppingListRepository.delete(list);
     }

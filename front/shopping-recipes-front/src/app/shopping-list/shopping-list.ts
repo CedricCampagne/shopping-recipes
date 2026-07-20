@@ -60,13 +60,11 @@ export class ShoppingList {
         setTimeout(()=>{
           this.ui.stopLoading();
           if(err.status === 403 || err.status === 404) {
-            
-            this.ui.showError("Une recette n'existe plus. La liste a été nettoyée.");
-            // Nettoyage de la liste locale
+            const recipeId = err.error.recipeId;       
+            const recipe = this.recipes().find(r => r.recipeId === recipeId);
+                                    
+            this.ui.showError(`La recette (${recipe?.name}) n'existe plus. Elle a été retirée de la liste`);
           }
-          setTimeout(()=>{
-            this.shoppingListService.clear(); // ou removeRecipe(uid) si tu veux juste retirer la recette
-          },3000);
         },800);
         return;
       }
