@@ -20,7 +20,9 @@ public class ShoppingListMapper {
                         .toList(),
                 list.getRecipes().stream()
                         .map(this::toRecipeResponse)
-                        .toList()
+                        .toList(),
+                list.getCreatedAt(),
+                list.getUpdatedAt()
         );
     }
 

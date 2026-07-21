@@ -1,20 +1,37 @@
+<h2 class="text-xl font-bold mb-4">Listes sauvegardées</h2>
+
 @if (lists().length > 0) {
-  @for (list of lists(); track list.id) {
-    <div class="border p-4 rounded mb-4 shadow flex flex-col items-start gap-2">
-      <p><strong>Liste ID :</strong> {{ list.id }}</p>
-      <p><strong>Status :</strong> {{ list.status }}</p>
-      
-      <button
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer"
-        (click)="openDetail(list.id)"
+  <div class="flex flex-col items-center gap-4">
+
+    @for (list of sortedListByDate(); track list.id) {
+      <div
+        class="w-full max-w-md border border-gray-300 bg-white p-4 rounded-lg 
+              shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col gap-3"
       >
-        Voir détail
-      </button>
-    </div>
-  }
+      <div class="flex justify-between">
+        <p class="text-sm text-gray-700 font-semibold">
+          Liste #{{ list.id }}
+        </p>
+
+        <span class="text-xs text-gray-500">
+          Créée le : {{ list.createdAt | date:'dd/MM/yy' }}
+        </span>
+      </div>
+
+      <span>Nombre de repas : {{ list.recipes.length }}</span>
+      <span>Nombre d'ingrédients : {{ list.items.length }}</span>
+
+        <div class="flex justify-start">
+          <button
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            (click)="openDetail(list.id)"
+          >
+            Voir détail
+          </button>
+        </div>
+      </div>
+    }
+  </div>
 } @else {
-  <p>Pas de liste disponible</p>
+  <p class="text-gray-600 italic">Pas de liste disponible</p>
 }
-
-
-

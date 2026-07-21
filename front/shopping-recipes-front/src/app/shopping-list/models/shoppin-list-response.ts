@@ -6,4 +6,6 @@ export interface ShoppingListResponse {
     status: string;
     items: ShoppingListItemResponse[];
     recipes: ShoppingListRecipeResponse[];
+    createdAt: string
+    updatedAt: string
 }
