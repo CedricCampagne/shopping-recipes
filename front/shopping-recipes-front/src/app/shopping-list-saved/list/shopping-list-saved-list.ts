@@ -1,7 +1,6 @@
-import { Component, inject, Signal } from '@angular/core';
+import { Component, computed, inject, effect } from '@angular/core';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { Router } from '@angular/router';
-import { ShoppingListResponse } from '../../shopping-list/models/shoppin-list-response';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,17 +14,19 @@ import { CommonModule } from '@angular/common';
 export class ShoppingListSavedList {
   private shoppingListService = inject(shoppingListService);
   private router = inject(Router);
-
-  constructor() {
-    this.shoppingListService.getAllSavedList().subscribe
-  }
-
-  lists: Signal<ShoppingListResponse[]> =this.shoppingListService.savedLists;
   
+  lists = this.shoppingListService.savedLists;
+
+  sortedListByDate = computed(()=>
+    this.lists().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() )
+  );
+
+  //Angular 17 moderne : effect() au lieu de constructor / ngOnInit
+  loadLists = effect(() => {
+    this.shoppingListService.getAllSavedList().subscribe();
+  });
+
   openDetail(id:number) {
     this.router.navigate(['/app/shopping-list-saved', id])
   }
-
 }
-
-
