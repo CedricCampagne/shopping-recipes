@@ -26,7 +26,9 @@ export class ShoppingList {
 
   // sauvegarder la list
   saveList(){
+    this.ui.clearMessage();
     this.ui.startLoading();
+
     const request: CreateShoppingRequest = {
       recipes: this.recipes().map(r=> ({
         recipeId: r.recipeId,
@@ -40,9 +42,6 @@ export class ShoppingList {
           this.ui.stopLoading();
           console.log("Liste sauvegardée :", res);
           this.ui.showSuccess("Liste sauvegardée avec succès.");
-          // this.saved.set(true);
-          
-          
         },800);
         
         setTimeout(()=>{

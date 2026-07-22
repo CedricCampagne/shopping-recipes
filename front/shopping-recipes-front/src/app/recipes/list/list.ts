@@ -47,6 +47,7 @@ export class List {
   }
 
   delete(id: number){
+    this.ui.clearMessage();
     this.ui.startLoading();
     console.log('DELETE', id)
 

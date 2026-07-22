@@ -79,6 +79,7 @@ export class RecipeForm {
       return;
     }
     
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     const name = this.form.controls.name.value!.trim();

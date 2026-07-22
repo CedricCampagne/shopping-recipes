@@ -32,7 +32,9 @@ export class IngredientForm {
   }
 
   onSubmit() {
+    this.ui.clearMessage();
     this.ui.startLoading();
+    
     if(this.form.invalid) {
       this.form.markAllAsTouched();
       return;

@@ -60,6 +60,7 @@ export class RecipeDetail {
   shoppingList = signal<RecipeIngredient[]>([]);
 
   addToShoppingList() {
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     const items = this.ingredientsWithTotal();

@@ -45,6 +45,7 @@ export class Register {
   onSubmit() {
     if (this.form.invalid) return;
     
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     const raw = this.form.getRawValue();

@@ -31,6 +31,7 @@ export class ShoppingListSavedDetail {
   );
 
   updateStatus(newStatus: string) {
+    this.ui.clearMessage();
     this.ui.startLoading();
     
     this.shoppingListService.updateStatus(this.id, newStatus).subscribe({
@@ -54,6 +55,7 @@ export class ShoppingListSavedDetail {
   }
 
   deleteList() {
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     this.shoppingListService.deleteList(this.id).subscribe({
@@ -78,6 +80,7 @@ export class ShoppingListSavedDetail {
   }
 
   exportPdf() {
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     this.shoppingListService.exportPdf(this.id).subscribe({

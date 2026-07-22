@@ -47,6 +47,7 @@ export class IngredientModal {
           unit: this.ingredientForm.controls.unit.value!
         }
     
+        this.ui.clearMessage();
         this.ui.startLoading();
 
         this.ingredientService.createIngredient(request).subscribe({

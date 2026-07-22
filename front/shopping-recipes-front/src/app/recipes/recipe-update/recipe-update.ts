@@ -102,6 +102,7 @@ export class RecipeUpdate {
 
   // Envoi du PUT au backend
   onSubmit() {
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     //Validation du form

@@ -82,6 +82,7 @@ export class IngredientList {
       unit: this.editForm.controls.unit.value!
     };
 
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     this.ingredientService.updateIngredient(id, request).subscribe({
@@ -111,8 +112,10 @@ export class IngredientList {
   }
 
   delete(id: number){
+    this.ui.clearMessage();
     this.ui.startLoading();
     console.log("DELETE", id)
+    
     this.ingredientService.deleteIngredient(id).subscribe({
       next: () => {
         setTimeout(()=>{
