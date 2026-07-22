@@ -1,13 +1,14 @@
-import { Component, inject, signal, computed, viewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { Header } from "../header/header";
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
-import { trigger, transition, style, animate } from '@angular/animations';
+
 import { RouterOutlet } from '@angular/router';
+import { UiMessages } from '../../shared/ui-messages/ui-messages';
 
 @Component({
   selector: 'app-main',
-  imports: [RouterModule, Header, RouterOutlet],
+  imports: [RouterModule, Header, RouterOutlet, UiMessages],
   templateUrl: './main.html',
   styleUrl: './main.css',
 })

@@ -45,6 +45,7 @@ export class Register {
   onSubmit() {
     if (this.form.invalid) return;
     
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     const raw = this.form.getRawValue();
@@ -56,25 +57,26 @@ export class Register {
     };
 
     this.authService.register(data).subscribe({
-      next: res => {
-        console.log('REGISTER OK', res)
-        this.ui.showSuccess("Inscription réussie, redirection vers la connexion...")
-
-        setTimeout(() => {
+      next: () => {
+        setTimeout(()=>{
           this.ui.stopLoading();
+          this.ui.showSuccess("Inscription réussie, redirection vers la connexion...")
+        }, 800);
+        
+        setTimeout(() => {
           this.router.navigate(['/login']);
-        }, 1500);
+        }, 1400);
       },
       error: err => {
         console.log('LOGIN ERROR', err);
 
         setTimeout(()=>{
           this.ui.stopLoading();
-        },1500);
+        },800);
         
         setTimeout(()=>{
           this.ui.showError("Erreur lors de l'inscription");
-        },1500);
+        },1400);
       }
     });
 

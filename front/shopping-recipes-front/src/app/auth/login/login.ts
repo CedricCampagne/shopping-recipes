@@ -27,8 +27,6 @@ export class Login {
 
   onSubmit() {
     if (this.form.invalid) return;
-    console.log("login click");
-
     this.ui.clearMessage();
     this.ui.startLoading();
     
@@ -41,23 +39,26 @@ export class Login {
     
         this.authService.login(data).subscribe({
           next: res => {
-            console.log('LOGIN OK', res);
-            localStorage.setItem('token', res.token);
+            setTimeout(()=>{
+              this.ui.stopLoading();
+              this.ui.showSuccess("Connexion autorisée!");
+            },800);
 
             setTimeout(() => {
-              this.ui.stopLoading();
+              localStorage.setItem('token', res.token);
+              this.ui.clearMessage();
               this.router.navigate(['/app']);
-            }, 1500);
+            }, 1400);
           },
           error: err => {
             console.log('LOGIN ERROR', err);
             setTimeout(()=>{
               this.ui.stopLoading();
-            },1500);
+            },800);
             
             setTimeout(()=>{
               this.ui.showError("Email ou mot de passe incorrect");
-            },1500);
+            },1400);
           }
         });
   }

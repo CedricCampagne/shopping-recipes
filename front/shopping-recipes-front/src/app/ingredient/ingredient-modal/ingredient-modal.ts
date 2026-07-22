@@ -2,14 +2,13 @@ import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { IngredientsService } from '../services/ingredients.service';
 import { UIStore } from '../../shared/ui.store';
-import { UiMessages } from "../../shared/ui-messages/ui-messages";
 import { Validators } from '@angular/forms';
 import { CreateIngredientRequest } from '../models/create-ingredient-request';
 
 @Component({
   selector: 'app-ingredient-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, UiMessages],
+  imports: [ReactiveFormsModule],
   templateUrl: './ingredient-modal.html',
   styleUrl: './ingredient-modal.css',
 })
@@ -48,20 +47,20 @@ export class IngredientModal {
           unit: this.ingredientForm.controls.unit.value!
         }
     
+        this.ui.clearMessage();
         this.ui.startLoading();
 
         this.ingredientService.createIngredient(request).subscribe({
           next: (newIngredient) => {
             setTimeout(()=>{
               this.ui.stopLoading();
-              this.ui.showSuccess("Ingrédient créé avec succès !");
-
-              setTimeout(()=> {
-                this.ingredientCreated.emit(newIngredient);
-                this.closeModal.emit();
-              },1200);
-
+              this.ui.showSuccess("Ingrédient créé avec succès !");              
             }, 800);
+
+            setTimeout(()=> {
+              this.ingredientCreated.emit(newIngredient);
+              this.closeModal.emit();
+            },1400);
           },
           error: (err) => {
             this.ui.stopLoading();

@@ -3,16 +3,15 @@ import { Router } from '@angular/router';
 import { RecipesServices } from '../services/recipes.service';
 import { IngredientsService } from '../../ingredient/services/ingredients.service';
 import { IngredientResponse } from '../../ingredient/models/ingredient-response';
-import { FormControl, FormControlName, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RecipeIngredientFront } from '../models/recipe-ingredient-front';
 import { UIStore } from '../../shared/ui.store';
-import { UiMessages } from "../../shared/ui-messages/ui-messages";
 import { CreateRecipeRequest } from '../models/create-recipe-request';
 import { IngredientModal } from '../../ingredient/ingredient-modal/ingredient-modal';
 
 @Component({
   selector: 'app-recipe-form',
-  imports: [ReactiveFormsModule, UiMessages, IngredientModal],
+  imports: [ReactiveFormsModule, IngredientModal],
   templateUrl: './recipe-form.html',
   styleUrl: './recipe-form.css',
 })
@@ -68,16 +67,20 @@ export class RecipeForm {
   }
 
   onSubmit() {
+    
     if(this.form.invalid) {
       this.ui.showError("Le formulaire est incomplet ou invalide.");
       this.form.markAllAsTouched();
       return;
     }
-
+    
     if (this.recipeIngredients().length === 0) {
       this.ui.showError("Ajoute au moins un ingrédient à la recette.");
       return;
     }
+    
+    this.ui.clearMessage();
+    this.ui.startLoading();
 
     const name = this.form.controls.name.value!.trim();
     const description = this.form.controls.description.value!.trim();
@@ -94,34 +97,34 @@ export class RecipeForm {
     };
     console.log(request);
     
-    this.ui.startLoading();
-
     this.recipesService.createRecipe(request).subscribe({
       next: () => {
         setTimeout(() => {
           this.ui.stopLoading();
           this.ui.showSuccess("Recette créée avec succès !");
-
-          setTimeout(() => {
-            this.form.reset({
-              servings: 4,
-              ingredientSelect: this.ingredients()[0]?.id ?? null,
-              ingredientQuantityPerPerson: null
-            });
-
-            this.recipeIngredients.set([]);
-            this.selectedUnit.set('');
-
-            this.loadIngredients();
-
-            this.router.navigate(['/app/recipes']);
-          }, 1200);
         }, 800);
+
+        setTimeout(() => {
+          this.form.reset({
+            servings: 4,
+            ingredientSelect: this.ingredients()[0]?.id ?? null,
+            ingredientQuantityPerPerson: null
+          });
+
+          this.recipeIngredients.set([]);
+          this.selectedUnit.set('');
+
+          this.loadIngredients();
+
+          this.router.navigate(['/app/recipes']);
+        }, 1400);
       },
       error: (err) => {
-        this.ui.stopLoading();
-        this.ui.showError("Erreur lorrs de la création de la recette.");
-        console.error(err);
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showError("Erreur lors de la création de la recette.");
+          console.error(err);
+        },800);
       }
     });
   }

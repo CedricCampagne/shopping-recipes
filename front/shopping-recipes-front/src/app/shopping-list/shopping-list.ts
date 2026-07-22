@@ -2,12 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { shoppingListService } from './services/shopping-list.service';
 import { CreateShoppingRequest } from './models/create-shopping-list-request';
 import { UIStore } from '../shared/ui.store';
-import { UiMessages } from "../shared/ui-messages/ui-messages";
 
 @Component({
   selector: 'app-shopping-list',
   standalone: true,
-  imports: [UiMessages],
+  imports: [],
   templateUrl: './shopping-list.html',
   styleUrl: './shopping-list.css',
 })
@@ -27,7 +26,9 @@ export class ShoppingList {
 
   // sauvegarder la list
   saveList(){
+    this.ui.clearMessage();
     this.ui.startLoading();
+
     const request: CreateShoppingRequest = {
       recipes: this.recipes().map(r=> ({
         recipeId: r.recipeId,
@@ -39,21 +40,16 @@ export class ShoppingList {
       next:(res) => {
         setTimeout(()=>{
           this.ui.stopLoading();
+          console.log("Liste sauvegardée :", res);
           this.ui.showSuccess("Liste sauvegardée avec succès.");
-          // this.saved.set(true);
-          
+        },800);
+        
+        setTimeout(()=>{
           // refresh des listes sauvegardées
           this.shoppingListService.refreshSavedLists();
-
-          setTimeout(()=>{
-            // this.saved.set(false);
-            this.shoppingListService.clear();
-          },3000)
-        },800);
-        console.log("Liste sauvegardée :", res);
-        
-        setTimeout(() =>{
-        } , 2000);
+          // this.saved.set(false);
+          this.shoppingListService.clear();
+        },1400)
       },
       error: (err) => {
         console.error("Erreur lors de la sauvegarde :", err);

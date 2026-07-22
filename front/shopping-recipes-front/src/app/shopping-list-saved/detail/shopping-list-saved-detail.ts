@@ -2,12 +2,11 @@ import { Component,  inject, computed, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { UIStore } from '../../shared/ui.store';
-import { UiMessages } from "../../shared/ui-messages/ui-messages";
 
 @Component({
   selector: 'app-shopping-list-saved-detail',
   standalone: true,
-  imports: [UiMessages],
+  imports: [],
   templateUrl: './shopping-list-saved-detail.html',
   styleUrl: './shopping-list-saved-detail.css',
 })
@@ -32,18 +31,19 @@ export class ShoppingListSavedDetail {
   );
 
   updateStatus(newStatus: string) {
+    this.ui.clearMessage();
     this.ui.startLoading();
     
     this.shoppingListService.updateStatus(this.id, newStatus).subscribe({
       next: () => {
-        this.ui.showSuccess("Statut mis à jour !");
-        
-        this.shoppingListService.refreshSavedLists();
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showSuccess("Statut mis à jour !");
+        },800);
 
         setTimeout(() => {
-          this.ui.stopLoading();
-        }, 1200);
-
+          this.shoppingListService.refreshSavedLists();
+        }, 1400);
       },
       error: () => {
         this.ui.showError("Erreur lors de la mise à jour du Statut !");
@@ -55,20 +55,55 @@ export class ShoppingListSavedDetail {
   }
 
   deleteList() {
+    this.ui.clearMessage();
     this.ui.startLoading();
 
     this.shoppingListService.deleteList(this.id).subscribe({
       next : () => {
-        this.ui.showSuccess("Liste supprimée !");
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showSuccess("Liste supprimée !");  
+        },800);
+
         setTimeout(() => {
           this.router.navigate(['/app/shopping-list-saved']);
           this.shoppingListService.refreshSavedLists();
-          this.ui.stopLoading();
-        }, 1200);
+        }, 1400);
       },
       error: () => {
-        this.ui.showError("Erreur lors de la suppression !");
-        this.ui.stopLoading();
+        setTimeout(()=>{
+          this.ui.showError("Erreur lors de la suppression !");
+          this.ui.stopLoading();
+        },800)
+      }
+    });
+  }
+
+  exportPdf() {
+    this.ui.clearMessage();
+    this.ui.startLoading();
+
+    this.shoppingListService.exportPdf(this.id).subscribe({
+      next: (pdfBlob: Blob) => {
+        setTimeout(() =>{
+          this.ui.stopLoading();
+          this.ui.showSuccess("PDF exporté !");
+        }, 800);
+
+        setTimeout(()=>{
+          const url = window.URL.createObjectURL(pdfBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `shopping-list-${this.id}.pdf`;
+          a.click();
+        },1400);
+
+      },
+      error: () => {
+        setTimeout(()=>{
+          this.ui.showError("Erreur lors de l'export PDF !");
+          this.ui.stopLoading();
+        },800);
       }
     });
   }

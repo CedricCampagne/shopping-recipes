@@ -1,5 +1,9 @@
 <main @pageTransition class="min-h-screen flex flex-col items-center justify-center gap-6 p-4">
 
+  <div class="fixed top-22 left-1/2 -translate-x-1/2 z-50">
+    <app-ui-messages></app-ui-messages>
+  </div>
+  
   <h2 class="text-2xl font-bold">Créer un compte</h2>
 
   <form
@@ -7,8 +11,6 @@
     (ngSubmit)="onSubmit()"
     class="flex flex-col gap-4 w-full max-w-sm"
   >
-
-  <app-ui-messages placement="default"/>
       
     <div class="flex flex-col gap-1">
       <label class="font-medium">Nom d'utilisateur</label>

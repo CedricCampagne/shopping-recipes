@@ -17,6 +17,7 @@ export class Header {
   private shoppingListService = inject(shoppingListService);
   private recipesService = inject(RecipesServices);
   private ingredientsService = inject(IngredientsService);
+
   shoppingList = this.shoppingListService.mergedItems;
   savedLists = this.shoppingListService.savedLists;
 

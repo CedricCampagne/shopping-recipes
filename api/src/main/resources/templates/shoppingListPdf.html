@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Liste PDF</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        h1, h2 {
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 6px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<div class="header">
+    <h1>Liste #<span th:text="${list.id}"></span></h1>
+
+    <p>
+        Créée le :
+        <span th:text="${list.createdAt}"></span>
+    </p>
+
+    <p>
+        Statut :
+        <span th:text="${list.status}"></span>
+    </p>
+</div>
+
+<h2>Ingrédients</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Quantité</th>
+        <th>Unité</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="item : ${list.items}">
+        <td th:text="${item.ingredientName}"></td>
+        <td th:text="${item.totalQuantity}"></td>
+        <td th:text="${item.unit}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Recettes</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Portions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="r : ${list.recipes}">
+        <td th:text="${r.recipeName}"></td>
+        <td th:text="${r.servings}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="footer">
+    <p>Exporté depuis l'application ShoppingList</p>
+    <p th:text="${exportDate}"></p>
+</div>
+
+</body>
+</html>
