@@ -1,5 +1,4 @@
 @if (list()) {
-
   <h1 class="text-2xl font-bold mb-4">
     Liste #{{ list()!.id }}
   </h1>
@@ -17,12 +16,16 @@
         <option value="VALIDE">Validée</option>
         <option value="ARCHIVE">Archivée</option>
       </select>
-
-      <app-ui-messages placement="status"/>
     </div>
     <div class="flex gap-2">
-      <app-ui-messages placement="delete"/>
-        
+      
+      <button
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition hover:cursor-pointer"
+        (click)="exportPdf()"
+      >
+        Exporter PDF
+      </button>
+
       <button
         class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition hover:cursor-pointer"
         (click)="deleteList()"

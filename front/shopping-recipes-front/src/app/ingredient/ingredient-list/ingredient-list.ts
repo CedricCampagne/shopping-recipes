@@ -5,12 +5,11 @@ import { Router } from '@angular/router';
 import { UIStore } from '../../shared/ui.store';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UpdateIngredientRequest } from '../models/update-ingredient.request';
-import { UiMessages } from "../../shared/ui-messages/ui-messages";
 
 @Component({
   selector: 'app-ingredient-list',
   standalone: true,
-  imports: [ReactiveFormsModule, UiMessages],
+  imports: [ReactiveFormsModule],
   templateUrl: './ingredient-list.html',
   styleUrl: './ingredient-list.css',
 })
@@ -89,30 +88,48 @@ export class IngredientList {
       next: () => {
         setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showSuccess("Ingrédient mis à jour !");
-
-          setTimeout(() => {
-            this.editingId.set(null);
-            this.loadIngredients();
-          }, 1200);
+          this.ui.showSuccess("Ingrédient mis à jour !");  
         }, 800);
+
+        setTimeout(() => {
+          this.editingId.set(null);
+          this.loadIngredients();
+        }, 1400);
       },
       error: (err) => {
-        this.ui.stopLoading();
-        this.ui.showError("Erreur lorrs de la mise à jour.");
-        console.error(err);
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showError("Erreur lors de la mise à jour.");
+          console.error(err);
+        },800);
+
+        setTimeout(()=>{
+          this.editingId.set(null);
+        },1400);
       }
     });
   }
 
   delete(id: number){
+    this.ui.startLoading();
     console.log("DELETE", id)
     this.ingredientService.deleteIngredient(id).subscribe({
       next: () => {
-        this.loadIngredients();
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showSuccess("Ingrédient supprimé avec succes");
+        },800);
+
+        setTimeout(()=>{
+          this.loadIngredients();
+        },1400);        
       },
       error: (err) => {
         console.error("Erreur lors de la suppression", err);
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showError("Erreur lors de la suppression");
+        },800);       
       }
     });
   }

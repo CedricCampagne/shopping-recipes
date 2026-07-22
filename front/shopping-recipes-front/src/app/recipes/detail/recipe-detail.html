@@ -1,5 +1,6 @@
 @if (recipe() !== null) {
   <div>
+    
     <h1 class="text-2xl font-bold">{{ recipe()!.name }}</h1>
     <p class="text-gray-600">{{ recipe()!.description }}</p>
 
@@ -33,7 +34,7 @@
               Ajouter à la liste de courses
           </button>
 
-          @if (ui.successMessage()) {
+          <!-- @if (ui.successMessage()) {
             <p class="mt-4 px-4 py-2 bg-green-600 text-white rounded">
               {{ ui.successMessage() }}
             </p>
@@ -43,7 +44,7 @@
             <p class="mt-4 px-4 py-2 bg-red-600 text-white rounded">
               {{ ui.errorMessage() }}
             </p>
-          }
+          } -->
         </div>
     } @else {
       <p>Aucun ingrédient trouvé</p>

@@ -10,7 +10,6 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { UpdateRecipeIngredientRequest } from '../models/update-recipe-ingredient-request';
 import { Validators } from '@angular/forms';
 import { UpdateRecipeRequest } from '../models/update-recipe-request';
-import { UiMessages } from "../../shared/ui-messages/ui-messages";
 import { Ingredient } from '../models/ingredient';
 import { IngredientsService } from '../../ingredient/services/ingredients.service';
 import { UIStore } from '../../shared/ui.store';
@@ -18,7 +17,7 @@ import { UIStore } from '../../shared/ui.store';
 @Component({
   selector: 'app-recipe-update',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UiMessages],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './recipe-update.html',
   styleUrl: './recipe-update.css',
 })
@@ -103,7 +102,7 @@ export class RecipeUpdate {
 
   // Envoi du PUT au backend
   onSubmit() {
-    this.ui.startLoading()
+    this.ui.startLoading();
 
     //Validation du form
     if(this.form.invalid) {
@@ -142,15 +141,17 @@ export class RecipeUpdate {
         setTimeout(()=>{
           this.ui.stopLoading();
           this.ui.showSuccess("Recette mise a jour avec succès !");
-
-          setTimeout(()=>{
-            this.router.navigate(['/app/recipes']);
-          }, 1200)
         }, 800);
+
+        setTimeout(()=>{
+          this.router.navigate(['/app/recipes']);
+        }, 1400)
       },
       error: (err) =>{
-        this.ui.showError("Erreur lors de la mise à jour.");
-        console.error(err);
+        setTimeout(()=>{
+          this.ui.showError("Erreur lors de la mise à jour.");
+          console.error(err);
+        }, 800);
       }
     });
   }

@@ -4,12 +4,11 @@ import { RecipesServices } from '../services/recipes.service';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { Recipe } from '../models/recipe';
 import { UIStore } from '../../shared/ui.store';
-import { UiMessages } from "../../shared/ui-messages/ui-messages";
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [UiMessages],
+  imports: [],
   templateUrl: './list.html',
   styleUrl: './list.css',
 })
@@ -48,27 +47,39 @@ export class List {
   }
 
   delete(id: number){
+    this.ui.startLoading();
     console.log('DELETE', id)
+
     this.recipesService.deleteRecipe(id).subscribe({
       next: () => {
-        this.recipes.update(list => list.filter(r => r.id != id));
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          this.ui.showSuccess("Recette suprrimée avec succes !");
+        },800);
+        setTimeout(()=>{
+          this.recipes.update(list => list.filter(r => r.id != id));
+        },1400);
       },
       error : (err) => {
+        
         const status =
         err.status ??
         err.error?.status ??
         err.error?.code ??
         err.error?.error;
         
-        if (status === 403) {
-          this.ui.showError("Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée.");
+        setTimeout(()=>{
+          this.ui.stopLoading();
+          if (status === 403) {
+            this.ui.showError("Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée.");
+          }
+          
+          this.ui.showError("Erreur lors de la suppression.");
+        },800);
+
+        setTimeout(()=>{
           return;
-        }
-
-        console.log("err.status", err.status);
-        console.log("status", status);
-
-        this.ui.showError("Erreur lors de la suppression.");
+        },1400);
       }
     });
   }

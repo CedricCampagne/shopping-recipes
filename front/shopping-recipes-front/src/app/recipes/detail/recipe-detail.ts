@@ -64,25 +64,23 @@ export class RecipeDetail {
 
     const items = this.ingredientsWithTotal();
 
-    try {
-      this.shoppingListService.addRecipe(
-        this.id,
-        this.servings(),
-        this.recipe()!.name,
-        items
-      );
-    
-    this.ui.showSuccess("Recette ajoutée à la liste !");
-    
-    setTimeout(()=> {
+    this.shoppingListService.addRecipe(
+      this.id,
+      this.servings(),
+      this.recipe()!.name,
+      items
+    );
+
+    setTimeout(() => {
       this.ui.stopLoading();
+      this.ui.showSuccess("Recette ajoutée à la liste !");
+    }, 800);
+
+    setTimeout(() => {
       this.router.navigate(['/app/recipes']);
-    }, 1200 );
-    } catch {
-      this.ui.showError("Erreur lors de l'ajout à la liste");
-      this.ui.stopLoading();
-    }
+    }, 1400);
   }
+
 
   createShoppingList() {
     // creation objet request

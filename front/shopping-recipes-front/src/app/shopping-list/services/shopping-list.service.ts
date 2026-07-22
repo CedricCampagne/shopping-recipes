@@ -144,4 +144,8 @@ export class shoppingListService {
     updateStatus(id: number, status: string) {
         return this.http.put(`${this.apiUrl}/${id}/status`, { status });
     }
+
+    exportPdf(id: number){  
+        return this.http.get(`${this.apiUrl}/pdf/${id}`, {responseType: 'blob'});
+    }
 }
