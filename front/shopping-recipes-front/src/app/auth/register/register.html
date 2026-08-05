@@ -49,7 +49,7 @@
         <p class="text-orange-500 text-sm">Le mot de passe est obligatoire</p>
       }
       @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
-        <p class="text-orange-500 text-sm">Le mot de passe doit contenier au moins 12 caractères</p>
+        <p class="text-orange-500 text-sm">Le mot de passe doit contenir au moins 12 caractères</p>
       }
       @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
         <p class="text-orange-500 text-sm">Le mot de passe doit contenir au moins un caractère spécial</p>

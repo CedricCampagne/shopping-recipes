@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { UIStore } from '../../shared/ui.store';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UpdateIngredientRequest } from '../models/update-ingredient.request';
+import { normalizeText } from '../../shared/utils/string.utils';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-ingredient-list',
@@ -20,9 +22,34 @@ export class IngredientList {
   ui = inject(UIStore);
 
   ingredients = signal<IngredientResponse[]>([]);
-  units = signal<string[]>([]);
+  readonly units = toSignal(
+    this.ingredientService.getUnits(),
+    { initialValue: []}
+  );
+
   editingId = signal<number | null>(null);
 
+  readonly search = signal('');
+  readonly selectedUnit = signal('');
+  readonly filteredIngredients = computed(()=>{
+    const searchValue = normalizeText(this.search().trim());
+    const unitValue = this.selectedUnit();
+    return this.sortedIngredients().filter(ingredient => {
+      const matchName = normalizeText(ingredient.name)
+        .includes(searchValue);
+
+      const matchUnit = unitValue === ''
+        || ingredient.unit === unitValue;
+
+      return matchName && matchUnit;
+    });
+  });
+
+  resetFilter() {
+    this.search.set('');
+    this.selectedUnit.set('');
+  }
+  
   // Formulaire edition inline
   editForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -39,11 +66,11 @@ export class IngredientList {
     this.loadIngredients();
   }
 
-  ngOnInit() {
-    this.ingredientService.getUnits().subscribe(units =>{
-      this.units.set(units);
-    });
-  }
+  // ngOnInit() {
+  //   this.ingredientService.getUnits().subscribe(units =>{
+  //     this.units.set(units);
+  //   });
+  // }
 
   loadIngredients() {
     this.ingredientService.getAllIngredients().subscribe(res => {
