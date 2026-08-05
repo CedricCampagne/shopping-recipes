@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UIStore } from '../../shared/ui.store';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UpdateIngredientRequest } from '../models/update-ingredient.request';
+import { normalizeText } from '../../shared/utils/string.utils';
 
 @Component({
   selector: 'app-ingredient-list',
@@ -22,6 +23,15 @@ export class IngredientList {
   ingredients = signal<IngredientResponse[]>([]);
   units = signal<string[]>([]);
   editingId = signal<number | null>(null);
+
+  readonly search = signal('');
+  readonly filteredIngredients = computed(()=>{
+    const searchValue = normalizeText(this.search().trim());
+    
+    return this.sortedIngredients().filter(ingredient =>
+      normalizeText(ingredient.name).includes(searchValue)
+    );
+  });
 
   // Formulaire edition inline
   editForm = new FormGroup({

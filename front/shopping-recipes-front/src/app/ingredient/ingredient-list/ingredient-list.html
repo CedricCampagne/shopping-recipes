@@ -10,8 +10,24 @@
   </button>
 </div>
 
+<div class="flex items-center mb-6 gap-6">
+  <h2 class="text-xl font-bold">Filtres : </h2>
+
+  <div>
+    <label for="name">Par noms : </label>
+    <input 
+      type="text"
+      id="name"
+      class="border p-2 rounded"
+      placeholder="Rechercher ..."
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    >
+  </div>
+</div>
+
 <div class="space-y-4">
-  @for (i of sortedIngredients(); track i.id) {
+  @for (i of filteredIngredients(); track i.id) {
 
     <div 
       class="flex flex-col border-2 border-white p-4 bg-white shadow rounded hover:border-blue-600 transition-all duration-300"
