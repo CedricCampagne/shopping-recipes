@@ -13,17 +13,43 @@
 <div class="flex items-center mb-6 gap-6">
   <h2 class="text-xl font-bold">Filtres : </h2>
 
-  <div>
-    <label for="name">Par noms : </label>
-    <input 
-      type="text"
-      id="name"
-      class="border p-2 rounded"
-      placeholder="Rechercher ..."
-      [value]="search()"
-      (input)="search.set($any($event.target).value)"
-    >
+  <div class="flex items-center gap-6">
+    <div>
+      <label for="name">Par noms : </label>
+      <input 
+        type="text"
+        id="name"
+        class="border p-2 rounded"
+        placeholder="Rechercher ..."
+        [value]="search()"
+        (input)="search.set($any($event.target).value)"
+      >
+    </div>
+
+    <div>
+      <select 
+        class="border p-2 rounded"
+        [value]="selectedUnit()"
+        (change)="selectedUnit.set($any($event.target).value)"
+      >
+        <option value="">Toutes les unités</option>
+        @for (u of units(); track u) {
+          <option [value]="u">{{ u.toLowerCase()}}</option>
+        }
+      </select>
+    </div>
   </div>
+
+  <button
+  type="button"
+  (click)="resetFilter()"
+  class="text-gray-500 hover:text-red-600 transition cursor-pointer"
+  title="Réinitialiser les filtres"
+>
+  <svg class="w-6 h-6" viewBox="0 0 16 16" fill="currentColor">
+    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M4.22 4.22a.75.75 0 0 1 1.06 0L8 6.94l2.72-2.72a.75.75 0 1 1 1.06 1.06L9.06 8l2.72 2.72a.75.75 0 1 1-1.06 1.06L8 9.06l-2.72 2.72a.75.75 0 1 1-1.06-1.06L6.94 8 4.22 5.28a.75.75 0 0 1 0-1.06"/>
+  </svg>
+</button>
 </div>
 
 <div class="space-y-4">
