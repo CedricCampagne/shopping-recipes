@@ -1,10 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipesServices } from '../services/recipes.service';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { Recipe } from '../models/recipe';
 import { UIStore } from '../../shared/ui.store';
-
+import { normalizeText } from '../../shared/utils/string.utils';
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -20,7 +20,22 @@ export class List {
   ui = inject(UIStore);
   
   recipes = signal<Recipe[]>([]);
-  
+  readonly search = signal('');
+  readonly filteredRecipes = computed(() => {
+  const searchValue = normalizeText(this.search().trim());
+
+  return this.recipes().filter(recipe => {
+
+      const matchName = normalizeText(recipe.name)
+        .includes(searchValue);
+
+      const matchDescription = normalizeText(recipe.description ?? '')
+        .includes(searchValue);
+
+      return matchName || matchDescription;
+    });
+  });
+
   ngOnInit(): void {
     this.recipesService.getAll().subscribe(res =>{
       this.recipes.set(res);
@@ -88,5 +103,9 @@ export class List {
   update(id: number){
     console.log('UPDATE', id)
     this.router.navigate(['/app/recipes/update', id]);
+  }
+
+  resetFilter() {
+    this.search.set('');
   }
 }
