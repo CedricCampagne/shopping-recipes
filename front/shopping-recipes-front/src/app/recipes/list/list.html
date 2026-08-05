@@ -10,8 +10,37 @@
   </button>
 </div>
 
+<div class="flex items-center mb-6 gap-6">
+  <h2 class="text-xl font-bold">Filtre : </h2>
+
+  <div class="flex items-center gap-6">
+    <div>
+      <label for="name">Recherche : </label>
+      <input 
+        type="text"
+        id="name"
+        class="border p-2 rounded"
+        placeholder="Nom, description ..."
+        [value]="search()"
+        (input)="search.set($any($event.target).value)"
+      >
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="text-gray-500 hover:text-red-600 transition cursor-pointer"
+    title="Réinitialiser les filtres"
+    (click)="resetFilter()"
+  >
+    <svg class="w-6 h-6" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M4.22 4.22a.75.75 0 0 1 1.06 0L8 6.94l2.72-2.72a.75.75 0 1 1 1.06 1.06L9.06 8l2.72 2.72a.75.75 0 1 1-1.06 1.06L8 9.06l-2.72 2.72a.75.75 0 1 1-1.06-1.06L6.94 8 4.22 5.28a.75.75 0 0 1 0-1.06"/>
+    </svg>
+  </button>
+</div>
+
 <div class="space-y-4">
-  @for (recipe of recipes(); track recipe.id) {
+  @for (recipe of filteredRecipes(); track recipe.id) {
     <div 
         class="flex justify-between border-2 border-white p-4 bg-white shadow rounded hover:cursor-pointer hover:border-blue-600 transition-all duration-300"
         (click)="goToRecipe(recipe.id)"
