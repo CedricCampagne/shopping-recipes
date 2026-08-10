@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { LoginRequest } from '../models/login-request';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 import { UIStore } from '../../shared/ui.store';
 import { UiMessages } from '../../shared/ui-messages/ui-messages';
 
@@ -15,8 +14,8 @@ import { UiMessages } from '../../shared/ui-messages/ui-messages';
   styleUrl: './login.css',
 })
 export class Login {
-  authService = inject(AuthService);
-  router = inject(Router);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   ui = inject(UIStore);
 
   form = new FormGroup({
@@ -36,6 +35,7 @@ export class Login {
 
   onSubmit() {
     if (this.form.invalid) return;
+
     this.ui.clearMessage();
     this.ui.startLoading();
 
@@ -60,7 +60,6 @@ export class Login {
         }, 1400);
       },
       error: (err) => {
-        console.log('LOGIN ERROR', err);
         setTimeout(() => {
           this.ui.stopLoading();
         }, 800);

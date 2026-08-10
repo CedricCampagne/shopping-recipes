@@ -1,13 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthStateService } from '../services/auth-state.service';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard {
-  constructor(
-    private authState: AuthStateService,
-    private router: Router,
-  ) {}
+  private authState = inject(AuthStateService);
+  private router = inject(Router);
 
   canActivate(): boolean {
     if (!this.authState.isLoggedIn()) {

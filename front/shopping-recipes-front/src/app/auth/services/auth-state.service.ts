@@ -6,7 +6,7 @@ export class AuthStateService {
     return !!localStorage.getItem('token');
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
   }
 }

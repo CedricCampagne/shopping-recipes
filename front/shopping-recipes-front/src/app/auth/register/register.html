@@ -3,38 +3,68 @@
     <app-ui-messages></app-ui-messages>
   </div>
 
-  <h2 class="text-2xl font-bold">Créer un compte</h2>
+  <h2 class="text-2xl font-bold">
+    Créer un compte
+  </h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full max-w-sm">
+  <form 
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()" 
+    class="flex flex-col gap-4 w-full max-w-sm"
+  >
     <div class="flex flex-col gap-1">
-      <label class="font-medium">Nom d'utilisateur</label>
-      <input type="text" formControlName="username" class="border border-gray-300 rounded p-2" />
+      <label class="font-medium">
+        Nom d'utilisateur
+      </label>
+      <input 
+        type="text" 
+        formControlName="username" 
+        class="border border-gray-300 rounded p-2"
+      />
       @if (form.controls.username.touched && form.controls.username.invalid) {
-        <p class="text-orange-500 text-sm h-4">Le nom est obligatoire</p>
+        <p class="text-orange-500 text-sm h-4">
+          Le nom est obligatoire
+        </p>
       }
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="font-medium">Email</label>
-      <input type="email" formControlName="email" class="border border-gray-300 rounded p-2" />
+      <label class="font-medium">
+        Email
+      </label>
+      <input 
+        type="email" 
+        formControlName="email" 
+        class="border border-gray-300 rounded p-2" 
+      />
       @if (form.controls.email.touched && form.controls.email.hasError('required')) {
-        <p class="text-orange-500 text-sm">L'email est obligatoire</p>
+        <p class="text-orange-500 text-sm">
+          L'email est obligatoire
+        </p>
       } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
-        <p class="text-orange-500 text-sm">Le format de l'email est invalide</p>
+        <p class="text-orange-500 text-sm">
+          Le format de l'email est invalide
+        </p>
       }
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="font-medium">Mot de passe</label>
+      <label class="font-medium">
+        Mot de passe
+      </label>
       <input
         type="password"
         formControlName="password"
         class="border border-gray-300 rounded p-2"
       />
       @if (form.controls.password.touched && form.controls.password.hasError('required')) {
-        <p class="text-orange-500 text-sm">Le mot de passe est obligatoire</p>
+        <p class="text-orange-500 text-sm">
+          Le mot de passe est obligatoire
+        </p>
       } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
-        <p class="text-orange-500 text-sm">Le mot de passe doit contenir au moins 12 caractères</p>
+        <p class="text-orange-500 text-sm">
+          Le mot de passe doit contenir au moins 12 caractères
+        </p>
       } @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
         <p class="text-orange-500 text-sm">
           Le mot de passe doit contenir au moins un caractère spécial
@@ -43,11 +73,19 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="font-medium">Confirmation du mot de passe</label>
-      <input type="password" formControlName="confirm" class="border border-gray-300 rounded p-2" />
+      <label class="font-medium">
+        Confirmation du mot de passe
+      </label>
+      <input 
+        type="password" 
+        formControlName="confirm" 
+        class="border border-gray-300 rounded p-2" 
+      />
 
       @if (form.hasError('passwordMismatch') && form.controls.confirm.touched) {
-        <p class="text-orange-500 text-sm">Les mots de passe ne correspondent pas</p>
+        <p class="text-orange-500 text-sm">
+          Les mots de passe ne correspondent pas
+        </p>
       }
     </div>
 
@@ -60,7 +98,8 @@
     </button>
 
     <a routerLink="/" class="text-green-600 underline text-center hover:cursor-pointer"
-      >Retour à l'accueil</a
+      >Retour à l'accueil
+    </a
     >
   </form>
 </main>

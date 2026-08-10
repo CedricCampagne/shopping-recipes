@@ -8,35 +8,21 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { RegisterRequest } from '../models/register-request';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 import { UIStore } from '../../shared/ui.store';
 import { UiMessages } from '../../shared/ui-messages/ui-messages';
-import { trigger, transition, style, animate } from '@angular/animations';
-
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, UiMessages],
   templateUrl: './register.html',
   styleUrl: './register.css',
-  animations: [
-    trigger('pageTransition', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(50px)' }),
-        animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
-      transition(':leave', [
-        animate('500ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' })),
-      ]),
-    ]),
-  ],
 })
 export class Register {
-  authService = inject(AuthService);
-  router = inject(Router);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   ui = inject(UIStore);
 
   form = new FormGroup(
@@ -85,8 +71,6 @@ export class Register {
         }, 1400);
       },
       error: (err) => {
-        console.log('LOGIN ERROR', err);
-
         setTimeout(() => {
           this.ui.stopLoading();
         }, 800);
