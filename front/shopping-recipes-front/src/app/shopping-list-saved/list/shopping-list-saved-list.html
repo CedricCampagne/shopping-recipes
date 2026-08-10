@@ -2,24 +2,20 @@
 
 @if (lists().length > 0) {
   <div class="flex flex-col items-center gap-4">
-
     @for (list of sortedListByDate(); track list.id) {
       <div
-        class="w-full max-w-md border border-gray-300 bg-white p-4 rounded-lg 
-              shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col gap-3"
+        class="w-full max-w-md border border-gray-300 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col gap-3"
       >
-      <div class="flex justify-between">
-        <p class="text-sm text-gray-700 font-semibold">
-          Liste #{{ list.id }}
-        </p>
+        <div class="flex justify-between">
+          <p class="text-sm text-gray-700 font-semibold">Liste #{{ list.id }}</p>
 
-        <span class="text-xs text-gray-500">
-          Créée le : {{ list.createdAt | date:'dd/MM/yy' }}
-        </span>
-      </div>
+          <span class="text-xs text-gray-500">
+            Créée le : {{ list.createdAt | date: 'dd/MM/yy' }}
+          </span>
+        </div>
 
-      <span>Nombre de repas : {{ list.recipes.length }}</span>
-      <span>Nombre d'ingrédients : {{ list.items.length }}</span>
+        <span>Nombre de repas : {{ list.recipes.length }}</span>
+        <span>Nombre d'ingrédients : {{ list.items.length }}</span>
 
         <div class="flex justify-start">
           <button

@@ -1,5 +1,5 @@
 export interface IngredientResponse {
-    id: number;
-    name: string;
-    unit: string;
+  id: number;
+  name: string;
+  unit: string;
 }

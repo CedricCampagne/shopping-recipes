@@ -11,7 +11,6 @@ import { UIStore } from '../shared/ui.store';
   styleUrl: './shopping-list.css',
 })
 export class ShoppingList {
-
   private shoppingListService = inject(shoppingListService);
   ui = inject(UIStore);
 
@@ -25,54 +24,56 @@ export class ShoppingList {
   saved = signal(false);
 
   // sauvegarder la list
-  saveList(){
+  saveList() {
     this.ui.clearMessage();
     this.ui.startLoading();
 
     const request: CreateShoppingRequest = {
-      recipes: this.recipes().map(r=> ({
+      recipes: this.recipes().map((r) => ({
         recipeId: r.recipeId,
-        servings: r.servings
-      }))
+        servings: r.servings,
+      })),
     };
 
     this.shoppingListService.createShoppingList(request).subscribe({
-      next:(res) => {
-        setTimeout(()=>{
+      next: (res) => {
+        setTimeout(() => {
           this.ui.stopLoading();
-          console.log("Liste sauvegardée :", res);
-          this.ui.showSuccess("Liste sauvegardée avec succès.");
-        },800);
-        
-        setTimeout(()=>{
+          console.log('Liste sauvegardée :', res);
+          this.ui.showSuccess('Liste sauvegardée avec succès.');
+        }, 800);
+
+        setTimeout(() => {
           // refresh des listes sauvegardées
           this.shoppingListService.refreshSavedLists();
           // this.saved.set(false);
           this.shoppingListService.clear();
-        },1400)
+        }, 1400);
       },
       error: (err) => {
-        console.error("Erreur lors de la sauvegarde :", err);
-        setTimeout(()=>{
+        console.error('Erreur lors de la sauvegarde :', err);
+        setTimeout(() => {
           this.ui.stopLoading();
-          if(err.status === 403 || err.status === 404) {
-            const recipeId = err.error.resourceId;       
-            const recipe = this.recipes().find(r => r.recipeId === recipeId);
+          if (err.status === 403 || err.status === 404) {
+            const recipeId = err.error.resourceId;
+            const recipe = this.recipes().find((r) => r.recipeId === recipeId);
 
             if (recipe) {
               this.shoppingListService.deleteRecipeAndItems(recipe.uid);
             }
-            
-            this.ui.showError(`La recette (${recipe?.name}) n'existe plus. Elle a été retirée de la liste`);
+
+            this.ui.showError(
+              `La recette (${recipe?.name}) n'existe plus. Elle a été retirée de la liste`,
+            );
           }
-        },800);
+        }, 800);
         return;
-      }
+      },
     });
   }
 
-  deleteRecipe(uid:number) {
-    console.log("Supprimer la recette de la liste");
+  deleteRecipe(uid: number) {
+    console.log('Supprimer la recette de la liste');
     this.shoppingListService.deleteRecipeAndItems(uid);
   }
 
@@ -81,16 +82,15 @@ export class ShoppingList {
   }
 
   increaseServing(uid: number) {
-    const recipe = this.recipes().find(r => r.uid === uid);
-    if(!recipe) return;
-    this.shoppingListService.updateServings(uid, recipe.servings + 1 );
+    const recipe = this.recipes().find((r) => r.uid === uid);
+    if (!recipe) return;
+    this.shoppingListService.updateServings(uid, recipe.servings + 1);
   }
 
   decreaseServings(uid: number) {
-    const recipe = this.recipes().find(r => r.uid === uid);
-    if(!recipe) return;
+    const recipe = this.recipes().find((r) => r.uid === uid);
+    if (!recipe) return;
     const newValue = recipe.servings > 1 ? recipe.servings - 1 : 1;
     this.shoppingListService.updateServings(uid, newValue);
   }
-
 }

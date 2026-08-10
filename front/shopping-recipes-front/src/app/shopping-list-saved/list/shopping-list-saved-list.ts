@@ -10,15 +10,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './shopping-list-saved-list.html',
   styleUrl: './shopping-list-saved-list.css',
 })
-
 export class ShoppingListSavedList {
   private shoppingListService = inject(shoppingListService);
   private router = inject(Router);
-  
+
   lists = this.shoppingListService.savedLists;
 
-  sortedListByDate = computed(()=>
-    this.lists().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() )
+  sortedListByDate = computed(() =>
+    this.lists().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
   );
 
   //Angular 17 moderne : effect() au lieu de constructor / ngOnInit
@@ -26,7 +25,7 @@ export class ShoppingListSavedList {
     this.shoppingListService.getAllSavedList().subscribe();
   });
 
-  openDetail(id:number) {
-    this.router.navigate(['/app/shopping-list-saved', id])
+  openDetail(id: number) {
+    this.router.navigate(['/app/shopping-list-saved', id]);
   }
 }

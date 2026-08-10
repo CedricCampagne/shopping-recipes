@@ -1,4 +1,4 @@
-import { Component,  inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { UIStore } from '../../shared/ui.store';
@@ -17,40 +17,36 @@ export class ShoppingListSavedDetail {
 
   ui = inject(UIStore);
 
-  id = Number(this.route.snapshot.paramMap.get("id"));
+  id = Number(this.route.snapshot.paramMap.get('id'));
   savedLists = this.shoppingListService.savedLists;
 
   sortedItems = computed(() => {
-    return [...this.list()!.items].sort((a, b) =>
-      a.ingredientName.localeCompare(b.ingredientName)
-    );
+    return [...this.list()!.items].sort((a, b) => a.ingredientName.localeCompare(b.ingredientName));
   });
 
-  list = computed(() =>
-    this.savedLists().find(l => l.id === this.id)
-  );
+  list = computed(() => this.savedLists().find((l) => l.id === this.id));
 
   updateStatus(newStatus: string) {
     this.ui.clearMessage();
     this.ui.startLoading();
-    
+
     this.shoppingListService.updateStatus(this.id, newStatus).subscribe({
       next: () => {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showSuccess("Statut mis à jour !");
-        },800);
+          this.ui.showSuccess('Statut mis à jour !');
+        }, 800);
 
         setTimeout(() => {
           this.shoppingListService.refreshSavedLists();
         }, 1400);
       },
       error: () => {
-        this.ui.showError("Erreur lors de la mise à jour du Statut !");
+        this.ui.showError('Erreur lors de la mise à jour du Statut !');
         setTimeout(() => {
           this.ui.stopLoading();
         }, 1500);
-      }
+      },
     });
   }
 
@@ -59,11 +55,11 @@ export class ShoppingListSavedDetail {
     this.ui.startLoading();
 
     this.shoppingListService.deleteList(this.id).subscribe({
-      next : () => {
-        setTimeout(()=>{
+      next: () => {
+        setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showSuccess("Liste supprimée !");  
-        },800);
+          this.ui.showSuccess('Liste supprimée !');
+        }, 800);
 
         setTimeout(() => {
           this.router.navigate(['/app/shopping-list-saved']);
@@ -71,11 +67,11 @@ export class ShoppingListSavedDetail {
         }, 1400);
       },
       error: () => {
-        setTimeout(()=>{
-          this.ui.showError("Erreur lors de la suppression !");
+        setTimeout(() => {
+          this.ui.showError('Erreur lors de la suppression !');
           this.ui.stopLoading();
-        },800)
-      }
+        }, 800);
+      },
     });
   }
 
@@ -85,26 +81,25 @@ export class ShoppingListSavedDetail {
 
     this.shoppingListService.exportPdf(this.id).subscribe({
       next: (pdfBlob: Blob) => {
-        setTimeout(() =>{
+        setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showSuccess("PDF exporté !");
+          this.ui.showSuccess('PDF exporté !');
         }, 800);
 
-        setTimeout(()=>{
+        setTimeout(() => {
           const url = window.URL.createObjectURL(pdfBlob);
           const a = document.createElement('a');
           a.href = url;
           a.download = `shopping-list-${this.id}.pdf`;
           a.click();
-        },1400);
-
+        }, 1400);
       },
       error: () => {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.ui.showError("Erreur lors de l'export PDF !");
           this.ui.stopLoading();
-        },800);
-      }
+        }, 800);
+      },
     });
   }
 }

@@ -1,6 +1,6 @@
 export interface CreateShoppingRequest {
-    recipes: {
-        recipeId: number;
-        servings: number;
-    } [];
+  recipes: {
+    recipeId: number;
+    servings: number;
+  }[];
 }

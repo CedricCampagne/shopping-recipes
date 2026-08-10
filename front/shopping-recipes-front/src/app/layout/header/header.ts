@@ -13,7 +13,6 @@ import { IngredientsService } from '../../ingredient/services/ingredients.servic
   styleUrl: './header.css',
 })
 export class Header {
-
   private shoppingListService = inject(shoppingListService);
   private recipesService = inject(RecipesServices);
   private ingredientsService = inject(IngredientsService);
@@ -25,16 +24,16 @@ export class Header {
 
   constructor(
     private authState: AuthStateService,
-    private router: Router 
-  ){}
+    private router: Router,
+  ) {}
 
   logout() {
     this.isFetching.set(true);
-    setTimeout(()=>{
+    setTimeout(() => {
       this.isFetching.set(false);
       this.authState.logout();
       this.router.navigate(['/login']);
-    }, 2500)
+    }, 2500);
   }
 
   goRecipes() {
@@ -44,25 +43,25 @@ export class Header {
       },
       error: () => {
         // l’interceptor gère déjà le redirect
-      }
+      },
     });
   }
 
   goIngredients() {
     this.ingredientsService.getAllIngredients().subscribe({
       next: () => {
-        this.router.navigateByUrl('/app/ingredients')
+        this.router.navigateByUrl('/app/ingredients');
       },
       error: () => {
         // l’interceptor gère déjà le redirect
-      }
+      },
     });
   }
 
   goSavedLists() {
     this.shoppingListService.getAllSavedList().subscribe({
       next: () => this.router.navigate(['/app/shopping-list-saved']),
-      error: () => this.router.navigate(['/login'])
+      error: () => this.router.navigate(['/login']),
     });
   }
 }

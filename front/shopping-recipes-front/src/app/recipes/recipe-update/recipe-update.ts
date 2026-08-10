@@ -33,35 +33,43 @@ export class RecipeUpdate {
   recipeToUpdate = signal<Recipe | null>(null);
   recipeIngredients = signal<RecipeIngredient[]>([]);
   updateIngredients = signal<UpdateRecipeIngredientRequest[]>([]);
-  
+
   allIngredients = signal<Ingredient[]>([]);
   selectedIngredient = signal<number | null>(null);
 
   id = 0;
 
   form = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(5), Validators.pattern(/^\S.*$/)]),
-    description: new FormControl('', [Validators.required, Validators.minLength(15), Validators.pattern(/^\S.*$/)]),
-    servings: new FormControl(4, [Validators.required,Validators.min(1)]),
+    name: new FormControl('', [
+      Validators.required,
+      Validators.minLength(5),
+      Validators.pattern(/^\S.*$/),
+    ]),
+    description: new FormControl('', [
+      Validators.required,
+      Validators.minLength(15),
+      Validators.pattern(/^\S.*$/),
+    ]),
+    servings: new FormControl(4, [Validators.required, Validators.min(1)]),
   });
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.params['id']);
 
     // Charge la recette (sans les ingrédients)
-    this.recipesService.getById(this.id).subscribe(res => {
+    this.recipesService.getById(this.id).subscribe((res) => {
       this.recipeToUpdate.set(res);
       this.patchFormRecipe(res);
     });
 
     //Charge les ingrédients de la recette
-    this.recipeIngredientService.getByRecipeId(this.id).subscribe(res =>{
+    this.recipeIngredientService.getByRecipeId(this.id).subscribe((res) => {
       this.recipeIngredients.set(res);
       this.patchFormIngredients(res);
     });
 
     //Charge tousles ingrédients dela bdd (pour pouvoir les ajouter)
-    this.ingredientsService.getAllIngredients().subscribe(res =>{
+    this.ingredientsService.getAllIngredients().subscribe((res) => {
       this.allIngredients.set(res);
     });
   }
@@ -71,32 +79,28 @@ export class RecipeUpdate {
     this.form.patchValue({
       name: recipe.name,
       description: recipe.description,
-      servings: recipe.servings
+      servings: recipe.servings,
     });
   }
 
   // Convertit les RecipeIngredient → UpdateRecipeIngredientRequest
   patchFormIngredients(ingredients: RecipeIngredient[]) {
     this.updateIngredients.set(
-      ingredients.map(ing =>({
+      ingredients.map((ing) => ({
         id: ing.id,
         ingredientId: ing.ingredient.id,
         ingredientName: ing.ingredient.name,
         quantityPerPerson: ing.quantityPerPerson,
-        unit: ing.unit
-      }))
+        unit: ing.unit,
+      })),
     );
   }
 
   onQuantityChange(index: number, event: Event) {
     const value = Number((event.target as HTMLInputElement).value);
 
-    this.updateIngredients.update(list =>
-      list.map((ing, i) =>
-        i === index
-          ? { ...ing, quantityPerPerson: value }
-          : ing
-      )
+    this.updateIngredients.update((list) =>
+      list.map((ing, i) => (i === index ? { ...ing, quantityPerPerson: value } : ing)),
     );
   }
 
@@ -106,8 +110,8 @@ export class RecipeUpdate {
     this.ui.startLoading();
 
     //Validation du form
-    if(this.form.invalid) {
-      this.ui.showError("Le formulaire est incomplet ou invalide.");
+    if (this.form.invalid) {
+      this.ui.showError('Le formulaire est incomplet ou invalide.');
       this.form.markAllAsTouched();
       return;
     }
@@ -116,17 +120,19 @@ export class RecipeUpdate {
     const emptyList = this.updateIngredients().length === 0;
 
     //validations des quantiés
-    const invalidQuantity = this.updateIngredients().some(ing =>
-      ing.quantityPerPerson === null || ing.quantityPerPerson <= 0
+    const invalidQuantity = this.updateIngredients().some(
+      (ing) => ing.quantityPerPerson === null || ing.quantityPerPerson <= 0,
     );
 
     const invalid = emptyList || invalidQuantity;
 
-    if(invalid) {
-      setTimeout(()=> {
+    if (invalid) {
+      setTimeout(() => {
         this.ui.stopLoading();
-        this.ui.showError("Veuillez remplir une quantité valide (> 0) et ajouter au moins un ingrédient.");
-      },800);
+        this.ui.showError(
+          'Veuillez remplir une quantité valide (> 0) et ajouter au moins un ingrédient.',
+        );
+      }, 800);
       return;
     }
 
@@ -134,64 +140,62 @@ export class RecipeUpdate {
       name: this.form.value.name!,
       description: this.form.value.description!,
       servings: Number(this.form.value.servings),
-      ingredients: this.updateIngredients()
+      ingredients: this.updateIngredients(),
     };
 
     this.recipesService.updateRecipe(this.id, request).subscribe({
       next: () => {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showSuccess("Recette mise a jour avec succès !");
+          this.ui.showSuccess('Recette mise a jour avec succès !');
         }, 800);
 
-        setTimeout(()=>{
+        setTimeout(() => {
           this.router.navigate(['/app/recipes']);
-        }, 1400)
+        }, 1400);
       },
-      error: (err) =>{
-        setTimeout(()=>{
-          this.ui.showError("Erreur lors de la mise à jour.");
+      error: (err) => {
+        setTimeout(() => {
+          this.ui.showError('Erreur lors de la mise à jour.');
           console.error(err);
         }, 800);
-      }
+      },
     });
   }
 
-  onSelectIngredient(event: Event){
+  onSelectIngredient(event: Event) {
     const value = Number((event.target as HTMLSelectElement).value);
     // console.log("SELECTED", event.target);
     // console.log("VALUE", value);
     this.selectedIngredient.set(value);
   }
 
-  addIngredientFromDb(){
+  addIngredientFromDb() {
     const id = this.selectedIngredient();
     if (!id) return;
 
-    const ing = this.allIngredients().find(i => i.id === id);
-    if(!ing) return;
+    const ing = this.allIngredients().find((i) => i.id === id);
+    if (!ing) return;
 
-    this.updateIngredients.update(list => [
+    this.updateIngredients.update((list) => [
       ...list,
       {
         id: null,
         ingredientId: ing.id,
         ingredientName: ing.name,
         quantityPerPerson: null,
-        unit: ing.unit
-      }
+        unit: ing.unit,
+      },
     ]);
 
     this.selectedIngredient.set(null);
   }
 
-  removeIngredient(id: number){
-    this.updateIngredients.update(list =>
-      list.filter(ing => ing.id != id)
-    );
+  removeIngredient(id: number) {
+    this.updateIngredients.update((list) => list.filter((ing) => ing.id != id));
   }
 
-  goToRecipe(){
-    this.router.navigateByUrl("/app/recipes");
+  goToRecipe() {
+    this.router.navigateByUrl('/app/recipes');
   }
 }

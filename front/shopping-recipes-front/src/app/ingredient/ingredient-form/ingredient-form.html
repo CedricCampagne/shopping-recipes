@@ -1,4 +1,3 @@
-
 <h1 class="text-2xl font-bold mt-12 mb-6 text-center">Créer un ingrédient</h1>
 
 <div class="flex justify-center">
@@ -7,40 +6,31 @@
     (ngSubmit)="onSubmit()"
     class="space-y-4 w-full max-w-xl bg-white p-6 rounded-lg shadow"
   >
-    
     <div>
       <label class="font-medium">Nom</label>
-      <input
-        type="text"
-        formControlName="name"
-        class="border p-2 rounded w-full"
-      />
+      <input type="text" formControlName="name" class="border p-2 rounded w-full" />
 
       @if (form.controls.name.touched && form.controls.name.invalid) {
-        <p class="text-red-600 text-sm">
-          Le nom doit faire au moins 3 caractères.
-        </p>
+        <p class="text-red-600 text-sm">Le nom doit faire au moins 3 caractères.</p>
       }
     </div>
 
     <div>
       <label class="font-medium">Unité</label>
 
-        @if (units().length > 0) {
-            <select formControlName="unit" class="border p-2 rounded w-full">
-                @for (u of units(); track u) {
-                <option [value]="u">{{ u.toLowerCase() }}</option>
-                }
-            </select>
-        } @else {
+      @if (units().length > 0) {
+        <select formControlName="unit" class="border p-2 rounded w-full">
+          @for (u of units(); track u) {
+            <option [value]="u">{{ u.toLowerCase() }}</option>
+          }
+        </select>
+      } @else {
         <p class="text-gray-500 text-sm">Chargement des unités...</p>
-        }
+      }
 
-        @if (form.controls.unit.touched && form.controls.unit.invalid) {
-            <p class="text-red-600 text-sm">
-            L’unité est obligatoire.
-            </p>
-        }
+      @if (form.controls.unit.touched && form.controls.unit.invalid) {
+        <p class="text-red-600 text-sm">L’unité est obligatoire.</p>
+      }
     </div>
 
     <button
@@ -49,6 +39,5 @@
     >
       Créer
     </button>
-
   </form>
 </div>
