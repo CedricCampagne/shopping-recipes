@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IngredientResponse } from '../models/ingredient-response';
 import { CreateIngredientRequest } from '../models/create-ingredient-request';
@@ -6,8 +6,8 @@ import { UpdateIngredientRequest } from '../models/update-ingredient.request';
 
 @Injectable({ providedIn: 'root' })
 export class IngredientsService {
-  constructor(private http: HttpClient) {}
-
+  
+  private http = inject(HttpClient)
   private apiUrl = 'http://localhost:8080/ingredients';
 
   getAllIngredients() {

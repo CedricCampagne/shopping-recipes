@@ -58,12 +58,6 @@ export class IngredientList {
     this.loadIngredients();
   }
 
-  // ngOnInit() {
-  //   this.ingredientService.getUnits().subscribe(units =>{
-  //     this.units.set(units);
-  //   });
-  // }
-
   loadIngredients() {
     this.ingredientService.getAllIngredients().subscribe((res) => {
       this.ingredients.set(res);
@@ -132,7 +126,6 @@ export class IngredientList {
   delete(id: number) {
     this.ui.clearMessage();
     this.ui.startLoading();
-    console.log('DELETE', id);
 
     this.ingredientService.deleteIngredient(id).subscribe({
       next: () => {

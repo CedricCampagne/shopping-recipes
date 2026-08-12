@@ -1,9 +1,10 @@
-import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { IngredientsService } from '../services/ingredients.service';
 import { UIStore } from '../../shared/ui.store';
 import { Validators } from '@angular/forms';
 import { CreateIngredientRequest } from '../models/create-ingredient-request';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-ingredient-modal',
@@ -16,7 +17,10 @@ export class IngredientModal {
   private ingredientService = inject(IngredientsService);
   private ui = inject(UIStore);
 
-  units = signal<string[]>([]);
+  readonly units = toSignal(
+    this.ingredientService.getUnits(),
+    {initialValue: []}
+  );
 
   ingredientForm = new FormGroup({
     name: new FormControl('', [
@@ -29,12 +33,6 @@ export class IngredientModal {
 
   @Output() closeModal = new EventEmitter<void>();
   @Output() ingredientCreated = new EventEmitter();
-
-  ngOnInit() {
-    this.ingredientService.getUnits().subscribe((units) => {
-      this.units.set(units);
-    });
-  }
 
   createIngredient() {
     if (this.ingredientForm.invalid) {
@@ -66,9 +64,9 @@ export class IngredientModal {
         this.ui.stopLoading();
         if (err.status === 409) {
           this.ui.showError("Ce nom d'ingrédient existe déjà.");
-          return;
+        } else{
+          this.ui.showError("Erreur lors de la création de l'ingrédient.");
         }
-        this.ui.showError("Erreur lors de la création de l'ingrédient.");
         console.error("Erreur lors de la création de l'ingredient", err);
       },
     });

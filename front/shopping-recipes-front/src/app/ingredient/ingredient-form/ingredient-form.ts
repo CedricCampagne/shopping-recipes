@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateIngredientRequest } from '../models/create-ingredient-request';
 import { UIStore } from '../../shared/ui.store';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-ingredient-form',
@@ -15,20 +16,17 @@ import { UIStore } from '../../shared/ui.store';
 export class IngredientForm {
   private ingredientService = inject(IngredientsService);
   private router = inject(Router);
-  private ui = inject(UIStore);
+  ui = inject(UIStore);
 
-  units = signal<string[]>([]);
+  units = toSignal(
+    this.ingredientService.getUnits(),
+    {initialValue: []}
+  );
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     unit: new FormControl('', [Validators.required]),
   });
-
-  ngOnInit() {
-    this.ingredientService.getUnits().subscribe((units) => {
-      this.units.set(units);
-    });
-  }
 
   onSubmit() {
     this.ui.clearMessage();
@@ -58,16 +56,18 @@ export class IngredientForm {
       error: (err) => {
         setTimeout(() => {
           this.ui.stopLoading();
+
           if (err.status === 409) {
             this.ui.showError("Ce nom d'ingrédient existe déjà.");
+          } else {
+            this.ui.showError("Erreur lors de la création de l'ingrédient.");
           }
-          this.ui.showError("Erreur lors de la création de l'ingrédient.");
-          console.error("Erreur lors de la création de l'ingredient", err);
+
+          console.error("Erreur lors de la création de l'ingrédient", err);
         }, 800);
 
         setTimeout(() => {
           this.form.controls.name.setValue(null);
-          return;
         }, 1400);
       },
     });

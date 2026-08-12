@@ -7,8 +7,14 @@
     class="space-y-4 w-full max-w-xl bg-white p-6 rounded-lg shadow"
   >
     <div>
-      <label class="font-medium">Nom</label>
-      <input type="text" formControlName="name" class="border p-2 rounded w-full" />
+      <label class="font-medium">
+        Nom
+      </label>
+      <input 
+        type="text" 
+        formControlName="name" 
+        class="border p-2 rounded w-full" 
+      />
 
       @if (form.controls.name.touched && form.controls.name.invalid) {
         <p class="text-red-600 text-sm">Le nom doit faire au moins 3 caractères.</p>
