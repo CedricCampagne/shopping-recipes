@@ -29,7 +29,7 @@
         @for (ing of ingredientsWithTotal(); track ing.id) {
           <li>
             <strong>{{ ing.ingredient.name }}</strong> : {{ ing.total }}
-            {{ ing.unit.toLocaleLowerCase() }}
+            {{ ing.unit.toLowerCase() }}
           </li>
         }
       </ul>
@@ -41,18 +41,6 @@
         >
           Ajouter à la liste de courses
         </button>
-
-        <!-- @if (ui.successMessage()) {
-            <p class="mt-4 px-4 py-2 bg-green-600 text-white rounded">
-              {{ ui.successMessage() }}
-            </p>
-          }
-
-          @if (ui.errorMessage()) {
-            <p class="mt-4 px-4 py-2 bg-red-600 text-white rounded">
-              {{ ui.errorMessage() }}
-            </p>
-          } -->
       </div>
     } @else {
       <p>Aucun ingrédient trouvé</p>

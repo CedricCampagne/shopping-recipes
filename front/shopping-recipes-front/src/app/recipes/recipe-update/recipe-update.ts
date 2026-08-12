@@ -165,8 +165,6 @@ export class RecipeUpdate {
 
   onSelectIngredient(event: Event) {
     const value = Number((event.target as HTMLSelectElement).value);
-    // console.log("SELECTED", event.target);
-    // console.log("VALUE", value);
     this.selectedIngredient.set(value);
   }
 

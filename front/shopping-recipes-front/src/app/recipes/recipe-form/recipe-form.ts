@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipesServices } from '../services/recipes.service';
 import { IngredientsService } from '../../ingredient/services/ingredients.service';
@@ -8,6 +8,7 @@ import { RecipeIngredientFront } from '../models/recipe-ingredient-front';
 import { UIStore } from '../../shared/ui.store';
 import { CreateRecipeRequest } from '../models/create-recipe-request';
 import { IngredientModal } from '../../ingredient/ingredient-modal/ingredient-modal';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recipe-form',
@@ -22,7 +23,11 @@ export class RecipeForm {
   ui = inject(UIStore);
 
   ingredients = signal<IngredientResponse[]>([]);
-  units = signal<string[]>([]);
+  // units = signal<string[]>([]);
+  units = toSignal(
+    this.ingredientsService.getUnits(),
+    {initialValue: []}
+  );
   recipeIngredients = signal<RecipeIngredientFront[]>([]);
 
   selectedUnit = signal('');
@@ -49,10 +54,6 @@ export class RecipeForm {
   }
 
   ngOnInit() {
-    this.ingredientsService.getUnits().subscribe((units) => {
-      this.units.set(units);
-    });
-
     this.form.controls.ingredientSelect.valueChanges.subscribe((id) => {
       const ingredient = this.ingredients().find((i) => i.id === id);
       this.selectedUnit.set(ingredient?.unit ?? '');

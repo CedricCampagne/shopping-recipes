@@ -60,7 +60,6 @@ export class List {
   delete(id: number) {
     this.ui.clearMessage();
     this.ui.startLoading();
-    console.log('DELETE', id);
 
     this.recipesService.deleteRecipe(id).subscribe({
       next: () => {
@@ -81,9 +80,10 @@ export class List {
             this.ui.showError(
               'Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée.',
             );
+          } else {
+            this.ui.showError('Erreur lors de la suppression.');
           }
 
-          this.ui.showError('Erreur lors de la suppression.');
         }, 800);
 
         setTimeout(() => {
@@ -94,7 +94,6 @@ export class List {
   }
 
   update(id: number) {
-    console.log('UPDATE', id);
     this.router.navigate(['/app/recipes/update', id]);
   }
 
