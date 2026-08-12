@@ -16,6 +16,10 @@ export class Main {
   private shoppingListService = inject(shoppingListService);
 
   constructor() {
+    this.loadSavedLists();
+  }
+
+  private loadSavedLists() {
     this.shoppingListService.getAllSavedList().subscribe({
       next: (res) => this.shoppingListService.savedLists.set(res),
       error: (err) => console.error('Erreur lors de récupération des listes', err),

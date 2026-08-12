@@ -16,16 +16,13 @@ export class Header {
   private shoppingListService = inject(shoppingListService);
   private recipesService = inject(RecipesServices);
   private ingredientsService = inject(IngredientsService);
+  private authState = inject(AuthStateService);
+  private router = inject(Router);
 
   shoppingList = this.shoppingListService.mergedItems;
   savedLists = this.shoppingListService.savedLists;
 
   isFetching = signal(false);
-
-  constructor(
-    private authState: AuthStateService,
-    private router: Router,
-  ) {}
 
   logout() {
     this.isFetching.set(true);
@@ -37,31 +34,14 @@ export class Header {
   }
 
   goRecipes() {
-    this.recipesService.getAll().subscribe({
-      next: () => {
-        this.router.navigateByUrl('/app/recipes');
-      },
-      error: () => {
-        // l’interceptor gère déjà le redirect
-      },
-    });
+    this.router.navigateByUrl('/app/recipes');
   }
 
   goIngredients() {
-    this.ingredientsService.getAllIngredients().subscribe({
-      next: () => {
-        this.router.navigateByUrl('/app/ingredients');
-      },
-      error: () => {
-        // l’interceptor gère déjà le redirect
-      },
-    });
+    this.router.navigateByUrl('/app/ingredients');
   }
 
   goSavedLists() {
-    this.shoppingListService.getAllSavedList().subscribe({
-      next: () => this.router.navigate(['/app/shopping-list-saved']),
-      error: () => this.router.navigate(['/login']),
-    });
+    this.router.navigateByUrl('/app/shopping-list-saved');
   }
 }
