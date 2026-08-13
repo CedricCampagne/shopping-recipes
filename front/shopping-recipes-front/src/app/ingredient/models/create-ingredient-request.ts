@@ -1,4 +1,4 @@
 export interface CreateIngredientRequest {
-    name: string;
-    unit: string;
+  name: string;
+  unit: string;
 }

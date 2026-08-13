@@ -1,4 +1,4 @@
 export interface UpdateIngredientRequest {
-    name: string;
-    unit: string;
+  name: string;
+  unit: string;
 }

@@ -16,30 +16,24 @@ import { toSignal } from '@angular/core/rxjs-interop';
   styleUrl: './ingredient-list.css',
 })
 export class IngredientList {
-
   private ingredientService = inject(IngredientsService);
   private router = inject(Router);
   ui = inject(UIStore);
 
   ingredients = signal<IngredientResponse[]>([]);
-  readonly units = toSignal(
-    this.ingredientService.getUnits(),
-    { initialValue: []}
-  );
+  readonly units = toSignal(this.ingredientService.getUnits(), { initialValue: [] });
 
   editingId = signal<number | null>(null);
 
   readonly search = signal('');
   readonly selectedUnit = signal('');
-  readonly filteredIngredients = computed(()=>{
+  readonly filteredIngredients = computed(() => {
     const searchValue = normalizeText(this.search().trim());
     const unitValue = this.selectedUnit();
-    return this.sortedIngredients().filter(ingredient => {
-      const matchName = normalizeText(ingredient.name)
-        .includes(searchValue);
+    return this.sortedIngredients().filter((ingredient) => {
+      const matchName = normalizeText(ingredient.name).includes(searchValue);
 
-      const matchUnit = unitValue === ''
-        || ingredient.unit === unitValue;
+      const matchUnit = unitValue === '' || ingredient.unit === unitValue;
 
       return matchName && matchUnit;
     });
@@ -49,31 +43,23 @@ export class IngredientList {
     this.search.set('');
     this.selectedUnit.set('');
   }
-  
+
   // Formulaire edition inline
   editForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     unit: new FormControl('', [Validators.required]),
   });
 
-  sortedIngredients = computed(()=>
-    [...this.ingredients()].sort((a, b)=>
-      a.name.localeCompare(b.name)
-    )
+  sortedIngredients = computed(() =>
+    [...this.ingredients()].sort((a, b) => a.name.localeCompare(b.name)),
   );
 
-  constructor(){
+  constructor() {
     this.loadIngredients();
   }
 
-  // ngOnInit() {
-  //   this.ingredientService.getUnits().subscribe(units =>{
-  //     this.units.set(units);
-  //   });
-  // }
-
   loadIngredients() {
-    this.ingredientService.getAllIngredients().subscribe(res => {
+    this.ingredientService.getAllIngredients().subscribe((res) => {
       this.ingredients.set(res);
     });
   }
@@ -83,30 +69,29 @@ export class IngredientList {
   }
 
   goUpdate(id: number) {
-    const ingredient = this.ingredients().find(i => i.id === id);
-    if(!ingredient) return;
+    const ingredient = this.ingredients().find((i) => i.id === id);
+    if (!ingredient) return;
 
     this.editingId.set(id);
     this.editForm.setValue({
       name: ingredient.name,
-      unit: ingredient.unit
+      unit: ingredient.unit,
     });
-
   }
-  
-  cancelEdit(){
+
+  cancelEdit() {
     this.editingId.set(null);
   }
 
-  saveEdit(id:number){
-    if(this.editForm.invalid){
+  saveEdit(id: number) {
+    if (this.editForm.invalid) {
       this.editForm.markAllAsTouched();
       return;
     }
 
     const request: UpdateIngredientRequest = {
       name: this.editForm.controls.name.value!,
-      unit: this.editForm.controls.unit.value!
+      unit: this.editForm.controls.unit.value!,
     };
 
     this.ui.clearMessage();
@@ -116,7 +101,7 @@ export class IngredientList {
       next: () => {
         setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showSuccess("Ingrédient mis à jour !");  
+          this.ui.showSuccess('Ingrédient mis à jour !');
         }, 800);
 
         setTimeout(() => {
@@ -125,42 +110,41 @@ export class IngredientList {
         }, 1400);
       },
       error: (err) => {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showError("Erreur lors de la mise à jour.");
+          this.ui.showError('Erreur lors de la mise à jour.');
           console.error(err);
-        },800);
+        }, 800);
 
-        setTimeout(()=>{
+        setTimeout(() => {
           this.editingId.set(null);
-        },1400);
-      }
+        }, 1400);
+      },
     });
   }
 
-  delete(id: number){
+  delete(id: number) {
     this.ui.clearMessage();
     this.ui.startLoading();
-    console.log("DELETE", id)
-    
+
     this.ingredientService.deleteIngredient(id).subscribe({
       next: () => {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showSuccess("Ingrédient supprimé avec succes");
-        },800);
+          this.ui.showSuccess('Ingrédient supprimé avec succes');
+        }, 800);
 
-        setTimeout(()=>{
+        setTimeout(() => {
           this.loadIngredients();
-        },1400);        
+        }, 1400);
       },
       error: (err) => {
-        console.error("Erreur lors de la suppression", err);
-        setTimeout(()=>{
+        console.error('Erreur lors de la suppression', err);
+        setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showError("Erreur lors de la suppression");
-        },800);       
-      }
+          this.ui.showError('Erreur lors de la suppression');
+        }, 800);
+      },
     });
   }
 }

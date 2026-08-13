@@ -9,56 +9,51 @@
     <!-- Nom -->
     <div>
       <label class="font-medium">Nom</label>
-      <input
-        type="text"
-        formControlName="name"
-        class="border p-2 rounded w-full"
-      />
-      @if(form.controls.name.touched && form.controls.name.hasError('required')){
+      <input type="text" formControlName="name" class="border p-2 rounded w-full" />
+      @if (form.controls.name.touched && form.controls.name.hasError('required')) {
         <p class="text-orange-500 text-sm">Le nom de la recette est obligatoire</p>
       } @else if (form.controls.name.touched && form.controls.name.hasError('minlength')) {
         <p class="text-orange-500 text-sm">Le nom de la recette doit avoir au moins 5 caractères</p>
-      } @else if(form.controls.name.touched && form.controls.name.hasError('pattern')){
+      } @else if (form.controls.name.touched && form.controls.name.hasError('pattern')) {
         <p class="text-orange-500 text-sm">Le nom ne doit pas commencer par un espace.</p>
       }
     </div>
     <!-- Description -->
     <div>
       <label class="font-medium">Description</label>
-      <input
-        type="text"
-        formControlName="description"
-        class="border p-2 rounded w-full"
-      />
-      @if(form.controls.description.touched && form.controls.description.hasError('required')){
+      <input type="text" formControlName="description" class="border p-2 rounded w-full" />
+      @if (form.controls.description.touched && form.controls.description.hasError('required')) {
         <p class="text-orange-500 text-sm">La description de la recette est obligatoire</p>
-      } @else if (form.controls.description.touched && form.controls.description.hasError('minlength')) {
-        <p class="text-orange-500 text-sm">La description de la recette doit avoir au moins 15 caractères</p>
-      } @else if(form.controls.description.touched && form.controls.description.hasError('pattern')){
+      } @else if (
+        form.controls.description.touched && form.controls.description.hasError('minlength')
+      ) {
+        <p class="text-orange-500 text-sm">
+          La description de la recette doit avoir au moins 15 caractères
+        </p>
+      } @else if (
+        form.controls.description.touched && form.controls.description.hasError('pattern')
+      ) {
         <p class="text-orange-500 text-sm">La description ne doit pas commencer par un espace.</p>
       }
-
     </div>
     <!-- Portions -->
     <div>
       <label class="font-medium">Portions</label>
-      <input
-        type="number"
-        min="1"
-        formControlName="servings"
-        class="border p-2 rounded w-full"
-      />
+      <input type="number" min="1" formControlName="servings" class="border p-2 rounded w-full" />
     </div>
 
     <!-- SECTION INGREDIENTS -->
     <div class="pt-4 border-t">
       <div class="flex justify-between">
         <h3 class="font-medium mb-2">Ajouter un ingrédient pour la recette</h3>
-  
+
         <h3 class="font-medium mb-2 flex items-center gap-2">
           Créer un ingrédient
-          <button type="button" class="bg-blue-600 text-white px-2 rounded"
-                  (click)="showIngredientModal.set(true)">
+          <button
+            type="button"
+            class="bg-blue-600 text-white px-2 rounded"
+            (click)="showIngredientModal.set(true)"
+          >
             +
           </button>
         </h3>
@@ -76,26 +71,26 @@
         </select>
 
         <div class="flex gap-2">
-            <input
-              type="number"
-              min="0"
-              step="0.5"
-              class="border p-2 rounded w-48"
-              formControlName="ingredientQuantityPerPerson"
-              placeholder="Qté pour une portion"
-            />
-    
-            <span class="text-gray-600 self-center">
-                {{ selectedUnit().toLocaleLowerCase() }}
-            </span>
-    
-            <button
-              type="button"
-              class="bg-green-600 text-white px-3 rounded hover:bg-green-700 cursor-pointer"
-              (click)="addIngredient()"
-            >
-              +
-            </button>
+          <input
+            type="number"
+            min="0"
+            step="0.5"
+            class="border p-2 rounded w-48"
+            formControlName="ingredientQuantityPerPerson"
+            placeholder="Qté pour une portion"
+          />
+
+          <span class="text-gray-600 self-center">
+            {{ selectedUnit().toLowerCase() }}
+          </span>
+
+          <button
+            type="button"
+            class="bg-green-600 text-white px-3 rounded hover:bg-green-700 cursor-pointer"
+            (click)="addIngredient()"
+          >
+            +
+          </button>
         </div>
       </div>
 
@@ -116,7 +111,7 @@
       </div>
     </div>
 
-    <div class="w-1/2 flex flex-col gap-2">  
+    <div class="w-1/2 flex flex-col gap-2">
       <button
         type="submit"
         [disabled]="ui.isLoading()"
@@ -128,12 +123,9 @@
   </form>
 </div>
 
-@if(showIngredientModal()) {
+@if (showIngredientModal()) {
   <app-ingredient-modal
     (closeModal)="showIngredientModal.set(false)"
     (ingredientCreated)="onCreatedIngredient($event)"
   ></app-ingredient-modal>
 }
-
-
- 

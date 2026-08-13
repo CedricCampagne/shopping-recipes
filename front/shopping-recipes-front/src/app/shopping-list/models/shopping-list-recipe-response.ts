@@ -1,5 +1,5 @@
 export interface ShoppingListRecipeResponse {
-    recipeId: number;
-    recipeName: string;
-    servings: number;
+  recipeId: number;
+  recipeName: string;
+  servings: number;
 }

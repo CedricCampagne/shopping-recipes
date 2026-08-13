@@ -1,4 +1,4 @@
-import { RecipeIngredientRequest } from "./recipe-ingredient-request";
+import { RecipeIngredientRequest } from './recipe-ingredient-request';
 
 export interface CreateRecipeRequest {
   name: string;

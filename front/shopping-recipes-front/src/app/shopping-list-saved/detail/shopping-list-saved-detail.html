@@ -1,14 +1,12 @@
 @if (list()) {
-  <h1 class="text-2xl font-bold mb-4">
-    Liste #{{ list()!.id }}
-  </h1>
- 
+  <h1 class="text-2xl font-bold mb-4">Liste #{{ list()!.id }}</h1>
+
   <div class="mb-6 flex items-center justify-between">
     <div class="flex items-center gap-2">
       <label class="block text-lg font-semibold">Changer le statut :</label>
-      <select #selectStatus
-        class="border p-2 rounded bg-white shadow-sm cursor-pointer
-              focus:outline-none focus:ring-2 focus:ring-blue-500"
+      <select
+        #selectStatus
+        class="border p-2 rounded bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
         [value]="list()!.status"
         (change)="updateStatus(selectStatus.value)"
       >
@@ -18,7 +16,6 @@
       </select>
     </div>
     <div class="flex gap-2">
-      
       <button
         class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition hover:cursor-pointer"
         (click)="exportPdf()"
@@ -32,7 +29,6 @@
       >
         Supprimer
       </button>
-  
     </div>
   </div>
   <div class="grid grid-cols-2 gap-6">
@@ -43,8 +39,7 @@
         <ul class="space-y-2">
           @for (item of sortedItems(); track item.ingredientId) {
             <li class="border p-2 rounded">
-              <strong>{{ item.ingredientName }}</strong> :
-              {{ item.totalQuantity }} {{ item.unit }}
+              <strong>{{ item.ingredientName }}</strong> : {{ item.totalQuantity }} {{ item.unit }}
             </li>
           }
         </ul>
@@ -57,7 +52,7 @@
       <h2 class="text-xl font-semibold mb-2">Recettes</h2>
       @if (list()!.recipes.length > 0) {
         <ul class="space-y-2">
-          @for (r of list()!.recipes; track $index) {
+          @for (r of list()!.recipes; track r.recipeId) {
             <li class="border p-2 rounded flex justify-between items-center">
               <div>
                 <strong>{{ r.recipeName }}</strong>

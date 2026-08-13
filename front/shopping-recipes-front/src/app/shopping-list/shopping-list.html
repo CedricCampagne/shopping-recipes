@@ -1,7 +1,6 @@
 <h1 class="text-2xl font-bold mb-4">Votre liste de courses</h1>
 
 <div class="grid grid-cols-2 gap-6">
-
   <!-- Colonne gauche : ingrédients fusionnés -->
   <div>
     <h2 class="text-xl font-semibold mb-2">Ingrédients</h2>
@@ -10,8 +9,7 @@
       <ul class="space-y-2">
         @for (item of items(); track $index) {
           <li class="border p-2 rounded">
-            <strong>{{ item.ingredient.name }}</strong> :
-            {{ item.total }} {{ item.unit }}
+            <strong>{{ item.ingredient.name }}</strong> : {{ item.total }} {{ item.unit }}
           </li>
         }
       </ul>
@@ -48,23 +46,26 @@
               </button>
             </div>
 
-            <button class="px-4 py-2 bg-red-600 text-white rounded"
-                    (click)="deleteRecipe(r.uid)">
+            <button class="px-4 py-2 bg-red-600 text-white rounded" (click)="deleteRecipe(r.uid)">
               X
             </button>
           </li>
-        } 
+        }
       </ul>
 
       <!-- Boutons -->
       <div class="mt-6 flex gap-4">
-        <button class="px-4 py-2 bg-red-600 text-white rounded hover:cursor-pointer"
-                (click)="clear()">
+        <button
+          class="px-4 py-2 bg-red-600 text-white rounded hover:cursor-pointer"
+          (click)="clear()"
+        >
           Vider la liste
         </button>
 
-        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer"
-                (click)="saveList()">
+        <button
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer"
+          (click)="saveList()"
+        >
           Sauvegarder la liste
         </button>
       </div>
@@ -73,5 +74,3 @@
     }
   </div>
 </div>
-
-

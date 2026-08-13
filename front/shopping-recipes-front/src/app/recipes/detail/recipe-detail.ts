@@ -16,7 +16,6 @@ import { UIStore } from '../../shared/ui.store';
   styleUrl: './recipe-detail.css',
 })
 export class RecipeDetail {
-
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private recipeService = inject(RecipesServices);
@@ -29,35 +28,28 @@ export class RecipeDetail {
 
   // Recette
   recipe = toSignal(
-    this.recipeService.getById(this.id),
-    {initialValue: null}
+    this.recipeService.getById(this.id), 
+    { initialValue: null }
   );
 
   // Ingredients
   recipeIngredient = toSignal(
     this.recipeIngredientSerivce.getByRecipeId(this.id),
-    { initialValue: [] as RecipeIngredient[] }
+    {initialValue: [] as RecipeIngredient[],}
   );
 
   // Portions modifables par le user
   servings = signal(4);
 
   // Quantités recalculées si changement de serving
-  ingredientsWithTotal = computed(()=>{
+  ingredientsWithTotal = computed(() => {
     const base: RecipeIngredient[] = this.recipeIngredient();
     const s = this.servings();
-    return base.map(ing =>({
+    return base.map((ing) => ({
       ...ing,
-      total: ing.quantityPerPerson * s
+      total: ing.quantityPerPerson * s,
     }));
   });
-
-  onServingsChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.servings.set(Number(input.value));
-  }
-
-  shoppingList = signal<RecipeIngredient[]>([]);
 
   addToShoppingList() {
     this.ui.clearMessage();
@@ -65,16 +57,11 @@ export class RecipeDetail {
 
     const items = this.ingredientsWithTotal();
 
-    this.shoppingListService.addRecipe(
-      this.id,
-      this.servings(),
-      this.recipe()!.name,
-      items
-    );
+    this.shoppingListService.addRecipe(this.id, this.servings(), this.recipe()!.name, items);
 
     setTimeout(() => {
       this.ui.stopLoading();
-      this.ui.showSuccess("Recette ajoutée à la liste !");
+      this.ui.showSuccess('Recette ajoutée à la liste !');
     }, 800);
 
     setTimeout(() => {
@@ -82,22 +69,4 @@ export class RecipeDetail {
     }, 1400);
   }
 
-
-  createShoppingList() {
-    // creation objet request
-    const request = {
-      recipes: [
-        {
-          recipeId: this.id,
-          servings: this.servings()
-        }
-      ]
-    };
-
-    this.shoppingListService.createShoppingList(request).subscribe({
-      next: (response) => {
-        console.log("Liste créée :", response);
-      }
-    });
-  }
 }

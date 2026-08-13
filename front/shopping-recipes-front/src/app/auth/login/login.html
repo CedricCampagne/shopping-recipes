@@ -1,46 +1,58 @@
 <main class="min-h-screen flex flex-col items-center justify-center gap-6 p-4">
-
   <div class="fixed top-22 left-1/2 -translate-x-1/2 z-50">
     <app-ui-messages></app-ui-messages>
   </div>
-  
-  <h2 class="text-2xl font-bold">Connectez-Vous</h2>
+
+  <h2 class="text-2xl font-bold">
+    Connectez-Vous
+  </h2>
 
   <form
     [formGroup]="form"
     (ngSubmit)="onSubmit()"
     class="flex flex-col gap-4 w-full max-w-sm"
   >
-
     <div class="flex flex-col gap-1">
-      <label class="font-medium">Email</label>
-      <input
+      <label class="font-medium">
+        Email
+      </label>
+      <input 
         type="email"
         formControlName="email"
         class="border border-gray-300 rounded p-2"
-      >
+      />
       @if (form.controls.email.touched && form.controls.email.hasError('required')) {
-        <p class="text-orange-500 text-sm">L'email est obligatoire</p>
+        <p class="text-orange-500 text-sm">
+          L'email est obligatoire
+        </p>
       } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
-        <p class="text-orange-500 text-sm">Le format de l'email est invalide</p>
+        <p class="text-orange-500 text-sm">
+          Le format de l'email est invalide
+        </p>
       }
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="font-medium">Mot de passe</label>
+      <label class="font-medium">
+        Mot de passe
+      </label>
       <input
         type="password"
         formControlName="password"
         class="border border-gray-300 rounded p-2"
-      >
+      />
       @if (form.controls.password.touched && form.controls.password.hasError('required')) {
-        <p class="text-orange-500 text-sm">Le mot de passe est obligatoire</p>
-      }
-      @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
-        <p class="text-orange-500 text-sm">Le mot de passe doit contenier au moins 12 caractères</p>
-      }
-      @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
-        <p class="text-orange-500 text-sm">Le mot de passe doit contenir au moins un caractère spécial</p>
+        <p class="text-orange-500 text-sm">
+          Le mot de passe est obligatoire
+        </p>
+      } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+        <p class="text-orange-500 text-sm">
+          Le mot de passe doit contenir au moins 12 caractères
+        </p>
+      } @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
+        <p class="text-orange-500 text-sm">
+          Le mot de passe doit contenir au moins un caractère spécial
+        </p>
       }
     </div>
 
@@ -52,8 +64,8 @@
       Se connecter
     </button>
 
-    <a routerLink="/" class="text-blue-600 underline text-center hover:cursor-pointer">Retour à l'accueil</a>
-
+    <a routerLink="/" class="text-blue-600 underline text-center hover:cursor-pointer">
+      Retour à l'accueil
+    </a>
   </form>
-
 </main>

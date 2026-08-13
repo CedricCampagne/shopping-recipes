@@ -1,15 +1,12 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-
-
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AuthStateService {
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
 
-    isLoggedIn(): boolean {
-        return !!localStorage.getItem('token');
-    }
-
-    logout() {
-        localStorage.removeItem('token');
-    }
+  logout(): void {
+    localStorage.removeItem('token');
+  }
 }
