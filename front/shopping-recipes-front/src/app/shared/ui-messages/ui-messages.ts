@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UIStore } from '../ui.store';
 
 @Component({
@@ -11,5 +11,4 @@ import { UIStore } from '../ui.store';
 export class UiMessages {
   ui = inject(UIStore);
 
-  @Input() placement: 'default' | 'status' | 'delete' = 'default';
 }

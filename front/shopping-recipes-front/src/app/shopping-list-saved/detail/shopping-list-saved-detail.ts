@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { UIStore } from '../../shared/ui.store';
@@ -20,8 +20,16 @@ export class ShoppingListSavedDetail {
   id = Number(this.route.snapshot.paramMap.get('id'));
   savedLists = this.shoppingListService.savedLists;
 
-  sortedItems = computed(() => {
-    return [...this.list()!.items].sort((a, b) => a.ingredientName.localeCompare(b.ingredientName));
+  sortedItems = computed(()=> {
+    const list = this.list();
+
+    if(!list){
+      return [];
+    }
+
+    return [...list.items].sort((a, b) =>
+      a.ingredientName.localeCompare(b.ingredientName),
+    );
   });
 
   list = computed(() => this.savedLists().find((l) => l.id === this.id));

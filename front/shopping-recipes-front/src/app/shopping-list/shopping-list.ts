@@ -15,7 +15,6 @@ export class ShoppingList {
   ui = inject(UIStore);
 
   // ingredients fussionnés
-  //items = this.shoppingListService.mergedItems;
   items = this.shoppingListService.sortedMergedItems;
 
   // recetttes ajoutées

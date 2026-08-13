@@ -17,13 +17,12 @@ export class ShoppingListSavedList {
   lists = this.shoppingListService.savedLists;
 
   sortedListByDate = computed(() =>
-    this.lists().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+    [...this.lists()].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
   );
 
-  //Angular 17 moderne : effect() au lieu de constructor / ngOnInit
-  loadLists = effect(() => {
-    this.shoppingListService.getAllSavedList().subscribe();
-  });
+  // loadLists = effect(() => {
+  //   this.shoppingListService.getAllSavedList().subscribe();
+  // });
 
   openDetail(id: number) {
     this.router.navigate(['/app/shopping-list-saved', id]);

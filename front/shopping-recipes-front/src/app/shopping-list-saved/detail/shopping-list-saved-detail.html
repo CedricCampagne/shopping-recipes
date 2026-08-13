@@ -52,7 +52,7 @@
       <h2 class="text-xl font-semibold mb-2">Recettes</h2>
       @if (list()!.recipes.length > 0) {
         <ul class="space-y-2">
-          @for (r of list()!.recipes; track $index) {
+          @for (r of list()!.recipes; track r.recipeId) {
             <li class="border p-2 rounded flex justify-between items-center">
               <div>
                 <strong>{{ r.recipeName }}</strong>

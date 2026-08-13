@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { RecipeIngredient } from '../../recipes/models/recipe-ingredient';
 import { CreateShoppingRequest } from '../models/create-shopping-list-request';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +6,8 @@ import { ShoppingListResponse } from '../models/shoppin-list-response';
 
 @Injectable({ providedIn: 'root' })
 export class shoppingListService {
-  constructor(private http: HttpClient) {}
+
+  private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/shopping-lists';
   private uidCounter = 0;
 
