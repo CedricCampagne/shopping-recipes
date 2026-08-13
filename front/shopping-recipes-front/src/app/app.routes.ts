@@ -3,7 +3,6 @@ import { Home } from './home/home';
 import { Register } from './auth/register/register';
 import { Login } from './auth/login/login';
 import { AuthGuard } from './auth/guard/auth.guard';
-import { animationFrameProvider } from 'rxjs/internal/scheduler/animationFrameProvider';
 
 export const routes: Routes = [
   {
@@ -25,7 +24,6 @@ export const routes: Routes = [
     children: [
       {
         path: 'recipes',
-        runGuardsAndResolvers: 'always',
         loadComponent: () => import('./recipes/list/list').then((m) => m.List),
       },
       {
