@@ -1,6 +1,5 @@
 package com.cedric.shoppingrecipes.recipe.service;
 
-
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
