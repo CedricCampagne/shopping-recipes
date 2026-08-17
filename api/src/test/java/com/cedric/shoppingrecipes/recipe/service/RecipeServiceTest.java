@@ -136,4 +136,76 @@ public class RecipeServiceTest {
         //Assert
         assertEquals(response, result);
     }
+
+    @Test
+    void shouldCreateRecipeWithMultipleIngredients() {
+        // Arrange
+        Long tomatoId = 1L;
+        Long onionId = 2L;
+
+        Ingredient tomato = new Ingredient();
+        tomato.setId(tomatoId);
+        tomato.setName("Tomate");
+
+        Ingredient onion = new Ingredient();
+        onion.setId(onionId);
+        onion.setName("Oignon");
+
+        CreateRecipeIngredientRequest tomatoRequest =
+                new CreateRecipeIngredientRequest(
+                        tomatoId,
+                        1.0,
+                        "piece"
+                );
+
+        CreateRecipeIngredientRequest onionRequest =
+                new CreateRecipeIngredientRequest(
+                        onionId,
+                        0.5,
+                        "piece"
+                );
+
+        CreateRecipeRequest request =
+                new CreateRecipeRequest(
+                        "Salade",
+                        "Une salade simple",
+                        4,
+                        List.of(
+                                tomatoRequest,
+                                onionRequest
+                        )
+                );
+
+        when(ingredientRepository.findById(tomatoId))
+                .thenReturn(Optional.of(tomato));
+
+        when(ingredientRepository.findById(onionId))
+                .thenReturn(Optional.of(onion));
+
+        Recipe savedRecipe = new Recipe();
+        savedRecipe.setId(1L);
+        savedRecipe.setName("Salade");
+        savedRecipe.setDescription("Une salade simple");
+        savedRecipe.setServings(4);
+
+        when(recipeRepository.save(any(Recipe.class)))
+                .thenReturn(savedRecipe);
+
+        RecipeDetailResponse response = new RecipeDetailResponse(
+                1L,
+                "Salade",
+                "Une salade simple",
+                4,
+                List.of()
+        );
+
+        when(recipeMapper.toDetailResponse(savedRecipe))
+                .thenReturn(response);
+
+        // Act
+        RecipeDetailResponse result = recipeService.create(request);
+
+        // Assert
+        assertEquals(response, result);
+    }
 }
