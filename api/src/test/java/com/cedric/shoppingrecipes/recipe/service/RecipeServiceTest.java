@@ -1,7 +1,9 @@
 package com.cedric.shoppingrecipes.recipe.service;
 
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
+import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
+
 import com.cedric.shoppingrecipes.recipe.dto.CreateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
@@ -9,20 +11,22 @@ import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
 import com.cedric.shoppingrecipes.recipeingredient.dto.CreateRecipeIngredientRequest;
-import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
+
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class RecipeServiceTest {
@@ -38,174 +42,210 @@ public class RecipeServiceTest {
     @InjectMocks
     private RecipeService recipeService;
 
-    @Test
-    void shouldFindRecipeById(){
-        //Arrange
-        Long id = 1L;
+    @Nested
+    class FindByIdTests {
+        @Test
+        void shouldFindRecipeById(){
+            //Arrange
+            Long id = 1L;
 
-        Recipe recipe = new Recipe();
-        recipe.setId(id);
-        recipe.setName("Salade");
+            Recipe recipe = new Recipe();
+            recipe.setId(id);
+            recipe.setName("Salade");
 
-        when(recipeRepository.findById(id))
-                .thenReturn(Optional.of(recipe));
+            when(recipeRepository.findById(id))
+                    .thenReturn(Optional.of(recipe));
 
-        RecipeDetailResponse response = new RecipeDetailResponse(
-                id,
-                "Salade",
-                "Une salade simple",
-                4,
-                List.of()
-        );
+            RecipeDetailResponse response = new RecipeDetailResponse(
+                    id,
+                    "Salade",
+                    "Une salade simple",
+                    4,
+                    List.of()
+            );
 
-        when(recipeMapper.toDetailResponse(recipe))
-                .thenReturn(response);
+            when(recipeMapper.toDetailResponse(recipe))
+                    .thenReturn(response);
 
-        //Act
-        RecipeDetailResponse result = recipeService.findById(id);
+            //Act
+            RecipeDetailResponse result = recipeService.findById(id);
 
-        //Assert
-        // (gauche ce que je veux, droite ce que mon code retourne)
-        assertEquals(response, result);
+            //Assert
+            // (gauche ce que je veux, droite ce que mon code retourne)
+            assertEquals(response, result);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenRecipeDoesNotExist(){
+            //Arrange
+            Long id = 1L;
+
+            when(recipeRepository.findById(id))
+                    .thenReturn(Optional.empty());
+
+            //Act + Assert
+            assertThrows(
+                    RecipeNotFoundException.class,
+                    ()-> recipeService.findById(id)
+            );
+        }
     }
 
-    @Test
-    void shouldThrowExceptionWhenRecipeDoesNotExist(){
-        //Arrange
-        Long id = 1L;
+    @Nested
+    class CreatedTest {
+        @Test
+        void shouldCreateRecipeWithOneIngredient(){
+            //Arrange
+            Long ingredientId = 1L;
+            Ingredient tomato = new Ingredient();
+            tomato.setId(ingredientId);
+            tomato.setName("Tomate");
 
-        when(recipeRepository.findById(id))
-                .thenReturn(Optional.empty());
+            CreateRecipeIngredientRequest createRecipeIngredientRequest =
+                    new CreateRecipeIngredientRequest(
+                            ingredientId,
+                            1.0,
+                            "piece"
+                    );
 
-        //Act + Assert
-        assertThrows(
-                RecipeNotFoundException.class,
-                ()-> recipeService.findById(id)
-        );
-    }
+            CreateRecipeRequest request =
+                    new CreateRecipeRequest(
+                            "Salade",
+                            "Une salade simple",
+                            4,
+                            List.of(createRecipeIngredientRequest)
+                    );
 
-    @Test
-    void shouldCreateRecipeWithOneIngredient(){
-        //Arrange
-        Long ingredientId = 1L;
-        Ingredient tomato = new Ingredient();
-        tomato.setId(ingredientId);
-        tomato.setName("Tomate");
+            when(ingredientRepository.findById(ingredientId))
+                    .thenReturn(Optional.of(tomato));
 
-        CreateRecipeIngredientRequest createRecipeIngredientRequest =
-                new CreateRecipeIngredientRequest(
-                        ingredientId,
-                        1.0,
-                        "piece"
-                );
+            Recipe savedRecipe = new Recipe();
+            savedRecipe.setId(1L);
+            savedRecipe.setName("Salade");
+            savedRecipe.setDescription("Une salade simple");
+            savedRecipe.setServings(4);
 
-        CreateRecipeRequest request =
-                new CreateRecipeRequest(
-                      "Salade",
-                      "Une salade simple",
-                      4,
-                      List.of(createRecipeIngredientRequest)
-                );
+            when(recipeRepository.save(any(Recipe.class)))
+                    .thenReturn(savedRecipe);
 
-        when(ingredientRepository.findById(ingredientId))
-                .thenReturn(Optional.of(tomato));
+            RecipeDetailResponse response = new RecipeDetailResponse(
+                    1L,
+                    "Salade",
+                    "Une salade simple",
+                    4,
+                    List.of()
+            );
 
-        Recipe savedRecipe = new Recipe();
-        savedRecipe.setId(1L);
-        savedRecipe.setName("Salade");
-        savedRecipe.setDescription("Une salade simple");
-        savedRecipe.setServings(4);
+            when(recipeMapper.toDetailResponse(savedRecipe))
+                    .thenReturn(response);
 
-        when(recipeRepository.save(any(Recipe.class)))
-                .thenReturn(savedRecipe);
+            //Act
+            RecipeDetailResponse result = recipeService.create(request);
 
-        RecipeDetailResponse response = new RecipeDetailResponse(
-                1L,
-                "Salade",
-                "Une salade simple",
-                4,
-                List.of()
-        );
+            //Assert
+            assertEquals(response, result);
+        }
 
-        when(recipeMapper.toDetailResponse(savedRecipe))
-                .thenReturn(response);
+        @Test
+        void shouldCreateRecipeWithMultipleIngredients() {
+            // Arrange
+            Long tomatoId = 1L;
+            Long onionId = 2L;
 
-        //Act
-        RecipeDetailResponse result = recipeService.create(request);
+            Ingredient tomato = new Ingredient();
+            tomato.setId(tomatoId);
+            tomato.setName("Tomate");
 
-        //Assert
-        assertEquals(response, result);
-    }
+            Ingredient onion = new Ingredient();
+            onion.setId(onionId);
+            onion.setName("Oignon");
 
-    @Test
-    void shouldCreateRecipeWithMultipleIngredients() {
-        // Arrange
-        Long tomatoId = 1L;
-        Long onionId = 2L;
+            CreateRecipeIngredientRequest tomatoRequest =
+                    new CreateRecipeIngredientRequest(
+                            tomatoId,
+                            1.0,
+                            "piece"
+                    );
 
-        Ingredient tomato = new Ingredient();
-        tomato.setId(tomatoId);
-        tomato.setName("Tomate");
+            CreateRecipeIngredientRequest onionRequest =
+                    new CreateRecipeIngredientRequest(
+                            onionId,
+                            0.5,
+                            "piece"
+                    );
 
-        Ingredient onion = new Ingredient();
-        onion.setId(onionId);
-        onion.setName("Oignon");
+            CreateRecipeRequest request =
+                    new CreateRecipeRequest(
+                            "Salade",
+                            "Une salade simple",
+                            4,
+                            List.of(
+                                    tomatoRequest,
+                                    onionRequest
+                            )
+                    );
 
-        CreateRecipeIngredientRequest tomatoRequest =
-                new CreateRecipeIngredientRequest(
-                        tomatoId,
-                        1.0,
-                        "piece"
-                );
+            when(ingredientRepository.findById(tomatoId))
+                    .thenReturn(Optional.of(tomato));
 
-        CreateRecipeIngredientRequest onionRequest =
-                new CreateRecipeIngredientRequest(
-                        onionId,
-                        0.5,
-                        "piece"
-                );
+            when(ingredientRepository.findById(onionId))
+                    .thenReturn(Optional.of(onion));
 
-        CreateRecipeRequest request =
-                new CreateRecipeRequest(
-                        "Salade",
-                        "Une salade simple",
-                        4,
-                        List.of(
-                                tomatoRequest,
-                                onionRequest
-                        )
-                );
+            Recipe savedRecipe = new Recipe();
+            savedRecipe.setId(1L);
+            savedRecipe.setName("Salade");
+            savedRecipe.setDescription("Une salade simple");
+            savedRecipe.setServings(4);
 
-        when(ingredientRepository.findById(tomatoId))
-                .thenReturn(Optional.of(tomato));
+            when(recipeRepository.save(any(Recipe.class)))
+                    .thenReturn(savedRecipe);
 
-        when(ingredientRepository.findById(onionId))
-                .thenReturn(Optional.of(onion));
+            RecipeDetailResponse response = new RecipeDetailResponse(
+                    1L,
+                    "Salade",
+                    "Une salade simple",
+                    4,
+                    List.of()
+            );
 
-        Recipe savedRecipe = new Recipe();
-        savedRecipe.setId(1L);
-        savedRecipe.setName("Salade");
-        savedRecipe.setDescription("Une salade simple");
-        savedRecipe.setServings(4);
+            when(recipeMapper.toDetailResponse(savedRecipe))
+                    .thenReturn(response);
 
-        when(recipeRepository.save(any(Recipe.class)))
-                .thenReturn(savedRecipe);
+            // Act
+            RecipeDetailResponse result = recipeService.create(request);
 
-        RecipeDetailResponse response = new RecipeDetailResponse(
-                1L,
-                "Salade",
-                "Une salade simple",
-                4,
-                List.of()
-        );
+            // Assert
+            assertEquals(response, result);
+        }
 
-        when(recipeMapper.toDetailResponse(savedRecipe))
-                .thenReturn(response);
+        @Test
+        void shouldThrowExceptionWhenIngredientDoesNotExist(){
+            //Arrange
+            Long ingredientId = 1L;
 
-        // Act
-        RecipeDetailResponse result = recipeService.create(request);
+            CreateRecipeIngredientRequest ingredientRequest =
+                    new CreateRecipeIngredientRequest(
+                            ingredientId,
+                            1.0,
+                            "piece"
+                    );
 
-        // Assert
-        assertEquals(response, result);
+            CreateRecipeRequest request =
+                    new CreateRecipeRequest(
+                            "Salade",
+                            "Une salade simple",
+                            4,
+                            List.of(ingredientRequest)
+                    );
+
+            when(ingredientRepository.findById(ingredientId))
+                    .thenReturn(Optional.empty());
+
+            //Act + Assert
+            assertThrows(
+                    IngredientNotFoundException.class,
+                    () -> recipeService.create(request)
+            );
+        }
     }
 }
