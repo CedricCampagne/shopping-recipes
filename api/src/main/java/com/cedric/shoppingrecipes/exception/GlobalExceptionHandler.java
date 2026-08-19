@@ -3,7 +3,7 @@ package com.cedric.shoppingrecipes.exception;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
-import com.cedric.shoppingrecipes.recipe.exception.RecipConflictException;
+import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
 import com.cedric.shoppingrecipes.recipeingredient.exception.RecipeIngredientNotFoundException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.shoppinglist.exception.ShoppingListNotFoundException;
@@ -38,8 +38,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(RecipConflictException.class)
-    public  ResponseEntity<ErrorResponse> handleRecipeConflict(RecipConflictException ex) {
+    @ExceptionHandler(RecipeConflictException.class)
+    public  ResponseEntity<ErrorResponse> handleRecipeConflict(RecipeConflictException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage(),

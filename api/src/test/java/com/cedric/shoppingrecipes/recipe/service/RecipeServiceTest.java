@@ -7,11 +7,14 @@ import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
 import com.cedric.shoppingrecipes.recipe.dto.CreateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
+import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
 import com.cedric.shoppingrecipes.recipeingredient.dto.CreateRecipeIngredientRequest;
 
+import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
+import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,6 +43,9 @@ public class RecipeServiceTest {
 
     @Mock
     private IngredientRepository ingredientRepository;
+
+    @Mock
+    private ShoppingListRepository shoppingListRepository;
 
     @InjectMocks
     private RecipeService recipeService;
@@ -92,7 +100,7 @@ public class RecipeServiceTest {
     }
 
     @Nested
-    class CreatedTest {
+    class CreatedTests {
         @Test
         void shouldCreateRecipeWithOneIngredient(){
             //Arrange
@@ -245,6 +253,63 @@ public class RecipeServiceTest {
             assertThrows(
                     IngredientNotFoundException.class,
                     () -> recipeService.create(request)
+            );
+        }
+    }
+
+    @Nested
+    class DeleteTests {
+
+        @Test
+        void shouldDeleteRecipe(){
+            //Arrange
+            Long recipeId = 1L;
+
+            Recipe recipe = new Recipe();
+            recipe.setId(recipeId);
+
+            when(shoppingListRepository.existsByRecipes_Id(recipeId))
+                    .thenReturn(false);
+
+            when(recipeRepository.findById(recipeId))
+                    .thenReturn(Optional.of(recipe));
+
+            //Act
+            recipeService.delete(recipeId);
+
+            //Assert
+            verify(recipeRepository).delete(recipe);
+        }
+
+        @Test
+        void shouldThrowRecipeNotFoundException(){
+            //Arrange
+            Long recipeId = 1L;
+
+            when(shoppingListRepository.existsByRecipes_Id(recipeId))
+                    .thenReturn(false);
+
+            when(recipeRepository.findById(recipeId))
+                    .thenReturn(Optional.empty());
+
+            //Act + Assert
+            assertThrows(
+                    RecipeNotFoundException.class,
+                    ()-> recipeService.delete(recipeId)
+            );
+        }
+
+        @Test
+        void shouldThrowRecipeConflictException(){
+            //Arrange
+            Long recipeId = 1L;
+
+            when(shoppingListRepository.existsByRecipes_Id(recipeId))
+                    .thenReturn(true);
+
+            assertThrows(
+                    RecipeConflictException.class,
+                    ()-> recipeService.delete(recipeId)
             );
         }
     }
