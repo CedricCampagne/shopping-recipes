@@ -6,6 +6,7 @@ import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
 
 import com.cedric.shoppingrecipes.recipe.dto.CreateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
+import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
@@ -13,8 +14,10 @@ import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
 import com.cedric.shoppingrecipes.recipeingredient.dto.CreateRecipeIngredientRequest;
 
+import com.cedric.shoppingrecipes.recipeingredient.dto.UpdateRecipeIngredientRequest;
+import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
+
 import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
-import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -311,6 +315,247 @@ public class RecipeServiceTest {
                     RecipeConflictException.class,
                     ()-> recipeService.delete(recipeId)
             );
+        }
+    }
+
+    @Nested
+    class UpdateTests {
+
+        @Test
+        void shouldUpdateRecipe(){
+            Long recipeId = 1L;
+
+            Recipe recipe = new Recipe();
+            recipe.setId(recipeId);
+            recipe.setName("Salade");
+            recipe.setDescription("Ancienne description");
+            recipe.setServings(2);
+
+            Long ingredientId = 1L;
+
+            Ingredient tomato = new Ingredient();
+            tomato.setId(ingredientId);
+            tomato.setName("Tomate");
+
+            Long recipeIngredientId = 10L;
+
+            RecipeIngredient recipeIngredient = new RecipeIngredient();
+            recipeIngredient.setId(recipeIngredientId);
+            recipeIngredient.setRecipe(recipe);
+            recipeIngredient.setIngredient(tomato);
+            recipeIngredient.setQuantityPerPerson(1.0);
+            recipeIngredient.setUnit("piece");
+
+            recipe.setIngredients(new ArrayList<>(List.of(recipeIngredient)));
+
+            UpdateRecipeIngredientRequest ingredientRequest =
+                    new UpdateRecipeIngredientRequest(
+                            recipeIngredientId, // id existant
+                            ingredientId,       // tomate
+                            2.0,
+                            "piece"
+                    );
+
+            UpdateRecipeRequest request =
+                    new UpdateRecipeRequest(
+                            "Salade améliorée",
+                            "Une meilleure salade",
+                            4,
+                            List.of(ingredientRequest)
+                    );
+
+            when(recipeRepository.findByIdWithIngredients(recipeId))
+                    .thenReturn(recipe);
+
+            when(ingredientRepository.findById(ingredientId))
+                    .thenReturn(Optional.of(tomato));
+
+            when(recipeRepository.save(any(Recipe.class)))
+                    .thenReturn(recipe);
+
+            RecipeDetailResponse response = new RecipeDetailResponse(
+                    recipeId,
+                    "Salade améliorée",
+                    "Une meilleure salade",
+                    4,
+                    List.of()
+            );
+
+            when(recipeMapper.toDetailResponse(recipe))
+                    .thenReturn(response);
+
+            //Act
+            RecipeDetailResponse result = recipeService.update(recipeId, request);
+
+            //Assert
+            assertEquals(response, result);
+        }
+    @Test
+        void shouldUpdateRecipeWithNewIngredient(){
+            Long recipeId = 1L;
+
+            Recipe recipe = new Recipe();
+            recipe.setId(recipeId);
+            recipe.setName("Salade");
+            recipe.setDescription("Ancienne description");
+            recipe.setServings(2);
+
+            Long ingredientId = 1L;
+
+            Ingredient tomato = new Ingredient();
+            tomato.setId(ingredientId);
+            tomato.setName("Tomate");
+
+            Long recipeIngredientId = 10L;
+
+            RecipeIngredient recipeIngredient = new RecipeIngredient();
+            recipeIngredient.setId(recipeIngredientId);
+            recipeIngredient.setRecipe(recipe);
+            recipeIngredient.setIngredient(tomato);
+            recipeIngredient.setQuantityPerPerson(1.0);
+            recipeIngredient.setUnit("piece");
+
+            recipe.setIngredients(new ArrayList<>(List.of(recipeIngredient)));
+
+            Long onionId = 2L;
+
+            Ingredient onion = new Ingredient();
+            onion.setId(onionId);
+            onion.setName("Oignon");
+
+            UpdateRecipeIngredientRequest onionRequest =
+                    new UpdateRecipeIngredientRequest(
+                            null,       // ⭐ nouveau RecipeIngredient
+                            onionId,
+                            0.5,
+                            "piece"
+                    );
+
+            UpdateRecipeIngredientRequest tomatoRequest =
+                    new UpdateRecipeIngredientRequest(
+                            recipeIngredientId, // ID existant
+                            ingredientId,
+                            1.0,
+                            "piece"
+                    );
+
+            UpdateRecipeRequest request =
+                    new UpdateRecipeRequest(
+                            "Salade avec oignon",
+                            "Une salade améliorée",
+                            4,
+                            List.of(
+                                    tomatoRequest, // existant → conservé
+                                    onionRequest   // id null → nouveau
+                            )
+                    );
+
+            when(recipeRepository.findByIdWithIngredients(recipeId))
+                    .thenReturn(recipe);
+
+            when(ingredientRepository.findById(ingredientId))
+                    .thenReturn(Optional.of(tomato));
+
+            when(ingredientRepository.findById(onionId))
+                    .thenReturn(Optional.of(onion));
+
+            when(recipeRepository.save(any(Recipe.class)))
+                    .thenReturn(recipe);
+
+            RecipeDetailResponse response = new RecipeDetailResponse(
+                    recipeId,
+                    "Salade améliorée",
+                    "Une meilleure salade",
+                    4,
+                    List.of()
+            );
+
+            when(recipeMapper.toDetailResponse(recipe))
+                    .thenReturn(response);
+
+            //Act
+            RecipeDetailResponse result = recipeService.update(recipeId, request);
+
+            //Assert
+            assertEquals(response, result);
+        }
+
+        @Test
+        void shouldUpdateRecipeWhenIngredientChanged(){
+            Long recipeId = 1L;
+
+            Recipe recipe = new Recipe();
+            recipe.setId(recipeId);
+            recipe.setName("Salade");
+            recipe.setDescription("Ancienne description");
+            recipe.setServings(2);
+
+            Long ingredientId = 1L;
+
+            Ingredient tomato = new Ingredient();
+            tomato.setId(ingredientId);
+            tomato.setName("Tomate");
+
+            Long recipeIngredientId = 10L;
+
+            RecipeIngredient recipeIngredient = new RecipeIngredient();
+            recipeIngredient.setId(recipeIngredientId);
+            recipeIngredient.setRecipe(recipe);
+            recipeIngredient.setIngredient(tomato);
+            recipeIngredient.setQuantityPerPerson(1.0);
+            recipeIngredient.setUnit("piece");
+
+            recipe.setIngredients(new ArrayList<>(List.of(recipeIngredient)));
+
+            Long onionId = 2L;
+
+            Ingredient onion = new Ingredient();
+            onion.setId(onionId);
+            onion.setName("Oignon");
+
+            UpdateRecipeIngredientRequest onionRequest =
+                    new UpdateRecipeIngredientRequest(
+                            recipeIngredientId,       // ⭐ nouveau RecipeIngredient
+                            onionId,
+                            0.5,
+                            "piece"
+                    );
+
+            UpdateRecipeRequest request =
+                    new UpdateRecipeRequest(
+                            "Salade avec oignon",
+                            "Une salade améliorée",
+                            4,
+                            List.of(
+                                    onionRequest
+                            )
+                    );
+
+            when(recipeRepository.findByIdWithIngredients(recipeId))
+                    .thenReturn(recipe);
+
+            when(ingredientRepository.findById(onionId))
+                    .thenReturn(Optional.of(onion));
+
+            when(recipeRepository.save(any(Recipe.class)))
+                    .thenReturn(recipe);
+
+            RecipeDetailResponse response = new RecipeDetailResponse(
+                    recipeId,
+                    "Salade améliorée",
+                    "Une meilleure salade",
+                    4,
+                    List.of()
+            );
+
+            when(recipeMapper.toDetailResponse(recipe))
+                    .thenReturn(response);
+
+            //Act
+            RecipeDetailResponse result = recipeService.update(recipeId, request);
+
+            //Assert
+            assertEquals(response, result);
         }
     }
 }
