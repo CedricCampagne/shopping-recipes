@@ -1,6 +1,5 @@
 package com.cedric.shoppingrecipes.recipe.service;
 
-
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
@@ -9,7 +8,7 @@ import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
 import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
-import com.cedric.shoppingrecipes.recipe.exception.RecipConflictException;
+import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
@@ -184,7 +183,7 @@ public class RecipeService {
         boolean usedShoppingList = shoppingListRepository.existsByRecipes_Id(id);
 
         if (usedShoppingList) {
-            throw new RecipConflictException(
+            throw new RecipeConflictException(
                     "Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée."
             );
         }
