@@ -3,6 +3,7 @@ package com.cedric.shoppingrecipes.ingredient.service;
 import com.cedric.shoppingrecipes.ingredient.Unit;
 import com.cedric.shoppingrecipes.ingredient.dto.CreateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.dto.IngredientResponse;
+import com.cedric.shoppingrecipes.ingredient.dto.UpdateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
@@ -199,8 +200,6 @@ public class IngredientServiceTest {
         @Test
         void shouldFindAll(){
             //Arrange
-
-
             Long ingredient1Id = 1L;
 
             Ingredient ingredient1 = new Ingredient();
@@ -327,6 +326,141 @@ public class IngredientServiceTest {
             assertThrows(
                     IngredientConflictException.class,
                     ()-> ingredientService.create(request)
+            );
+        }
+    }
+
+    @Nested
+    class DeleteTests {
+        @Test
+        void shouldDeleteIngredient(){
+            //Arrange
+            Long ingredientId = 1L;
+
+            Ingredient ingredient = new Ingredient();
+            ingredient.setId(ingredientId);
+            ingredient.setName("tomato");
+            ingredient.setUnit(Unit.pièce);
+
+            when(ingredientRepository.existsById(ingredientId))
+                    .thenReturn(true);
+
+            //Act
+            ingredientService.delete(ingredientId);
+
+            //Assert
+            verify(ingredientRepository).deleteById(ingredientId);
+        }
+
+        @Test
+        void shouldThrowIngredientNotFoundException(){
+            //Arrange
+            Long ingredientId = 1L;
+
+            when(ingredientRepository.existsById(ingredientId))
+                    .thenReturn(false);
+
+            //Act + Assert
+            assertThrows(
+                    IngredientNotFoundException.class,
+                    ()-> ingredientService.delete(ingredientId)
+            );
+        }
+    }
+
+    @Nested
+    class UpdateTests {
+        @Test
+        void shouldUpdateIngredientName(){
+            //Arrange
+            Long ingredientId = 1L;
+
+            Ingredient ingredient = new Ingredient();
+            ingredient.setId(ingredientId);
+            ingredient.setName("tomato");
+            ingredient.setUnit(Unit.pièce);
+
+            when(ingredientRepository.findById(ingredientId))
+                    .thenReturn(Optional.of(ingredient));
+
+            UpdateIngredientRequest request = new UpdateIngredientRequest(
+                    "tomate",
+                    Unit.pièce
+            );
+
+            when(ingredientRepository.save(ingredient))
+                    .thenReturn(ingredient);
+
+            IngredientResponse response = new IngredientResponse(
+                    ingredientId,
+                    "tomate",
+                    Unit.pièce
+            );
+
+            when(ingredientMapper.toResponse(ingredient))
+                    .thenReturn(response);
+
+            //Act
+            IngredientResponse result = ingredientService.update(ingredientId, request);
+
+            //Assert
+            assertEquals(response, result);
+        }
+
+        @Test
+        void shouldUpdateIngredientUnit(){
+            //Arrange
+            Long ingredientId = 1L;
+
+            Ingredient ingredient = new Ingredient();
+            ingredient.setId(ingredientId);
+            ingredient.setName("tomato");
+            ingredient.setUnit(Unit.pièce);
+
+            when(ingredientRepository.findById(ingredientId))
+                    .thenReturn(Optional.of(ingredient));
+
+            UpdateIngredientRequest request = new UpdateIngredientRequest(
+                    "tomato",
+                    Unit.tranche
+            );
+
+            when(ingredientRepository.save(ingredient))
+                    .thenReturn(ingredient);
+
+            IngredientResponse response = new IngredientResponse(
+                    ingredientId,
+                    "tomato",
+                    Unit.tranche
+            );
+
+            when(ingredientMapper.toResponse(ingredient))
+                    .thenReturn(response);
+
+            //Act
+            IngredientResponse result = ingredientService.update(ingredientId, request);
+
+            //Assert
+            assertEquals(response, result);
+        }
+
+        @Test
+        void shouldThrowIngredientNotFoundExceptionWhenUpdatingUnknownIngredient() {
+            //Arrange
+            Long ingredientId = 1L;
+
+            UpdateIngredientRequest request = new UpdateIngredientRequest(
+                    "tomate",
+                    Unit.pièce
+            );
+
+            when(ingredientRepository.findById(ingredientId))
+                    .thenReturn(Optional.empty());
+
+            //Act + Assert
+            assertThrows(
+                    IngredientNotFoundException.class,
+                    ()-> ingredientService.update(ingredientId, request)
             );
         }
     }
