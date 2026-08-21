@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { UIStore } from '../ui.store';
+import { UIStore } from '../../ui.store';
 
 @Component({
   selector: 'app-ui-messages',

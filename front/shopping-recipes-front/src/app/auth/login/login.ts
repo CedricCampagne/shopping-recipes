@@ -5,7 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { LoginRequest } from '../models/login-request';
 import { AuthService } from '../services/auth.service';
 import { UIStore } from '../../shared/ui.store';
-import { UiMessages } from '../../shared/ui-messages/ui-messages';
+import { UiMessages } from '../../shared/ui/ui-messages/ui-messages';
 
 @Component({
   selector: 'app-login',

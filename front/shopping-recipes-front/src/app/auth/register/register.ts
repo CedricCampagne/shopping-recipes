@@ -12,7 +12,8 @@ import { RouterModule, Router } from '@angular/router';
 import { RegisterRequest } from '../models/register-request';
 import { AuthService } from '../services/auth.service';
 import { UIStore } from '../../shared/ui.store';
-import { UiMessages } from '../../shared/ui-messages/ui-messages';
+import { UiMessages } from '../../shared/ui/ui-messages/ui-messages';
+
 @Component({
   selector: 'app-register',
   standalone: true,
