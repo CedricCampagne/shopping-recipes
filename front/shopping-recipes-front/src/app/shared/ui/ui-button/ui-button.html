@@ -1,3 +1,7 @@
-<button [class]="buttonClasses">
+<button 
+    [type]="type()"
+    [class]="buttonClasses"
+    [disabled]="disabled()"
+>
     <ng-content />
 </button>

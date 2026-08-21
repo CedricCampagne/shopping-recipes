@@ -10,6 +10,8 @@ import { Component, input } from '@angular/core';
 export class UiButton {
   variant = input<'primary' | 'danger' | 'secondary'>('primary');
   size = input<'sm' | 'md' | 'lg'>('md');
+  type = input<'button' | 'submit' | 'reset'>('button');
+  disabled  = input(false);
 
   get buttonClasses(): string {
     const variants = {
@@ -31,6 +33,7 @@ export class UiButton {
       font-medium
       transition-colors
       duration-500
+      ${this.disabled() ? 'opacity-50 cursor-not-allowed' : ''}
       ${variants[this.variant()]}
       ${sizes[this.size()]}
     `;

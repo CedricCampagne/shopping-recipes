@@ -13,11 +13,13 @@ import { RegisterRequest } from '../models/register-request';
 import { AuthService } from '../services/auth.service';
 import { UIStore } from '../../shared/ui.store';
 import { UiMessages } from '../../shared/ui/ui-messages/ui-messages';
+import { UiLink } from '../../shared/ui/ui-link/ui-link';
+import { UiButton } from '../../shared/ui/ui-button/ui-button';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, UiMessages],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, UiMessages, UiLink, UiButton],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

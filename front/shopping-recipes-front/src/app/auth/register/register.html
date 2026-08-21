@@ -1,105 +1,123 @@
-<main @pageTransition class="min-h-screen flex flex-col items-center justify-center gap-6 p-4">
+<main
+  class="min-h-screen flex items-center justify-center p-4 bg-background"
+>
   <div class="fixed top-22 left-1/2 -translate-x-1/2 z-50">
     <app-ui-messages></app-ui-messages>
   </div>
 
-  <h2 class="text-2xl font-bold">
-    Créer un compte
-  </h2>
+  <div class="w-full max-w-md bg-surface rounded-xl shadow-md p-6 md:p-8">
 
-  <form 
-    [formGroup]="form"
-    (ngSubmit)="onSubmit()" 
-    class="flex flex-col gap-4 w-full max-w-sm"
-  >
-    <div class="flex flex-col gap-1">
-      <label class="font-medium">
-        Nom d'utilisateur
-      </label>
-      <input 
-        type="text" 
-        formControlName="username" 
-        class="border border-gray-300 rounded p-2"
-      />
-      @if (form.controls.username.touched && form.controls.username.invalid) {
-        <p class="text-orange-500 text-sm h-4">
-          Le nom est obligatoire
-        </p>
-      }
-    </div>
+    <h2 class="text-2xl font-bold text-text text-center mb-6">
+      Créer un compte
+    </h2>
 
-    <div class="flex flex-col gap-1">
-      <label class="font-medium">
-        Email
-      </label>
-      <input 
-        type="email" 
-        formControlName="email" 
-        class="border border-gray-300 rounded p-2" 
-      />
-      @if (form.controls.email.touched && form.controls.email.hasError('required')) {
-        <p class="text-orange-500 text-sm">
-          L'email est obligatoire
-        </p>
-      } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
-        <p class="text-orange-500 text-sm">
-          Le format de l'email est invalide
-        </p>
-      }
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label class="font-medium">
-        Mot de passe
-      </label>
-      <input
-        type="password"
-        formControlName="password"
-        class="border border-gray-300 rounded p-2"
-      />
-      @if (form.controls.password.touched && form.controls.password.hasError('required')) {
-        <p class="text-orange-500 text-sm">
-          Le mot de passe est obligatoire
-        </p>
-      } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
-        <p class="text-orange-500 text-sm">
-          Le mot de passe doit contenir au moins 12 caractères
-        </p>
-      } @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
-        <p class="text-orange-500 text-sm">
-          Le mot de passe doit contenir au moins un caractère spécial
-        </p>
-      }
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label class="font-medium">
-        Confirmation du mot de passe
-      </label>
-      <input 
-        type="password" 
-        formControlName="confirm" 
-        class="border border-gray-300 rounded p-2" 
-      />
-
-      @if (form.hasError('passwordMismatch') && form.controls.confirm.touched) {
-        <p class="text-orange-500 text-sm">
-          Les mots de passe ne correspondent pas
-        </p>
-      }
-    </div>
-
-    <button
-      [disabled]="ui.isLoading()"
-      type="submit"
-      class="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-5 w-full"
     >
-      S'inscrire
-    </button>
 
-    <a routerLink="/" class="text-green-600 underline text-center hover:cursor-pointer"
-      >Retour à l'accueil
-    </a
-    >
-  </form>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-text">
+          Nom d'utilisateur
+        </label>
+
+        <input
+          type="text"
+          formControlName="username"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+
+        @if (form.controls.username.touched && form.controls.username.invalid) {
+          <p class="text-danger text-sm h-4">
+            Le nom est obligatoire
+          </p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-text">
+          Email
+        </label>
+
+        <input
+          type="email"
+          formControlName="email"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <p class="text-danger text-sm">
+            L'email est obligatoire
+          </p>
+        } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+          <p class="text-danger text-sm">
+            Le format de l'email est invalide
+          </p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-text">
+          Mot de passe
+        </label>
+
+        <input
+          type="password"
+          formControlName="password"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <p class="text-danger text-sm">
+            Le mot de passe est obligatoire
+          </p>
+        } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+          <p class="text-danger text-sm">
+            Le mot de passe doit contenir au moins 12 caractères
+          </p>
+        } @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
+          <p class="text-danger text-sm">
+            Le mot de passe doit contenir au moins un caractère spécial
+          </p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-text">
+          Confirmation du mot de passe
+        </label>
+
+        <input
+          type="password"
+          formControlName="confirm"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+
+        @if (form.hasError('passwordMismatch') && form.controls.confirm.touched) {
+          <p class="text-danger text-sm">
+            Les mots de passe ne correspondent pas
+          </p>
+        }
+      </div>
+
+      <div class="flex justify-between items-center">
+        <app-ui-button
+          type="submit"
+          [disabled]="ui.isLoading()"
+        >
+          S'inscrire
+        </app-ui-button>
+
+        <app-ui-link routerLink="/">
+          Retour à l'accueil
+        </app-ui-link>
+      </div>
+
+    </form>
+  </div>
 </main>
