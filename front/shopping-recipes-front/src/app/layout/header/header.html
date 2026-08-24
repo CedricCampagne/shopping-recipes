@@ -1,4 +1,4 @@
-<header class="bg-white border-b-2 border-gray-400 shadow p-4">
+<header class="bg-surface border-b-2 border-gray-400 shadow p-4">
   <div class="flex justify-between items-center">
     <h1 class="text-xl font-semibold text-text">Shopping Recipes</h1>
 
@@ -17,7 +17,7 @@
   </div>
 
   <!-- Navigation desktop -->
-  <nav class="hidden md:flex items-center gap-1">
+  <nav class="hidden md:flex items-center gap-1 mt-2">
     <app-ui-link (click)="goIngredients()">Ingredients</app-ui-link>
     <app-ui-link (click)="goRecipes()">Recettes</app-ui-link>
     <app-ui-link (click)="goShoppingList()">Liste de course <span>({{ shoppingList().length }})</span></app-ui-link>

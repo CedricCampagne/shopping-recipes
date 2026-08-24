@@ -5,10 +5,12 @@ import { shoppingListService } from '../../shopping-list/services/shopping-list.
 import { Recipe } from '../models/recipe';
 import { UIStore } from '../../shared/ui.store';
 import { normalizeText } from '../../shared/utils/string.utils';
+import { RecipeCard } from "../recipe-card/recipe-card";
+import { UiButton } from '../../shared/ui/ui-button/ui-button';
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [],
+  imports: [RecipeCard, UiButton],
   templateUrl: './list.html',
   styleUrl: './list.css',
 })
