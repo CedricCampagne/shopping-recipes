@@ -1,7 +1,23 @@
-<header class="bg-white shadow p-4 flex justify-around items-center">
-  <h1 class="text-xl font-semibold text-text">Shopping Recipes</h1>
+<header class="bg-white border-b-2 border-gray-400 shadow p-4">
+  <div class="flex justify-between items-center">
+    <h1 class="text-xl font-semibold text-text">Shopping Recipes</h1>
 
-  <nav class="flex items-center gap-1">
+    <!-- Burger mobile -->
+    <button
+      type="button"
+      class="md:hidden"
+      (click)="toggleMenu()"
+    >
+      @if (isMenuOpen()) {
+        X
+      } @else{
+        ☰
+      }
+    </button>
+  </div>
+
+  <!-- Navigation desktop -->
+  <nav class="hidden md:flex items-center gap-1">
     <app-ui-link (click)="goIngredients()">Ingredients</app-ui-link>
     <app-ui-link (click)="goRecipes()">Recettes</app-ui-link>
     <app-ui-link (click)="goShoppingList()">Liste de course <span>({{ shoppingList().length }})</span></app-ui-link>
@@ -13,4 +29,20 @@
       <app-ui-button (click)="logout()">Logout</app-ui-button>
     }
   </nav>
+
+  <!-- Navigation mobile -->
+  @if (isMenuOpen()) {
+    <nav class="md:hidden flex flex-col gap-6 mt-4">
+      <app-ui-link (click)="goIngredients()">Ingredients</app-ui-link>
+      <app-ui-link (click)="goRecipes()">Recettes</app-ui-link>
+      <app-ui-link (click)="goShoppingList()">Liste de course <span>({{ shoppingList().length }})</span></app-ui-link>
+      <app-ui-link (click)="goSavedLists()">Mes listes<span>({{ savedLists().length }})</span></app-ui-link>
+
+      @if (isFetching()) {
+        <app-ui-button>Bye ...</app-ui-button>
+      } @else {
+        <app-ui-button (click)="logout()">Logout</app-ui-button>
+      }
+    </nav>
+  }
 </header>
