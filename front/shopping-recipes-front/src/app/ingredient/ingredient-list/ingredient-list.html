@@ -1,109 +1,81 @@
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-2xl font-bold">Ingrédients</h1>
+<div class="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-between sm:items-center">
+  <h1 class="text-2xl md:text-3xl font-bold text-text">
+    Ingrédients
+  </h1>
 
-  <button
-    class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300"
-    (click)="goCreate()"
-  >
+  <app-ui-button (click)="goCreate()">
     + Ajouter un ingrédient
-  </button>
+  </app-ui-button>
 </div>
 
-<div class="flex items-center mb-6 gap-6">
-  <h2 class="text-xl font-bold">Filtres :</h2>
+<!-- Filtres -->
+<div class="flex flex-col gap-4 mb-6">
 
-  <div class="flex items-center gap-6">
-    <div>
-      <label for="name">Par nom : </label>
-      <input
-        type="text"
-        id="name"
-        class="border p-2 rounded"
-        placeholder="Rechercher ..."
-        [value]="search()"
-        (input)="search.set($any($event.target).value)"
-      />
-    </div>
+  <label for="name" class="text-sm font-medium text-text">
+    Rechercher un ingrédient :
+  </label>
 
-    <div>
-      <select
-        class="border p-2 rounded"
-        [value]="selectedUnit()"
-        (change)="selectedUnit.set($any($event.target).value)"
-      >
-        <option value="">Toutes les unités</option>
-        @for (u of units(); track u) {
-          <option [value]="u">{{ u.toLowerCase() }}</option>
-        }
-      </select>
-    </div>
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+
+    <input
+      type="text"
+      id="name"
+      class="w-full sm:max-w-md border border-gray-300 rounded-lg px-3 py-2
+             text-text bg-surface
+             focus:outline-none focus:border-primary
+             focus:ring-2 focus:ring-primary/20"
+      placeholder="Rechercher par nom..."
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    />
+
+    <select
+      class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2
+             text-text bg-surface
+             focus:outline-none focus:border-primary
+             focus:ring-2 focus:ring-primary/20"
+      [value]="selectedUnit()"
+      (change)="selectedUnit.set($any($event.target).value)"
+    >
+      <option value="">Toutes les unités</option>
+
+      @for (u of units(); track u) {
+        <option [value]="u">
+          {{ u.toLowerCase() }}
+        </option>
+      }
+    </select>
+
+    <button
+      type="button"
+      (click)="resetFilter()"
+      class="text-text-muted hover:text-danger transition cursor-pointer
+             self-start sm:self-auto"
+      title="Réinitialiser les filtres"
+    >
+      <svg class="w-6 h-6" viewBox="0 0 16 16" fill="currentColor">
+        <path
+          d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M4.22 4.22a.75.75 0 0 1 1.06 0L8 6.94l2.72-2.72a.75.75 0 1 1 1.06 1.06L9.06 8l2.72 2.72a.75.75 0 1 1 1.06 1.06L8 9.06l-2.72 2.72a.75.75 0 1 1-1.06-1.06L6.94 8 4.22 5.28a.75.75 0 0 1-1.06-1.06"
+        />
+      </svg>
+    </button>
+
   </div>
 
-  <button
-    type="button"
-    (click)="resetFilter()"
-    class="text-gray-500 hover:text-red-600 transition cursor-pointer"
-    title="Réinitialiser les filtres"
-  >
-    <svg class="w-6 h-6" viewBox="0 0 16 16" fill="currentColor">
-      <path
-        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M4.22 4.22a.75.75 0 0 1 1.06 0L8 6.94l2.72-2.72a.75.75 0 1 1 1.06 1.06L9.06 8l2.72 2.72a.75.75 0 1 1-1.06 1.06L8 9.06l-2.72 2.72a.75.75 0 1 1-1.06-1.06L6.94 8 4.22 5.28a.75.75 0 0 1 0-1.06"
-      />
-    </svg>
-  </button>
 </div>
 
-<div class="space-y-4">
+<!-- Liste des ingrédients -->
+<div class="flex flex-col gap-4">
+
   @for (i of filteredIngredients(); track i.id) {
-    <div
-      class="flex flex-col border-2 border-white p-4 bg-white shadow rounded hover:border-blue-600 transition-all duration-300"
-      (click)="goUpdate(i.id)"
-    >
-      <!-- Mode affichage -->
-      @if (editingId() !== i.id) {
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-lg font-semibold">{{ i.name }}</h2>
-            <p class="text-gray-600">Unité : {{ i.unit.toLowerCase() }}</p>
-          </div>
 
-          <button
-            class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-            (click)="delete(i.id); $event.stopPropagation()"
-          >
-            X
-          </button>
-        </div>
-      }
+    <app-ingredient-card
+      [ingredient]="i"
+      [units]="units()"
+      (delete)="delete($event)"
+      (updated)="loadIngredients()"
+    />
 
-      <!-- Mode édition -->
-      @if (editingId() === i.id) {
-        <form [formGroup]="editForm" class="space-y-2" (click)="$event.stopPropagation()">
-          <input type="text" class="border p-2 rounded w-full" formControlName="name" />
-
-          <select class="border p-2 rounded w-full" formControlName="unit">
-            @for (u of units(); track u) {
-              <option [value]="u">{{ u.toLowerCase() }}</option>
-            }
-          </select>
-
-          <div class="flex gap-2 items-center">
-            <button
-              class="bg-green-600 text-white px-4 py-2 rounded"
-              (click)="saveEdit(i.id); $event.stopPropagation()"
-            >
-              Sauvegarder
-            </button>
-
-            <button
-              class="bg-red-600 text-white px-4 py-2 rounded"
-              (click)="cancelEdit(); $event.stopPropagation()"
-            >
-              Annuler
-            </button>
-          </div>
-        </form>
-      }
-    </div>
   }
+
 </div>
