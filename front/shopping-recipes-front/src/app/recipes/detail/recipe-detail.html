@@ -1,4 +1,4 @@
-@if (recipe() !== null) {
+<!-- @if (recipe() !== null) {
   <div>
     <h1 class="text-2xl font-bold">{{ recipe()!.name }}</h1>
     <p class="text-gray-600">{{ recipe()!.description }}</p>
@@ -48,4 +48,124 @@
   </div>
 } @else {
   <p>Aucune recette ne correspond</p>
+} -->
+
+@if (recipe() !== null) {
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-4">
+    <app-ui-link (click)="goBackToRecipes()">
+      <- Retour aux recettes
+    </app-ui-link>
+  </div>
+    <!-- En-tête recette -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface rounded-xl shadow-sm p-4 md:p-6">
+
+      <!-- Image -->
+      <div class="w-full">
+        <img
+          [src]="recipe()!.imageUrl || '/images/recipe-fallback.webp'"
+          alt="Image de la recette"
+          class="w-full h-64 md:h-full min-h-64 object-cover rounded-lg"
+        />
+      </div>
+
+      <!-- Informations -->
+      <div class="flex flex-col">
+
+        <span class="text-sm font-medium text-primary mb-2">
+          Recette
+        </span>
+
+        <h1 class="text-2xl md:text-3xl font-bold text-text">
+          {{ recipe()!.name }}
+        </h1>
+
+        <p class="text-text-muted mt-2">
+          {{ recipe()!.description }}
+        </p>
+
+        <!-- Portions -->
+        <div class="flex flex-wrap items-center gap-3 mt-6">
+          <p class="text-sm font-medium text-text">
+            Pour combien de personnes ?
+          </p>
+
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              class="px-3 py-1 bg-background text-text rounded-lg border border-primary
+                     hover:bg-primary hover:text-white transition"
+              (click)="servings.update((s) => (s > 1 ? s - 1 : 1))"
+            >
+              -
+            </button>
+
+            <span class="text-lg font-semibold text-text">
+              {{ servings() }}
+            </span>
+
+            <button
+              type="button"
+              class="px-3 py-1 bg-background text-text rounded-lg border border-primary
+                     hover:bg-primary hover:text-white transition"
+              (click)="servings.update((s) => s + 1)"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Ingrédients -->
+    <section class="mt-6 bg-surface rounded-xl shadow-sm p-4 md:p-6">
+
+      <h2 class="text-xl md:text-2xl font-semibold text-text">
+        Ingrédients
+      </h2>
+
+      @if (ingredientsWithTotal().length > 0) {
+
+        <ul class="mt-4 space-y-2">
+          @for (ing of ingredientsWithTotal(); track ing.id) {
+            <li
+              class="flex flex-wrap items-baseline gap-1 py-2 border-b border-gray-100 last:border-0"
+            >
+              <strong class="text-text">
+                {{ ing.ingredient.name }}
+              </strong>
+
+              <span class="text-text-muted">
+                : {{ ing.total }} {{ ing.unit.toLowerCase() }}
+              </span>
+            </li>
+          }
+        </ul>
+
+        <div class="mt-6">
+          <app-ui-button (click)="addToShoppingList()">
+            Ajouter à la liste de courses
+          </app-ui-button>
+        </div>
+
+      } @else {
+
+        <p class="mt-4 text-text-muted">
+          Aucun ingrédient trouvé
+        </p>
+
+      }
+
+    </section>
+
+  </div>
+} @else {
+
+  <p class="text-center text-text-muted">
+    Aucune recette ne correspond
+  </p>
+
 }
+
+
