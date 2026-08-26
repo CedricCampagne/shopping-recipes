@@ -1,125 +1,237 @@
-<h1 class="text-2xl font-bold mt-12 mb-6 text-center">Créer une recette</h1>
+<h1 class="text-2xl md:text-3xl font-bold text-text text-center mt-6 mb-6">
+  Créer une recette
+</h1>
 
 <div class="flex justify-center">
   <form
     [formGroup]="form"
     (ngSubmit)="onSubmit()"
-    class="space-y-4 w-full max-w-xl bg-white p-6 rounded-lg shadow"
+    class="w-full max-w-xl bg-surface rounded-xl shadow-sm p-4 md:p-6 space-y-6"
   >
+
     <!-- Nom -->
-    <div>
-      <label class="font-medium">Nom</label>
-      <input type="text" formControlName="name" class="border p-2 rounded w-full" />
+    <div class="flex flex-col gap-1">
+      <label for="name" class="text-sm font-medium text-text">
+        Nom
+      </label>
+
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+               focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+      />
+
       @if (form.controls.name.touched && form.controls.name.hasError('required')) {
-        <p class="text-orange-500 text-sm">Le nom de la recette est obligatoire</p>
+        <p class="text-danger text-sm">
+          Le nom de la recette est obligatoire
+        </p>
       } @else if (form.controls.name.touched && form.controls.name.hasError('minlength')) {
-        <p class="text-orange-500 text-sm">Le nom de la recette doit avoir au moins 5 caractères</p>
+        <p class="text-danger text-sm">
+          Le nom de la recette doit avoir au moins 5 caractères
+        </p>
       } @else if (form.controls.name.touched && form.controls.name.hasError('pattern')) {
-        <p class="text-orange-500 text-sm">Le nom ne doit pas commencer par un espace.</p>
+        <p class="text-danger text-sm">
+          Le nom ne doit pas commencer par un espace.
+        </p>
       }
     </div>
+
     <!-- Description -->
-    <div>
-      <label class="font-medium">Description</label>
-      <input type="text" formControlName="description" class="border p-2 rounded w-full" />
-      @if (form.controls.description.touched && form.controls.description.hasError('required')) {
-        <p class="text-orange-500 text-sm">La description de la recette est obligatoire</p>
-      } @else if (
-        form.controls.description.touched && form.controls.description.hasError('minlength')
+    <div class="flex flex-col gap-1">
+      <label for="description" class="text-sm font-medium text-text">
+        Description
+      </label>
+
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="3"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface resize-none
+               focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+      ></textarea>
+
+      @if (
+        form.controls.description.touched &&
+        form.controls.description.hasError('required')
       ) {
-        <p class="text-orange-500 text-sm">
+        <p class="text-danger text-sm">
+          La description de la recette est obligatoire
+        </p>
+      } @else if (
+        form.controls.description.touched &&
+        form.controls.description.hasError('minlength')
+      ) {
+        <p class="text-danger text-sm">
           La description de la recette doit avoir au moins 15 caractères
         </p>
       } @else if (
-        form.controls.description.touched && form.controls.description.hasError('pattern')
+        form.controls.description.touched &&
+        form.controls.description.hasError('pattern')
       ) {
-        <p class="text-orange-500 text-sm">La description ne doit pas commencer par un espace.</p>
+        <p class="text-danger text-sm">
+          La description ne doit pas commencer par un espace.
+        </p>
       }
     </div>
+
     <!-- Portions -->
-    <div>
-      <label class="font-medium">Portions</label>
-      <input type="number" min="1" formControlName="servings" class="border p-2 rounded w-full" />
+    <div class="flex flex-col gap-1">
+      <label for="servings" class="text-sm font-medium text-text">
+        Portions
+      </label>
+
+      <input
+        id="servings"
+        type="number"
+        min="1"
+        formControlName="servings"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+               focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+      />
     </div>
 
-    <!-- SECTION INGREDIENTS -->
-    <div class="pt-4 border-t">
-      <div class="flex justify-between">
-        <h3 class="font-medium mb-2">Ajouter un ingrédient pour la recette</h3>
+    <!-- Ingrédients -->
+    <section class="pt-5 border-t border-gray-200">
 
-        <h3 class="font-medium mb-2 flex items-center gap-2">
-          Créer un ingrédient
-          <button
-            type="button"
-            class="bg-blue-600 text-white px-2 rounded"
-            (click)="showIngredientModal.set(true)"
-          >
-            +
-          </button>
-        </h3>
-      </div>
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-4">
 
-      <div class="flex flex-col gap-2 items-stretch">
-        <!-- Select scrollable -->
-        <select
-          class="border p-2 rounded w-full max-h-48 overflow-y-auto"
-          formControlName="ingredientSelect"
-        >
-          @for (i of ingredients(); track i.id) {
-            <option [ngValue]="i.id">{{ i.name }}</option>
-          }
-        </select>
+        <h2 class="text-lg font-semibold text-text">
+          Ingrédients
+        </h2>
 
-        <div class="flex gap-2">
-          <input
-            type="number"
-            min="0"
-            step="0.5"
-            class="border p-2 rounded w-48"
-            formControlName="ingredientQuantityPerPerson"
-            placeholder="Qté pour une portion"
-          />
-
-          <span class="text-gray-600 self-center">
-            {{ selectedUnit().toLowerCase() }}
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-text-muted">
+            Créer un ingrédient
           </span>
 
           <button
             type="button"
-            class="bg-green-600 text-white px-3 rounded hover:bg-green-700 cursor-pointer"
-            (click)="addIngredient()"
+            class="w-8 h-8 rounded-full bg-primary text-white
+                   hover:opacity-90 transition cursor-pointer"
+            (click)="showIngredientModal.set(true)"
           >
             +
           </button>
         </div>
+
       </div>
 
-      <!-- Liste des ingrédients ajoutés -->
-      <div class="mt-4 space-y-2">
-        @for (ri of recipeIngredients(); track ri.index) {
-          <div class="flex justify-between items-center border p-2 rounded">
-            <span>{{ ri.name }} — {{ ri.quantityPerPerson }} {{ ri.unit }}</span>
+      <!-- Ajouter un ingrédient -->
+      <div class="flex flex-col gap-3">
+
+        <div class="flex flex-col gap-1">
+          <label for="ingredientSelect" class="text-sm font-medium text-text">
+            Ingrédient
+          </label>
+
+          <select
+            id="ingredientSelect"
+            formControlName="ingredientSelect"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                   focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          >
+            @for (i of ingredients(); track i.id) {
+              <option [ngValue]="i.id">
+                {{ i.name }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+
+          <div class="flex-1">
+            <label
+              for="ingredientQuantityPerPerson"
+              class="text-sm font-medium text-text"
+            >
+              Quantité par personne
+            </label>
+
+            <input
+              id="ingredientQuantityPerPerson"
+              type="number"
+              min="0"
+              step="0.5"
+              formControlName="ingredientQuantityPerPerson"
+              placeholder="Ex. 100"
+              class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                     focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          <div>
+            <span class="text-sm text-text-muted sm:mt-6">
+              {{ selectedUnit().toLowerCase() }}
+            </span>
+  
             <button
               type="button"
-              class="text-red-600 cursor-pointer"
-              (click)="removeIngredient(ri.index)"
+              class="self-end sm:self-auto sm:mt-6 w-10 h-10 rounded-lg bg-primary text-white
+                     hover:opacity-90 transition cursor-pointer"
+              (click)="addIngredient()"
             >
-              Supprimer
+              +
             </button>
           </div>
-        }
-      </div>
-    </div>
 
-    <div class="w-1/2 flex flex-col gap-2">
-      <button
+        </div>
+
+      </div>
+
+      <!-- Ingrédients ajoutés -->
+      @if (recipeIngredients().length > 0) {
+
+        <div class="mt-5 space-y-2">
+
+          <h3 class="text-sm font-medium text-text">
+            Ingrédients de la recette
+          </h3>
+
+          @for (ri of recipeIngredients(); track ri.index) {
+            <div
+              class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center
+                     border border-gray-200 rounded-lg p-3 bg-background"
+            >
+              <span class="text-sm text-text">
+                <strong>{{ ri.name }}</strong>
+                — {{ ri.quantityPerPerson }} {{ ri.unit }}
+              </span>
+
+              <button
+                type="button"
+                class="text-danger text-sm font-medium cursor-pointer hover:underline self-start sm:self-auto"
+                (click)="removeIngredient(ri.index)"
+              >
+                Supprimer
+              </button>
+            </div>
+          }
+
+        </div>
+
+      } @else {
+
+        <p class="mt-5 text-sm text-text-muted">
+          Aucun ingrédient ajouté à la recette.
+        </p>
+
+      }
+
+    </section>
+
+    <!-- Submit -->
+    <div class="pt-2">
+      <app-ui-button
         type="submit"
         [disabled]="ui.isLoading()"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all duration-300 w-full cursor-pointer"
       >
         Créer la recette
-      </button>
+      </app-ui-button>
     </div>
+
   </form>
 </div>
 

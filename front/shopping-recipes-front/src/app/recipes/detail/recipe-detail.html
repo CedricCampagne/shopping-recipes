@@ -1,55 +1,3 @@
-<!-- @if (recipe() !== null) {
-  <div>
-    <h1 class="text-2xl font-bold">{{ recipe()!.name }}</h1>
-    <p class="text-gray-600">{{ recipe()!.description }}</p>
-
-    <div class="flex items-center gap-3 mt-4">
-      <p>Pour combien de personnes ?</p>
-      <button
-        class="px-3 py-1 bg-gray-200 rounded border-2 border-blue-600 hover:scale-110 transition-all duration-300"
-        (click)="servings.update((s) => (s > 1 ? s - 1 : 1))"
-      >
-        -
-      </button>
-
-      <span class="text-lg font-semibold">{{ servings() }}</span>
-
-      <button
-        class="px-3 py-1 bg-gray-200 rounded border-2 border-blue-600 hover:scale-110 transition-all duration-300"
-        (click)="servings.update((s) => s + 1)"
-      >
-        +
-      </button>
-    </div>
-
-    <h2 class="text-xl font-semibold mt-6">Ingrédients</h2>
-
-    @if (ingredientsWithTotal().length > 0) {
-      <ul class="mt-2 space-y-1">
-        @for (ing of ingredientsWithTotal(); track ing.id) {
-          <li>
-            <strong>{{ ing.ingredient.name }}</strong> : {{ ing.total }}
-            {{ ing.unit.toLowerCase() }}
-          </li>
-        }
-      </ul>
-
-      <div class="flex h-20 items-center gap-4">
-        <button
-          class="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-          (click)="addToShoppingList()"
-        >
-          Ajouter à la liste de courses
-        </button>
-      </div>
-    } @else {
-      <p>Aucun ingrédient trouvé</p>
-    }
-  </div>
-} @else {
-  <p>Aucune recette ne correspond</p>
-} -->
-
 @if (recipe() !== null) {
   <div class="max-w-5xl mx-auto">
     <div class="mb-4">
@@ -62,12 +10,12 @@
 
       <!-- Image -->
       <div class="w-full">
-        <img
-          [src]="recipe()!.imageUrl || '/images/recipe-fallback.webp'"
-          alt="Image de la recette"
-          class="w-full h-64 md:h-full min-h-64 object-cover rounded-lg"
-        />
-      </div>
+  <img
+    [src]="recipe()!.imageUrl || '/images/recipe-fallback.webp'"
+    alt="Image de la recette"
+    class="w-full h-64 md:h-80 object-cover rounded-lg"
+  />
+</div>
 
       <!-- Informations -->
       <div class="flex flex-col">
