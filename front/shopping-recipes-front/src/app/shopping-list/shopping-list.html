@@ -1,76 +1,154 @@
-<h1 class="text-2xl font-bold mb-4">Votre liste de courses</h1>
+<div class="flex flex-col gap-4">
 
-<div class="grid grid-cols-2 gap-6">
-  <!-- Colonne gauche : ingrédients fusionnés -->
-  <div>
-    <h2 class="text-xl font-semibold mb-2">Ingrédients</h2>
+  <!-- Titre -->
+  <h1 class="text-2xl md:text-3xl font-bold text-text">
+    Votre liste de courses
+  </h1>
 
-    @if (items().length > 0) {
-      <ul class="space-y-2">
-        @for (item of items(); track $index) {
-          <li class="border p-2 rounded">
-            <strong>{{ item.ingredient.name }}</strong> : {{ item.total }} {{ item.unit }}
-          </li>
-        }
-      </ul>
-    } @else {
-      <p class="text-gray-600">Aucun ingrédient pour le moment.</p>
-    }
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- Colonne gauche : ingrédients fusionnés -->
+    <section class="bg-surface rounded-xl shadow-sm p-4 md:p-6">
+
+      <h2 class="text-xl font-semibold text-text mb-4">
+        Ingrédients
+      </h2>
+
+      @if (items().length > 0) {
+
+        <ul class="flex flex-col gap-3">
+
+          @for (item of items(); track $index) {
+
+            <li
+              class="flex items-center justify-between gap-3
+                     border border-gray-200 rounded-lg
+                     bg-background px-4 py-3"
+            >
+              <strong class="text-text">
+                {{ item.ingredient.name }}
+              </strong>
+
+              <span class="text-text-muted text-sm text-right">
+                {{ item.total }} {{ item.unit }}
+              </span>
+            </li>
+
+          }
+
+        </ul>
+
+      } @else {
+
+        <p class="text-text-muted text-sm">
+          Aucun ingrédient pour le moment.
+        </p>
+
+      }
+
+    </section>
+
+
+    <!-- Colonne droite : recettes ajoutées -->
+    <section class="bg-surface rounded-xl shadow-sm p-4 md:p-6">
+
+      <h2 class="text-xl font-semibold text-text mb-4">
+        Recettes ajoutées
+      </h2>
+
+      @if (recipes().length > 0) {
+
+        <ul class="flex flex-col gap-3">
+
+          @for (r of recipes(); track $index) {
+
+            <li
+              class="flex flex-col gap-4
+                     border border-gray-200 rounded-lg
+                     bg-background p-4
+                     sm:flex-row sm:items-center sm:justify-between"
+            >
+
+              <!-- Nom + portions -->
+              <div class="min-w-0">
+                <strong class="text-text block truncate">
+                  {{ r.name }}
+                </strong>
+
+                <span class="text-text-muted text-sm">
+                  {{ r.servings }} pers.
+                </span>
+              </div>
+
+
+              <!-- Gestion des portions -->
+              <div class="flex items-center gap-3">
+
+                <app-ui-button
+                  size="sm"
+                  (click)="decreaseServings(r.uid)"
+                >
+                  -
+                </app-ui-button>
+
+                <span class="text-lg font-semibold text-text min-w-6 text-center">
+                  {{ r.servings }}
+                </span>
+
+                <app-ui-button
+                  size="sm"
+                  (click)="increaseServing(r.uid)"
+                >
+                  +
+                </app-ui-button>
+
+              </div>
+
+
+              <!-- Supprimer -->
+              <app-ui-button
+                variant="danger"
+                size="sm"
+                (click)="deleteRecipe(r.uid)"
+              >
+                Supprimer
+              </app-ui-button>
+
+            </li>
+
+          }
+
+        </ul>
+
+
+        <!-- Boutons -->
+        <div class="flex flex-col gap-2 mt-6 sm:flex-row">
+
+          <app-ui-button
+            variant="danger"
+            (click)="clear()"
+          >
+            Vider la liste
+          </app-ui-button>
+
+          <app-ui-button
+            (click)="saveList()"
+          >
+            Sauvegarder la liste
+          </app-ui-button>
+
+        </div>
+
+      } @else {
+
+        <p class="text-text-muted text-sm">
+          Aucune recette pour le moment.
+        </p>
+
+      }
+
+    </section>
+
   </div>
 
-  <!-- Colonne droite : recettes ajoutées -->
-  <div>
-    <h2 class="text-xl font-semibold mb-2">Recettes ajoutées</h2>
-
-    @if (recipes().length > 0) {
-      <ul class="space-y-2">
-        @for (r of recipes(); track $index) {
-          <li class="border p-2 rounded flex justify-between items-center">
-            <div>
-              <strong>{{ r.name }}</strong> — {{ r.servings }} pers.
-            </div>
-
-            <div class="flex items-center gap-3">
-              <button
-                class="px-3 py-1 bg-gray-200 rounded border-2 border-blue-600 hover:scale-110 transition-all duration-300"
-                (click)="decreaseServings(r.uid)"
-              >
-                -
-              </button>
-              <span class="text-lg font-semibold">{{ r.servings }}</span>
-              <button
-                class="px-3 py-1 bg-gray-200 rounded border-2 border-blue-600 hover:scale-110 transition-all duration-300"
-                (click)="increaseServing(r.uid)"
-              >
-                +
-              </button>
-            </div>
-
-            <button class="px-4 py-2 bg-red-600 text-white rounded" (click)="deleteRecipe(r.uid)">
-              X
-            </button>
-          </li>
-        }
-      </ul>
-
-      <!-- Boutons -->
-      <div class="mt-6 flex gap-4">
-        <button
-          class="px-4 py-2 bg-red-600 text-white rounded hover:cursor-pointer"
-          (click)="clear()"
-        >
-          Vider la liste
-        </button>
-
-        <button
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer"
-          (click)="saveList()"
-        >
-          Sauvegarder la liste
-        </button>
-      </div>
-    } @else {
-      <p class="text-gray-600">Aucune recette pour le moment.</p>
-    }
-  </div>
 </div>

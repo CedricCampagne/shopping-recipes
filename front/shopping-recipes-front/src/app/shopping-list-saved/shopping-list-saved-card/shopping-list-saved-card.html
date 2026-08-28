@@ -1,0 +1,47 @@
+<div
+  class="w-full border border-gray-200 bg-surface
+         p-4 rounded-xl shadow-sm
+         hover:border-primary hover:shadow-md
+         transition-all duration-300
+         flex flex-col gap-3"
+>
+
+  <!-- Informations de la liste -->
+  <div class="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center">
+
+    <p class="text-sm text-text font-semibold">
+      Liste #{{ list().id }}
+    </p>
+
+    <span class="text-xs text-text-muted">
+      Créée le : {{ list().createdAt | date: 'dd/MM/yy' }}
+    </span>
+
+  </div>
+
+  <!-- Statistiques -->
+  <div class="flex flex-col gap-1 text-sm text-text-muted">
+
+    <span>
+      Nombre de repas : {{ list().recipes.length }}
+    </span>
+
+    <span>
+      Nombre d'ingrédients : {{ list().items.length }}
+    </span>
+
+  </div>
+
+  <!-- Action -->
+  <div class="flex justify-start pt-1">
+
+    <app-ui-button
+      size="sm"
+      (click)="openDetail.emit(list().id)"
+    >
+      Voir le détail
+    </app-ui-button>
+
+  </div>
+
+</div>
