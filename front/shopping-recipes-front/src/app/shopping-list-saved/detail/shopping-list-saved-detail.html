@@ -1,71 +1,167 @@
 @if (list()) {
-  <h1 class="text-2xl font-bold mb-4">Liste #{{ list()!.id }}</h1>
 
-  <div class="mb-6 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <label class="block text-lg font-semibold">Changer le statut :</label>
+  <!-- Titre -->
+  <h1 class="text-2xl md:text-3xl font-bold text-text mb-6">
+    Liste #{{ list()!.id }}
+  </h1>
+
+
+  <!-- Actions et statut -->
+  <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
+
+    <!-- Statut -->
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+
+      <label
+        for="status"
+        class="text-sm font-medium text-text"
+      >
+        Changer le statut :
+      </label>
+
       <select
+        id="status"
         #selectStatus
-        class="border p-2 rounded bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2
+               text-text bg-surface
+               focus:outline-none focus:border-primary
+               focus:ring-2 focus:ring-primary/20
+               cursor-pointer"
         [value]="list()!.status"
         (change)="updateStatus(selectStatus.value)"
       >
-        <option value="EN_COURS">En cours</option>
-        <option value="VALIDE">Validée</option>
-        <option value="ARCHIVE">Archivée</option>
-      </select>
-    </div>
-    <div class="flex gap-2">
-      <button
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition hover:cursor-pointer"
-        (click)="exportPdf()"
-      >
-        Exporter PDF
-      </button>
+        <option value="EN_COURS">
+          En cours
+        </option>
 
-      <button
-        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition hover:cursor-pointer"
-        (click)="deleteList()"
-      >
-        Supprimer
-      </button>
+        <option value="VALIDE">
+          Validée
+        </option>
+
+        <option value="ARCHIVE">
+          Archivée
+        </option>
+      </select>
+
+    </div>
+
+
+    <!-- Actions -->
+    <div class="flex flex-col gap-2 sm:flex-row">
+
+        <app-ui-button
+          (click)="exportPdf()"
+        >
+          Exporter PDF
+        </app-ui-button>
+     
+        <app-ui-button
+          variant="danger"
+          (click)="deleteList()"
+        >
+          Supprimer
+        </app-ui-button>
     </div>
   </div>
-  <div class="grid grid-cols-2 gap-6">
+
+
+  <!-- Contenu -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
     <!-- Colonne gauche : ingrédients -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Ingrédients</h2>
+    <section class="bg-surface rounded-xl shadow-sm p-4 md:p-6">
+
+      <h2 class="text-xl font-semibold text-text mb-4">
+        Ingrédients
+      </h2>
+
       @if (list()!.items.length > 0) {
-        <ul class="space-y-2">
+
+        <ul class="flex flex-col gap-3">
+
           @for (item of sortedItems(); track item.ingredientId) {
-            <li class="border p-2 rounded">
-              <strong>{{ item.ingredientName }}</strong> : {{ item.totalQuantity }} {{ item.unit }}
+
+            <li
+              class="flex items-center justify-between gap-3
+                     border border-gray-200 rounded-lg
+                     bg-background px-4 py-3"
+            >
+
+              <strong class="text-text">
+                {{ item.ingredientName }}
+              </strong>
+
+              <span class="text-text-muted text-sm text-right">
+                {{ item.totalQuantity }} {{ item.unit }}
+              </span>
+
             </li>
+
           }
+
         </ul>
+
       } @else {
-        <p class="text-gray-600">Aucun ingrédient.</p>
+
+        <p class="text-text-muted text-sm">
+          Aucun ingrédient.
+        </p>
+
       }
-    </div>
+
+    </section>
+
+
     <!-- Colonne droite : recettes -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Recettes</h2>
+    <section class="bg-surface rounded-xl shadow-sm p-4 md:p-6">
+
+      <h2 class="text-xl font-semibold text-text mb-4">
+        Recettes
+      </h2>
+
       @if (list()!.recipes.length > 0) {
-        <ul class="space-y-2">
+
+        <ul class="flex flex-col gap-3">
+
           @for (r of list()!.recipes; track r.recipeId) {
-            <li class="border p-2 rounded flex justify-between items-center">
-              <div>
-                <strong>{{ r.recipeName }}</strong>
+
+            <li
+              class="border border-gray-200 rounded-lg
+                     bg-background px-4 py-3"
+            >
+
+              <strong class="text-text">
+                {{ r.recipeName }}
+              </strong>
+
+              <span class="text-text-muted text-sm">
                 — {{ r.servings }} pers.
-              </div>
+              </span>
+
             </li>
+
           }
+
         </ul>
+
       } @else {
-        <p class="text-gray-600">Aucune recette.</p>
+
+        <p class="text-text-muted text-sm">
+          Aucune recette.
+        </p>
+
       }
-    </div>
+
+    </section>
+
   </div>
+
 } @else {
-  <p>Erreur lors dela recupération des listes...</p>
+
+  <p class="text-text-muted">
+    Erreur lors de la récupération des listes...
+  </p>
+
 }
+
+

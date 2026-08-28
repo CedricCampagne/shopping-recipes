@@ -1,46 +1,48 @@
-<header class="bg-white shadow p-4 flex justify-around items-center">
-  <h1 class="text-xl font-semibold">Shopping Recipes</h1>
+<header class="bg-surface border-b-2 border-gray-400 shadow p-4">
+  <div class="flex justify-between items-center">
+    <h1 class="text-xl font-semibold text-text">Shopping Recipes</h1>
 
-  <nav class="flex gap-1">
-    <a
-      (click)="goIngredients()"
-      class="cursor-pointer text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
+    <!-- Burger mobile -->
+    <button
+      type="button"
+      class="md:hidden"
+      (click)="toggleMenu()"
     >
-      Ingredients
-    </a>
-    <a
-      (click)="goRecipes()"
-      class="cursor-pointer text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
-    >
-      Recettes
-    </a>
-    <a
-      routerLink="/app/shopping-list"
-      class="text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
-    >
-      Liste de course
-      <span>({{ shoppingList().length }})</span>
-    </a>
+      @if (isMenuOpen()) {
+        X
+      } @else{
+        ☰
+      }
+    </button>
+  </div>
 
-    <a
-      (click)="goSavedLists()"
-      class="cursor-pointer text-blue-600 font-medium px-2 py-1 border-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-700"
-    >
-      Mes listes
-      <span>({{ savedLists().length }})</span>
-    </a>
+  <!-- Navigation desktop -->
+  <nav class="hidden md:flex items-center gap-1 mt-2">
+    <app-ui-link (click)="goIngredients()">Ingredients</app-ui-link>
+    <app-ui-link (click)="goRecipes()">Recettes</app-ui-link>
+    <app-ui-link (click)="goShoppingList()">Liste de course <span>({{ shoppingList().length }})</span></app-ui-link>
+    <app-ui-link (click)="goSavedLists()">Mes listes<span>({{ savedLists().length }})</span></app-ui-link>
 
     @if (isFetching()) {
-      <p class="bg-green-700 font-medium text-white px-2 py-1 rounded-2xl">
-        Déconnexion en cours ...
-      </p>
+      <app-ui-button>Bye ...</app-ui-button>
     } @else {
-      <button
-        class="text-red-600 font-medium px-2 py-1 border-2 rounded-lg hover:cursor-pointer hover:bg-red-600 hover:text-white transition-all duration-700"
-        (click)="logout()"
-      >
-        Logout
-      </button>
+      <app-ui-button (click)="logout()">Logout</app-ui-button>
     }
   </nav>
+
+  <!-- Navigation mobile -->
+  @if (isMenuOpen()) {
+    <nav class="md:hidden flex flex-col gap-6 mt-4">
+      <app-ui-link (click)="goIngredients()">Ingredients</app-ui-link>
+      <app-ui-link (click)="goRecipes()">Recettes</app-ui-link>
+      <app-ui-link (click)="goShoppingList()">Liste de course <span>({{ shoppingList().length }})</span></app-ui-link>
+      <app-ui-link (click)="goSavedLists()">Mes listes<span>({{ savedLists().length }})</span></app-ui-link>
+
+      @if (isFetching()) {
+        <app-ui-button>Bye ...</app-ui-button>
+      } @else {
+        <app-ui-button (click)="logout()">Logout</app-ui-button>
+      }
+    </nav>
+  }
 </header>

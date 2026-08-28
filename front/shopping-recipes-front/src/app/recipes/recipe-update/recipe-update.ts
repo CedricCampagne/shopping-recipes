@@ -13,11 +13,12 @@ import { UpdateRecipeRequest } from '../models/update-recipe-request';
 import { Ingredient } from '../models/ingredient';
 import { IngredientsService } from '../../ingredient/services/ingredients.service';
 import { UIStore } from '../../shared/ui.store';
+import { UiButton } from '../../shared/ui/ui-button/ui-button';
 
 @Component({
   selector: 'app-recipe-update',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, UiButton],
   templateUrl: './recipe-update.html',
   styleUrl: './recipe-update.css',
 })

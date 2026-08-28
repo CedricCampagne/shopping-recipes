@@ -9,10 +9,11 @@ import { UIStore } from '../../shared/ui.store';
 import { CreateRecipeRequest } from '../models/create-recipe-request';
 import { IngredientModal } from '../../ingredient/ingredient-modal/ingredient-modal';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { UiButton } from '../../shared/ui/ui-button/ui-button';
 
 @Component({
   selector: 'app-recipe-form',
-  imports: [ReactiveFormsModule, IngredientModal],
+  imports: [ReactiveFormsModule, IngredientModal, UiButton],
   templateUrl: './recipe-form.html',
   styleUrl: './recipe-form.css',
 })

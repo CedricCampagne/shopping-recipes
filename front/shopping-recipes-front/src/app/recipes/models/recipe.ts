@@ -3,4 +3,5 @@ export interface Recipe {
   name: string;
   description: string;
   servings: number;
+  imageUrl?: string | null;
 }

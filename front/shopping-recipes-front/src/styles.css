@@ -1,6 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  
+  --color-primary: #6b8e72;
+  --color-accent: #d9825b;
+  --color-background: #f7f5ef;
+  --color-surface: #ffffff;
+  --color-text: #252525;
+  --color-text-muted: #6b6b6b;
+  --color-danger: #c75c5c;
+}
 
 @keyframes fadeIn {
   from {

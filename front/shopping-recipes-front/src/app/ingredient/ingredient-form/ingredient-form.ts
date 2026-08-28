@@ -5,11 +5,12 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CreateIngredientRequest } from '../models/create-ingredient-request';
 import { UIStore } from '../../shared/ui.store';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { UiButton } from '../../shared/ui/ui-button/ui-button';
 
 @Component({
   selector: 'app-ingredient-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, UiButton],
   templateUrl: './ingredient-form.html',
   styleUrl: './ingredient-form.css',
 })

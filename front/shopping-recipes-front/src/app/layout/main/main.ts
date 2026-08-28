@@ -4,7 +4,7 @@ import { Header } from '../header/header';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 
 import { RouterOutlet } from '@angular/router';
-import { UiMessages } from '../../shared/ui-messages/ui-messages';
+import { UiMessages } from '../../shared/ui/ui-messages/ui-messages';
 
 @Component({
   selector: 'app-main',

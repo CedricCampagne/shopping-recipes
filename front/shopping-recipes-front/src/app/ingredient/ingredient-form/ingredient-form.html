@@ -1,49 +1,89 @@
-<h1 class="text-2xl font-bold mt-12 mb-6 text-center">Créer un ingrédient</h1>
+<div class="flex justify-center py-6">
+  <div class="w-full max-w-md mt-6 md:mt-12 bg-surface p-4 md:p-6 rounded-xl shadow-sm">
 
-<div class="flex justify-center">
-  <form
-    [formGroup]="form"
-    (ngSubmit)="onSubmit()"
-    class="space-y-4 w-full max-w-xl bg-white p-6 rounded-lg shadow"
-  >
-    <div>
-      <label class="font-medium">
-        Nom
-      </label>
-      <input 
-        type="text" 
-        formControlName="name" 
-        class="border p-2 rounded w-full" 
-      />
+    <!-- Titre -->
+    <h1 class="text-2xl md:text-3xl font-bold text-text mb-6 text-center">
+      Créer un ingrédient
+    </h1>
 
-      @if (form.controls.name.touched && form.controls.name.invalid) {
-        <p class="text-red-600 text-sm">Le nom doit faire au moins 3 caractères.</p>
-      }
-    </div>
-
-    <div>
-      <label class="font-medium">Unité</label>
-
-      @if (units().length > 0) {
-        <select formControlName="unit" class="border p-2 rounded w-full">
-          @for (u of units(); track u) {
-            <option [value]="u">{{ u.toLowerCase() }}</option>
-          }
-        </select>
-      } @else {
-        <p class="text-gray-500 text-sm">Chargement des unités...</p>
-      }
-
-      @if (form.controls.unit.touched && form.controls.unit.invalid) {
-        <p class="text-red-600 text-sm">L’unité est obligatoire.</p>
-      }
-    </div>
-
-    <button
-      type="submit"
-      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all duration-300 w-full"
+    <!-- Formulaire -->
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="space-y-6"
     >
-      Créer
-    </button>
-  </form>
+
+      <!-- Nom -->
+      <div class="flex flex-col gap-1">
+        <label
+          for="name"
+          class="text-sm font-medium text-text"
+        >
+          Nom
+        </label>
+
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2
+                 text-text bg-surface
+                 focus:outline-none focus:border-primary
+                 focus:ring-2 focus:ring-primary/20"
+        />
+
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <p class="text-danger text-sm">
+            Le nom doit faire au moins 3 caractères.
+          </p>
+        }
+      </div>
+
+      <!-- Unité -->
+      <div class="flex flex-col gap-1">
+        <label
+          for="unit"
+          class="text-sm font-medium text-text"
+        >
+          Unité
+        </label>
+
+        @if (units().length > 0) {
+          <select
+            id="unit"
+            formControlName="unit"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2
+                   text-text bg-surface
+                   focus:outline-none focus:border-primary
+                   focus:ring-2 focus:ring-primary/20"
+          >
+            @for (u of units(); track u) {
+              <option [value]="u">
+                {{ u.toLowerCase() }}
+              </option>
+            }
+          </select>
+        } @else {
+          <p class="text-text-muted text-sm">
+            Chargement des unités...
+          </p>
+        }
+
+        @if (form.controls.unit.touched && form.controls.unit.invalid) {
+          <p class="text-danger text-sm">
+            L’unité est obligatoire.
+          </p>
+        }
+      </div>
+
+      <!-- Action -->
+      <div class="flex flex-col gap-2 pt-2">
+        <app-ui-button type="submit">
+          Créer
+        </app-ui-button>
+      </div>
+
+    </form>
+  </div>
 </div>
+

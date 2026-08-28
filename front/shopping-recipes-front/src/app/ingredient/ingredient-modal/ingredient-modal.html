@@ -75,3 +75,153 @@
     </form>
   </div>
 </div>
+
+
+
+
+
+<!-- MODAL OVERLAY -->
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+
+  <!-- MODAL CONTAINER -->
+  <div
+    class="w-full max-w-md bg-surface rounded-xl shadow-lg p-5 md:p-6 space-y-5"
+  >
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-text">
+        Créer un ingrédient
+      </h2>
+
+      <button
+        type="button"
+        class="text-text-muted hover:text-danger transition cursor-pointer"
+        (click)="close()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- FORM -->
+    <form
+      [formGroup]="ingredientForm"
+      class="space-y-5"
+    >
+
+      <!-- Nom -->
+      <div class="flex flex-col gap-1">
+
+        <label
+          for="ingredient-name"
+          class="text-sm font-medium text-text"
+        >
+          Nom
+        </label>
+
+        <input
+          id="ingredient-name"
+          type="text"
+          formControlName="name"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+
+        @if (
+          ingredientForm.controls.name.touched &&
+          ingredientForm.controls.name.hasError('required')
+        ) {
+          <p class="text-danger text-sm">
+            Le nom est obligatoire.
+          </p>
+        } @else if (
+          ingredientForm.controls.name.touched &&
+          ingredientForm.controls.name.hasError('minlength')
+        ) {
+          <p class="text-danger text-sm">
+            Le nom doit avoir au moins 3 caractères.
+          </p>
+        } @else if (
+          ingredientForm.controls.name.touched &&
+          ingredientForm.controls.name.hasError('pattern')
+        ) {
+          <p class="text-danger text-sm">
+            Le nom ne doit pas commencer par un espace.
+          </p>
+        }
+
+      </div>
+
+      <!-- Unité -->
+      <div class="flex flex-col gap-1">
+
+        <label
+          for="ingredient-unit"
+          class="text-sm font-medium text-text"
+        >
+          Unité
+        </label>
+
+        @if (units().length > 0) {
+
+          <select
+            id="ingredient-unit"
+            formControlName="unit"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+                   focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          >
+            @for (u of units(); track u) {
+              <option [value]="u">
+                {{ u.toLowerCase() }}
+              </option>
+            }
+          </select>
+
+        } @else {
+
+          <p class="text-text-muted text-sm">
+            Chargement des unités...
+          </p>
+
+        }
+
+        @if (
+          ingredientForm.controls.unit.touched &&
+          ingredientForm.controls.unit.invalid
+        ) {
+          <p class="text-danger text-sm">
+            L’unité est obligatoire.
+          </p>
+        }
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
+
+        <button
+          type="button"
+          class="px-4 py-2 rounded-lg bg-background text-text
+                 border border-gray-200 hover:border-gray-300 transition cursor-pointer"
+          (click)="close()"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          class="px-4 py-2 rounded-lg bg-primary text-white
+                 hover:opacity-90 transition cursor-pointer"
+          (click)="createIngredient()"
+        >
+          Créer
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+

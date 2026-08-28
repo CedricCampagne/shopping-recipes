@@ -2,11 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { shoppingListService } from './services/shopping-list.service';
 import { CreateShoppingRequest } from './models/create-shopping-list-request';
 import { UIStore } from '../shared/ui.store';
+import { UiButton } from '../shared/ui/ui-button/ui-button';
 
 @Component({
   selector: 'app-shopping-list',
   standalone: true,
-  imports: [],
+  imports: [UiButton],
   templateUrl: './shopping-list.html',
   styleUrl: './shopping-list.css',
 })

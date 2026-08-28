@@ -7,11 +7,13 @@ import { RecipeIgredientService } from '../services/recipe-ingredient.service';
 import { RecipeIngredient } from '../models/recipe-ingredient';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { UIStore } from '../../shared/ui.store';
+import { UiButton } from '../../shared/ui/ui-button/ui-button';
+import { UiLink } from '../../shared/ui/ui-link/ui-link';
 
 @Component({
   selector: 'app-recipe-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UiButton, UiLink],
   templateUrl: './recipe-detail.html',
   styleUrl: './recipe-detail.css',
 })
@@ -67,6 +69,10 @@ export class RecipeDetail {
     setTimeout(() => {
       this.router.navigate(['/app/recipes']);
     }, 1400);
+  }
+
+  goBackToRecipes() {
+    this.router.navigateByUrl('/app/recipes');
   }
 
 }

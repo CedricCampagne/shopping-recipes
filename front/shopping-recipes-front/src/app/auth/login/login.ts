@@ -5,11 +5,13 @@ import { RouterModule, Router } from '@angular/router';
 import { LoginRequest } from '../models/login-request';
 import { AuthService } from '../services/auth.service';
 import { UIStore } from '../../shared/ui.store';
-import { UiMessages } from '../../shared/ui-messages/ui-messages';
+import { UiMessages } from '../../shared/ui/ui-messages/ui-messages';
+import { UiButton } from "../../shared/ui/ui-button/ui-button";
+import { UiLink } from "../../shared/ui/ui-link/ui-link";
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, UiMessages],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, UiMessages, UiButton, UiLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

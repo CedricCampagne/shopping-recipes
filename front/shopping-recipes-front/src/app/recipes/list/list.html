@@ -1,76 +1,50 @@
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-2xl font-bold">Recettes</h1>
+<div class="flex flex-col gap-4 mb-6 sm:flex-row sm:justify-between sm:items-center">
+  <h1 class="text-2xl font-bold text-text">
+    Recettes
+  </h1>
 
-  <button
-    class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300"
-    (click)="goCreate()"
-  >
+  <app-ui-button (click)="goCreate()">
     + Ajouter une recette
-  </button>
+  </app-ui-button>
 </div>
 
-<div class="flex items-center mb-6 gap-6">
-  <h2 class="text-xl font-bold">Filtre :</h2>
+<div class="flex flex-col gap-4 mb-6">
+  
+  <label for="name" class="text-sm font-medium text-text">
+    Rechercher une recette : 
+  </label>
 
-  <div class="flex items-center gap-6">
-    <div>
-      <label for="name">Recherche : </label>
-      <input
-        type="text"
-        id="name"
-        class="border p-2 rounded"
-        placeholder="Nom, description ..."
-        [value]="search()"
-        (input)="search.set($any($event.target).value)"
-      />
-    </div>
+  <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+    <input
+      type="text"
+      id="name"
+      class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
+            focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 max-w-md"
+      placeholder="Nom ou description..."
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    />
+
+    <app-ui-button
+      size="sm"
+      variant="secondary"
+      (click)="resetFilter()"
+    >
+      Réinitialiser
+    </app-ui-button>
   </div>
 
-  <button
-    type="button"
-    class="text-gray-500 hover:text-red-600 transition cursor-pointer"
-    title="Réinitialiser les filtres"
-    (click)="resetFilter()"
-  >
-    <svg class="w-6 h-6" viewBox="0 0 16 16" fill="currentColor">
-      <path
-        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M4.22 4.22a.75.75 0 0 1 1.06 0L8 6.94l2.72-2.72a.75.75 0 1 1 1.06 1.06L9.06 8l2.72 2.72a.75.75 0 1 1-1.06 1.06L8 9.06l-2.72 2.72a.75.75 0 1 1-1.06-1.06L6.94 8 4.22 5.28a.75.75 0 0 1 0-1.06"
-      />
-    </svg>
-  </button>
 </div>
 
-<div class="space-y-4">
+<div class=" flex flex-col gap-4">
   @for (recipe of filteredRecipes(); track recipe.id) {
-    <div
-      class="flex justify-between border-2 border-white p-4 bg-white shadow rounded hover:cursor-pointer hover:border-blue-600 transition-all duration-300"
-      (click)="goToRecipe(recipe.id)"
-    >
-      <div>
-        <div class="flex gap-2 mb-2">
-          <h2 class="text-lg font-semibold">{{ recipe.name }}</h2>
-          @if (isAdded(recipe.id)) {
-            <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">
-              Déjà Ajoutée pour : {{ addedServing(recipe.id) }} pers
-            </span>
-          }
-        </div>
-        <p class="text-gray-600">{{ recipe.description }}</p>
-      </div>
-      <div class="flex gap-2">
-        <button
-          class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 self-center"
-          (click)="update(recipe.id); $event.stopPropagation()"
-        >
-          update
-        </button>
-        <button
-          class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 self-center"
-          (click)="delete(recipe.id); $event.stopPropagation()"
-        >
-          X
-        </button>
-      </div>
-    </div>
+    <app-recipe-card
+      [recipe]="recipe"
+      [isAdded]="isAdded(recipe.id)"
+      [addedServing]="addedServing(recipe.id)"
+      (select)="goToRecipe($event)"
+      (update)="update($event)"
+      (delete)="delete($event)"
+    />
   }
 </div>
