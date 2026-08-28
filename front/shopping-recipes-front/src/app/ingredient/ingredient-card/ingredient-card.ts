@@ -18,10 +18,14 @@ export class IngredientCard {
   ingredient = input.required<IngredientResponse>();
   units = input.required<string[]>();
 
-  isEditing = signal(false);
+  isEditing = input(false);
 
   delete = output<number>();
   updated = output<void>();
+
+  edit = output<number>();
+  closeEdit = output<void>();
+  editCancel = output<void>();
 
   editForm = new FormGroup({
     name: new FormControl('', {
@@ -40,47 +44,47 @@ export class IngredientCard {
       unit: this.ingredient().unit,
     });
 
-    this.isEditing.set(true);
+    this.edit.emit(this.ingredient().id);
   }
 
   cancelEdit() {
-    this.isEditing.set(false);
+    this.editCancel.emit();
     this.editForm.reset();
   }
 
   saveEdit() {
-  if (this.editForm.invalid) return;
+    if (this.editForm.invalid) return;
 
-  const request = this.editForm.getRawValue();
+    const request = this.editForm.getRawValue();
 
-  this.ui.clearMessage();
-  this.ui.startLoading();
+    this.ui.clearMessage();
+    this.ui.startLoading();
 
-  this.ingredientService.updateIngredient(this.ingredient().id, request).subscribe({
-    next: () => {
-      setTimeout(() => {
-        this.ui.stopLoading();
-        this.ui.showSuccess('Ingrédient mis à jour !');
-      }, 800);
+    this.ingredientService.updateIngredient(this.ingredient().id, request).subscribe({
+      next: () => {
+        setTimeout(() => {
+          this.ui.stopLoading();
+          this.ui.showSuccess('Ingrédient mis à jour !');
+        }, 800);
 
-      setTimeout(() => {
-        this.isEditing.set(false);
-        this.editForm.reset();
-        this.updated.emit();
-      }, 1400);
-    },
+        setTimeout(() => {
+          this.editForm.reset();
+          this.closeEdit.emit();
+          this.updated.emit();
+        }, 1400);
+      },
 
-    error: (err) => {
-      setTimeout(() => {
-        this.ui.stopLoading();
-        this.ui.showError('Erreur lors de la mise à jour.');
-        console.error(err);
-      }, 800);
+      error: (err) => {
+        setTimeout(() => {
+          this.ui.stopLoading();
+          this.ui.showError('Erreur lors de la mise à jour.');
+          console.error(err);
+        }, 800);
 
-      setTimeout(() => {
-        this.isEditing.set(false);
-      }, 1400);
-    },
-  });
-}
+        setTimeout(() => {
+          this.closeEdit.emit();
+        }, 1400);
+      },
+    });
+  }
 }

@@ -93,4 +93,14 @@ export class IngredientList {
       },
     });
   }
+
+  editingId = signal<number | null>(null);
+
+  startEdit(id: number) {
+    this.editingId.set(id);
+  }
+
+  cancelEdit() {
+    this.editingId.set(null);
+  }
 }

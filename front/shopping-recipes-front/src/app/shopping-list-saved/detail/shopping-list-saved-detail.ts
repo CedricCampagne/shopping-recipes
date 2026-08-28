@@ -2,11 +2,12 @@ import { Component, inject, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { UIStore } from '../../shared/ui.store';
+import { UiButton } from '../../shared/ui/ui-button/ui-button';
 
 @Component({
   selector: 'app-shopping-list-saved-detail',
   standalone: true,
-  imports: [],
+  imports: [UiButton],
   templateUrl: './shopping-list-saved-detail.html',
   styleUrl: './shopping-list-saved-detail.css',
 })
