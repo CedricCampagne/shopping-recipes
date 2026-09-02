@@ -32,7 +32,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public AuthenticationResponse login(UserLoginRequest request) {
+    public String login(UserLoginRequest request) {
         // Vérifier si le user existe
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("Email inconnu")) ;
@@ -43,8 +43,6 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(token)
-                .build();
+        return token;
     }
 }

@@ -3,6 +3,7 @@ package com.cedric.shoppingrecipes.auth;
 import com.cedric.shoppingrecipes.user.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -43,14 +44,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String authHeader = request.getHeader("Authorization");
+        //String authHeader = request.getHeader("Authorization");
+        Cookie[] cookies = request.getCookies();
+        String token = null;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("access_token")) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
         String email = jwtService.extractUsername(token);
 
         if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {

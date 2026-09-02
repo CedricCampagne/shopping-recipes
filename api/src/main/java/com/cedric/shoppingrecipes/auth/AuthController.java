@@ -4,8 +4,13 @@ import com.cedric.shoppingrecipes.auth.dto.AuthenticationResponse;
 import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,9 +25,23 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthenticationResponse login(
-            @RequestBody UserLoginRequest request
+    public ResponseEntity<Void> login(
+            @RequestBody UserLoginRequest request,
+            HttpServletResponse response
     ) {
-        return authService.login(request);
+        String token = authService.login(request);
+
+        ResponseCookie cookie = ResponseCookie
+                .from("access_token", token)
+                .httpOnly(true)
+                .path("/")
+                .build();
+
+        response.addHeader(
+                HttpHeaders.SET_COOKIE,
+                cookie.toString()
+        );
+
+        return  ResponseEntity.ok().build();
     }
 }
