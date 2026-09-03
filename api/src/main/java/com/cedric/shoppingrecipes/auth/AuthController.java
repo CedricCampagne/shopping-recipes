@@ -1,6 +1,8 @@
 package com.cedric.shoppingrecipes.auth;
 
 import com.cedric.shoppingrecipes.auth.dto.AuthenticationResponse;
+import com.cedric.shoppingrecipes.auth.dto.LoginResult;
+import com.cedric.shoppingrecipes.user.dto.UserResponse;
 import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,14 +28,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(
+    public ResponseEntity<UserResponse> login(
             @RequestBody UserLoginRequest request,
             HttpServletResponse response
     ) {
-        String token = authService.login(request);
+        LoginResult result = authService.login(request);
 
         ResponseCookie cookie = ResponseCookie
-                .from("access_token", token)
+                .from("access_token", result.token())
                 .httpOnly(true)
                 .path("/")
                 .build();
@@ -42,6 +45,13 @@ public class AuthController {
                 cookie.toString()
         );
 
-        return  ResponseEntity.ok().build();
+        return  ResponseEntity.ok(result.user());
+    }
+
+    @GetMapping("/me")
+    public UserResponse me (
+            Authentication authentication
+    ) {
+        return authService.getCurrentUser(authentication);
     }
 }
