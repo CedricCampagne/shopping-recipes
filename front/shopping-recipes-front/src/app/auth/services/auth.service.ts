@@ -16,4 +16,8 @@ export class AuthService {
   login(data: LoginRequest) {
     return this.http.post<UserResponse>(`${this.apiUrl}/login`, data);
   }
+
+  getCurrentUser(){
+    return this.http.get<UserResponse>(`${this.apiUrl}/me`);
+  }
 }
