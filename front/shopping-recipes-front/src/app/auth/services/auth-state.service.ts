@@ -1,12 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { UserResponse } from '../models/user-response';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStateService {
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!this.currentUser();
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    this.currentUser.set(null);
   }
+
+  currentUser = signal<UserResponse | null>(null)
 }

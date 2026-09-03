@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { RegisterRequest } from '../models/register-request';
 import { LoginRequest } from '../models/login-request';
-import { AuthenticationResponse } from '../models/authentication-response';
+import { UserResponse } from '../models/user-response';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -14,6 +14,16 @@ export class AuthService {
   }
 
   login(data: LoginRequest) {
-    return this.http.post<AuthenticationResponse>(`${this.apiUrl}/login`, data);
+    return this.http.post<UserResponse>(`${this.apiUrl}/login`, data);
   }
+
+  logout(){
+    return this.http.post<void>(`${this.apiUrl}/logout`, "");
+  }
+
+  getCurrentUser(){
+    return this.http.get<UserResponse>(`${this.apiUrl}/me`);
+  }
+
+
 }

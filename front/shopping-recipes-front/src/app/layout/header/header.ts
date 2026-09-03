@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { shoppingListService } from '../../shopping-list/services/shopping-list.service';
 import { UiButton } from '../../shared/ui/ui-button/ui-button';
 import { UiLink } from "../../shared/ui/ui-link/ui-link";
+import { AuthService } from '../../auth/services/auth.service';
+import { UIStore } from '../../shared/ui.store';
 
 @Component({
   selector: 'app-header',
@@ -14,8 +16,10 @@ import { UiLink } from "../../shared/ui/ui-link/ui-link";
 })
 export class Header {
   private shoppingListService = inject(shoppingListService);
+  private authService = inject(AuthService);
   private authState = inject(AuthStateService);
   private router = inject(Router);
+  ui = inject(UIStore);
 
   shoppingList = this.shoppingListService.mergedItems;
   savedLists = this.shoppingListService.savedLists;
@@ -30,12 +34,19 @@ export class Header {
 
   logout() {
     this.isFetching.set(true);
-    setTimeout(() => {
-      this.isMenuOpen.set(false);
-      this.isFetching.set(false);
-      this.authState.logout();
-      this.router.navigate(['/login']);
-    }, 2500);
+    this.authService.logout().subscribe({
+      next: (res)=> {
+        setTimeout(() => {
+          this.isMenuOpen.set(false);
+          this.isFetching.set(false);
+          this.authState.logout();
+          this.router.navigate(['/login']);
+        }, 2500);
+      },
+      error: (err) =>{
+        this.isFetching.set(false);
+      }
+    });
   }
 
   goRecipes() {

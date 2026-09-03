@@ -8,6 +8,7 @@ import { UIStore } from '../../shared/ui.store';
 import { UiMessages } from '../../shared/ui/ui-messages/ui-messages';
 import { UiButton } from "../../shared/ui/ui-button/ui-button";
 import { UiLink } from "../../shared/ui/ui-link/ui-link";
+import { AuthStateService } from '../services/auth-state.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,8 @@ import { UiLink } from "../../shared/ui/ui-link/ui-link";
 })
 export class Login {
   private authService = inject(AuthService);
+  private authState = inject(AuthStateService);
+
   private router = inject(Router);
   ui = inject(UIStore);
 
@@ -56,7 +59,7 @@ export class Login {
         }, 800);
 
         setTimeout(() => {
-          localStorage.setItem('token', res.token);
+          this.authState.currentUser.set(res);
           this.ui.clearMessage();
           this.router.navigate(['/app']);
         }, 1400);
