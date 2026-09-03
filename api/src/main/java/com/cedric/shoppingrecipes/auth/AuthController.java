@@ -48,6 +48,23 @@ public class AuthController {
         return  ResponseEntity.ok(result.user());
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout (HttpServletResponse response){
+        ResponseCookie cookie = ResponseCookie
+                .from("access_token", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        response.addHeader(
+                HttpHeaders.SET_COOKIE,
+                cookie.toString()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/me")
     public UserResponse me (
             Authentication authentication

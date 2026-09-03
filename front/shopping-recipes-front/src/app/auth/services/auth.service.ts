@@ -17,7 +17,13 @@ export class AuthService {
     return this.http.post<UserResponse>(`${this.apiUrl}/login`, data);
   }
 
+  logout(){
+    return this.http.post<void>(`${this.apiUrl}/logout`, "");
+  }
+
   getCurrentUser(){
     return this.http.get<UserResponse>(`${this.apiUrl}/me`);
   }
+
+
 }
