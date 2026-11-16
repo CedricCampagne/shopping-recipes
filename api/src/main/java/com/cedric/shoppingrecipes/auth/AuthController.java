@@ -1,15 +1,17 @@
 package com.cedric.shoppingrecipes.auth;
 
-import com.cedric.shoppingrecipes.auth.dto.AuthenticationResponse;
 import com.cedric.shoppingrecipes.auth.dto.LoginResult;
+
 import com.cedric.shoppingrecipes.user.dto.UserResponse;
-import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
-import jakarta.servlet.http.HttpServlet;
+
 import jakarta.servlet.http.HttpServletResponse;
+
 import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public User register(@Valid @RequestBody UserRegisterRequest request) {
+    public UserResponse register(@Valid @RequestBody UserRegisterRequest request) {
         return authService.register(request);
     }
 

@@ -1,20 +1,22 @@
 package com.cedric.shoppingrecipes.auth;
 
-import com.cedric.shoppingrecipes.auth.dto.AuthenticationResponse;
 import com.cedric.shoppingrecipes.auth.dto.LoginResult;
-import com.cedric.shoppingrecipes.user.CustomUserDetails;
+
 import com.cedric.shoppingrecipes.user.dto.UserResponse;
-import com.cedric.shoppingrecipes.user.entity.User;
-import com.cedric.shoppingrecipes.user.exception.UserNotFoundException;
-import com.cedric.shoppingrecipes.user.repository.UserRepository;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
+import com.cedric.shoppingrecipes.user.CustomUserDetails;
+import com.cedric.shoppingrecipes.user.entity.User;
+import com.cedric.shoppingrecipes.user.exception.UserNotFoundException;
+import com.cedric.shoppingrecipes.user.mapper.UserMapper;
+import com.cedric.shoppingrecipes.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +24,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final UserMapper userMapper;
 
-    public User register(UserRegisterRequest request) {
+    public UserResponse register(UserRegisterRequest request) {
         // Verification email déjà présent
         if (userRepository.findByEmail(request.email()).isPresent()){
             throw new RuntimeException("Email dèjà utilisé");
@@ -36,7 +39,9 @@ public class AuthService {
         user.setEmail(request.email());
         user.setPassword(hashed);
 
-        return userRepository.save(user);
+        User saved =  userRepository.save(user);
+
+        return userMapper.toUserResponse(saved);
     }
 
     public LoginResult login(UserLoginRequest request) {
@@ -49,11 +54,7 @@ public class AuthService {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        UserResponse userResponse = new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail()
-        );
+        UserResponse userResponse = userMapper.toUserResponse(user);
 
         String token = jwtService.generateToken(user);
 
@@ -73,11 +74,7 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
 
-        UserResponse currentUser = new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail()
-        );
+        UserResponse currentUser = userMapper.toUserResponse(user);
 
         return currentUser;
     }
