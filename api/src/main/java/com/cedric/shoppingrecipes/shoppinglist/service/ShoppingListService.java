@@ -42,6 +42,8 @@ public class ShoppingListService {
     private final UserRepository userRepository;
     private final ShoppingListMapper shoppingListMapper;
 
+    private record MergeKey(Long ingredientId, String unit){}
+
     @Transactional(readOnly = true)
     public List<ShoppingListResponse> getAll() {
         User user = getCurrentUser();
@@ -78,9 +80,8 @@ public class ShoppingListService {
         shoppingList.setUser(user);
 
         // Les Maps pour fusionner
-        Map<Long, Double> mergedQuantities = new HashMap<>();
-        Map<Long, String> mergedUnits = new HashMap<>();
-        Map<Long, Ingredient> mergedIngredients = new HashMap<>();
+        Map<MergeKey, Double> mergedQuantities = new HashMap<>();
+        Map<MergeKey, Ingredient> mergedIngredients = new HashMap<>();
 
         // Parcourir les recettes
         for (CreateShoppingListRequest.RecipeSelection selection : request.recipes()) {
@@ -97,22 +98,21 @@ public class ShoppingListService {
                     recipeIngredientRepository.findByRecipeId(recipe.getId());
 
             for (RecipeIngredient ri : recipeIngredients) {
-                Long ingredientId = ri.getIngredient().getId();
-                double quantity = ri.getQuantityPerPerson()* selection.servings();
+                MergeKey key = new MergeKey(ri.getIngredient().getId(), ri.getUnit());
+                double quantity = ri.getQuantityPerPerson() * selection.servings();
 
-                mergedQuantities.merge(ingredientId, quantity, Double::sum);
-                mergedUnits.put(ingredientId,ri.getUnit());
-                mergedIngredients.put(ingredientId, ri.getIngredient());
+                mergedQuantities.merge(key, quantity, Double::sum);
+                mergedIngredients.put(key, ri.getIngredient());
             }
+
         }
 
         // Créer les ShoppingListItem
-        for (Long ingredientId : mergedQuantities.keySet()) {
-
+        for (MergeKey key : mergedQuantities.keySet()) {
             ShoppingListItem item = new ShoppingListItem();
-            item.setIngredient(mergedIngredients.get(ingredientId));
-            item.setTotalQuantity(mergedQuantities.get(ingredientId));
-            item.setUnit(mergedUnits.get(ingredientId));
+            item.setIngredient(mergedIngredients.get(key));
+            item.setTotalQuantity(mergedQuantities.get(key));
+            item.setUnit(key.unit());
             item.setShoppingList(shoppingList);
 
             shoppingList.getItems().add(item);
