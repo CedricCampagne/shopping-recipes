@@ -13,5 +13,5 @@ public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredie
 
     List<RecipeIngredient> findByRecipeId(Long recipeId);
     List<RecipeIngredient> findByIngredientId(Long ingredientId);
-
+    boolean existsByIngredientId(Long ingredientId);
 }

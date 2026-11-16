@@ -10,6 +10,9 @@ import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictExcepti
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.mapper.IngredientMapper;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
+import com.cedric.shoppingrecipes.recipeingredient.repository.RecipeIngredientRepository;
+import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListItemRepository;
+import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +23,19 @@ public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
     private final IngredientMapper ingredientMapper;
+    private final RecipeIngredientRepository recipeIngredientRepository;
+    private final ShoppingListItemRepository shoppingListItemRepository;
 
-    public IngredientService(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper) {
+    public IngredientService(
+            IngredientRepository ingredientRepository,
+            IngredientMapper ingredientMapper,
+            RecipeIngredientRepository recipeIngredientRepository,
+            ShoppingListItemRepository shoppingListItemRepository
+    ) {
         this.ingredientRepository = ingredientRepository;
         this.ingredientMapper = ingredientMapper;
+        this.recipeIngredientRepository = recipeIngredientRepository;
+        this.shoppingListItemRepository = shoppingListItemRepository;
     }
 
     public List<IngredientResponse> findAll() {
@@ -75,9 +87,17 @@ public class IngredientService {
     }
 
     public void delete(Long id) {
-        if(!ingredientRepository.existsById(id)){
+        if (!ingredientRepository.existsById(id)) {
             throw new IngredientNotFoundException(id);
         }
+
+        if (recipeIngredientRepository.existsByIngredientId(id)
+                || shoppingListItemRepository.existsByIngredientId(id)) {
+            throw new IngredientConflictException(
+                    "Impossible de supprimer cet ingrédient : il est utilisé dans une recette ou une liste sauvegardée."
+            );
+        }
+
         ingredientRepository.deleteById(id);
     }
 

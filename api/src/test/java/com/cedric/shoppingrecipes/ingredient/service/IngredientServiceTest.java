@@ -9,6 +9,8 @@ import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictExcepti
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.mapper.IngredientMapper;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
+import com.cedric.shoppingrecipes.recipeingredient.repository.RecipeIngredientRepository;
+import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListItemRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,9 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -33,6 +35,12 @@ public class IngredientServiceTest {
 
     @Mock
     private IngredientMapper ingredientMapper;
+
+    @Mock
+    private RecipeIngredientRepository recipeIngredientRepository;
+
+    @Mock
+    private ShoppingListItemRepository shoppingListItemRepository;
 
     @InjectMocks
     private IngredientService ingredientService;
@@ -365,6 +373,28 @@ public class IngredientServiceTest {
                     IngredientNotFoundException.class,
                     ()-> ingredientService.delete(ingredientId)
             );
+        }
+
+        @Test
+        void shouldThrowConflictWhenIngredientIsUsedInRecipe() {
+            when(ingredientRepository.existsById(1L)).thenReturn(true);
+            when(recipeIngredientRepository.existsByIngredientId(1L)).thenReturn(true);
+
+            assertThrows(IngredientConflictException.class,
+                    () -> ingredientService.delete(1L));
+
+            verify(ingredientRepository, never()).deleteById(any());
+        }
+
+        @Test
+        void shouldThrowConflictWhenIngredientIsUsedInShoppingList() {
+            when(ingredientRepository.existsById(1L)).thenReturn(true);
+            when(shoppingListItemRepository.existsByIngredientId(1L)).thenReturn(true);
+
+            assertThrows(IngredientConflictException.class,
+                    () -> ingredientService.delete(1L));
+
+            verify(ingredientRepository, never()).deleteById(any());
         }
     }
 
