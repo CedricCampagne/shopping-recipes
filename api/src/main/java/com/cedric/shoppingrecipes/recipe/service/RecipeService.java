@@ -180,7 +180,7 @@ public class RecipeService {
 
     @Transactional
     public void delete(Long id) {
-        boolean usedShoppingList = shoppingListRepository.existsByRecipes_Id(id);
+        boolean usedShoppingList = shoppingListRepository.existsByRecipes_Recipe_Id(id);
 
         if (usedShoppingList) {
             throw new RecipeConflictException(

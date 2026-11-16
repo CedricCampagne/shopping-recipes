@@ -272,7 +272,7 @@ public class RecipeServiceTest {
             Recipe recipe = new Recipe();
             recipe.setId(recipeId);
 
-            when(shoppingListRepository.existsByRecipes_Id(recipeId))
+            when(shoppingListRepository.existsByRecipes_Recipe_Id(recipeId))
                     .thenReturn(false);
 
             when(recipeRepository.findById(recipeId))
@@ -290,7 +290,7 @@ public class RecipeServiceTest {
             //Arrange
             Long recipeId = 1L;
 
-            when(shoppingListRepository.existsByRecipes_Id(recipeId))
+            when(shoppingListRepository.existsByRecipes_Recipe_Id(recipeId))
                     .thenReturn(false);
 
             when(recipeRepository.findById(recipeId))
@@ -308,7 +308,7 @@ public class RecipeServiceTest {
             //Arrange
             Long recipeId = 1L;
 
-            when(shoppingListRepository.existsByRecipes_Id(recipeId))
+            when(shoppingListRepository.existsByRecipes_Recipe_Id(recipeId))
                     .thenReturn(true);
 
             assertThrows(
