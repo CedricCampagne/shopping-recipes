@@ -48,6 +48,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/me").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/ingredients/units").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
