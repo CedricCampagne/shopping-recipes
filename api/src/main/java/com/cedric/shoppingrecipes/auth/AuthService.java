@@ -2,6 +2,7 @@ package com.cedric.shoppingrecipes.auth;
 
 import com.cedric.shoppingrecipes.auth.dto.LoginResult;
 
+import com.cedric.shoppingrecipes.auth.exception.EmailAlreadyUsedException;
 import com.cedric.shoppingrecipes.auth.exception.InvalidCredentialsException;
 import com.cedric.shoppingrecipes.user.dto.UserResponse;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
@@ -30,7 +31,7 @@ public class AuthService {
     public UserResponse register(UserRegisterRequest request) {
         // Verification email déjà présent
         if (userRepository.findByEmail(request.email()).isPresent()){
-            throw new RuntimeException("Email dèjà utilisé");
+            throw new EmailAlreadyUsedException();
         }
 
         String hashed = passwordEncoder.encode(request.password());

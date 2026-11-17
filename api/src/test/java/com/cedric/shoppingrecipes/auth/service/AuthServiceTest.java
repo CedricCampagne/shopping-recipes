@@ -1,7 +1,9 @@
 package com.cedric.shoppingrecipes.auth;
 
+import com.cedric.shoppingrecipes.auth.exception.EmailAlreadyUsedException;
 import com.cedric.shoppingrecipes.auth.exception.InvalidCredentialsException;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
+import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
 import com.cedric.shoppingrecipes.user.entity.User;
 import com.cedric.shoppingrecipes.user.mapper.UserMapper;
 import com.cedric.shoppingrecipes.user.repository.UserRepository;
@@ -46,5 +48,15 @@ class AuthServiceTest {
 
         assertThrows(InvalidCredentialsException.class,
                 () -> authService.login(new UserLoginRequest("test@example.com", "mauvais")));
+    }
+
+    @Test
+    void shouldThrowEmailAlreadyUsedWhenEmailExists() {
+        when(userRepository.findByEmail("existe@example.com"))
+                .thenReturn(Optional.of(new User()));
+
+        assertThrows(EmailAlreadyUsedException.class,
+                () -> authService.register(
+                        new UserRegisterRequest("pseudo", "existe@example.com", "Un-mot-de-passe-12!")));
     }
 }

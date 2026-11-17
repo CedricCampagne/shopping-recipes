@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.exception;
 
+import com.cedric.shoppingrecipes.auth.exception.EmailAlreadyUsedException;
 import com.cedric.shoppingrecipes.auth.exception.InvalidCredentialsException;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 
@@ -101,5 +102,15 @@ public class GlobalExceptionHandler {
                 null
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(EmailAlreadyUsedException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyUsed(EmailAlreadyUsedException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }
