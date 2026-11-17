@@ -88,7 +88,13 @@ export class IngredientList {
 
         setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showError('Erreur lors de la suppression');
+          if (err.status === 409) {
+            this.ui.showError(
+              'Impossible de supprimer cet ingrédient : il est utilisé dans une recette ou une liste sauvegardée.',
+            );
+          } else {
+            this.ui.showError('Erreur lors de la suppression');
+          }
         }, 800);
       },
     });
