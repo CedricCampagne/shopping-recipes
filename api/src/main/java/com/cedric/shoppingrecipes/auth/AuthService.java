@@ -2,6 +2,7 @@ package com.cedric.shoppingrecipes.auth;
 
 import com.cedric.shoppingrecipes.auth.dto.LoginResult;
 
+import com.cedric.shoppingrecipes.auth.exception.InvalidCredentialsException;
 import com.cedric.shoppingrecipes.user.dto.UserResponse;
 import com.cedric.shoppingrecipes.user.dto.UserLoginRequest;
 import com.cedric.shoppingrecipes.user.dto.UserRegisterRequest;
@@ -47,11 +48,11 @@ public class AuthService {
     public LoginResult login(UserLoginRequest request) {
         // Vérifier si le user existe
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("Email inconnu")) ;
+                .orElseThrow(InvalidCredentialsException::new);
 
         // Vérifier le mot de pass
         if(!passwordEncoder.matches(request.password(), user.getPassword())){
-            throw new RuntimeException("Mot de passe incorrect");
+            throw new InvalidCredentialsException();
         }
 
         UserResponse userResponse = userMapper.toUserResponse(user);

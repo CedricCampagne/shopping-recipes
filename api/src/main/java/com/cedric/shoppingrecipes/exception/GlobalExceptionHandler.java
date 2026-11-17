@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.exception;
 
+import com.cedric.shoppingrecipes.auth.exception.InvalidCredentialsException;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
@@ -88,5 +89,17 @@ public class GlobalExceptionHandler {
                 null
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handlerInvalidCredentialsException(
+            InvalidCredentialsException ex
+    ) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
