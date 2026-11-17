@@ -74,11 +74,9 @@ export class List {
         }, 1400);
       },
       error: (err) => {
-        const status = err.status ?? err.error?.status ?? err.error?.code ?? err.error?.error;
-
         setTimeout(() => {
           this.ui.stopLoading();
-          if (status === 403) {
+          if (err.status === 409) {
             this.ui.showError(
               'Impossible de supprimer cette recette : elle est utilisée dans une liste sauvegardée.',
             );

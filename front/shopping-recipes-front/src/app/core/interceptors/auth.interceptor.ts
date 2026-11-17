@@ -19,9 +19,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err) => {
-      const status = err.status ?? err.error?.status ?? err.error?.code ?? err.error?.error;
-
-      if (status === 401) {
+      if (err.status === 401) {
         console.error('401 : session expirée ou token invalide');
         authState.logout();
         router.navigate(['/login']);
