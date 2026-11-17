@@ -7,6 +7,7 @@ import com.cedric.shoppingrecipes.ingredient.dto.UpdateIngredientRequest;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.service.IngredientService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class IngredientController {
 
     @PostMapping
     public IngredientResponse create(
-            @RequestBody CreateIngredientRequest request
+            @Valid @RequestBody CreateIngredientRequest request
             )
     {
         return ingredientService.create(request);
@@ -58,7 +59,7 @@ public class IngredientController {
     @PutMapping("/{id}")
     public IngredientResponse update(
             @PathVariable Long id,
-            @RequestBody UpdateIngredientRequest request
+            @Valid @RequestBody UpdateIngredientRequest request
             )
     {
         return ingredientService.update(id, request);
