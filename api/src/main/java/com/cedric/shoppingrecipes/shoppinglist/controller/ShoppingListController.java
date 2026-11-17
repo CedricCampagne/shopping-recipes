@@ -6,10 +6,9 @@ import com.cedric.shoppingrecipes.shoppinglist.dto.ShoppingListResponse;
 import com.cedric.shoppingrecipes.shoppinglist.dto.UpdateStatusRequest;
 import com.cedric.shoppingrecipes.shoppinglist.mapper.ShoppingListMapper;
 
-import com.cedric.shoppingrecipes.shoppinglist.entity.ShoppingList;
-
 import com.cedric.shoppingrecipes.shoppinglist.service.ShoppingListService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class ShoppingListController {
     private final ShoppingListMapper shoppingListMapper;
 
     @PostMapping
-    public ShoppingListResponse create(@RequestBody CreateShoppingListRequest request) {
+    public ShoppingListResponse create(@Valid @RequestBody CreateShoppingListRequest request) {
         return shoppingListService.createShoppingList(request);
     }
 
