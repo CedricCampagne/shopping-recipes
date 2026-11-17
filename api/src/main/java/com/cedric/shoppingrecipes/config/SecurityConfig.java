@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/ingredients/units").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/shopping-lists/pdf/**").authenticated()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
