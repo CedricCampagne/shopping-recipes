@@ -1,6 +1,7 @@
 package com.cedric.shoppingrecipes.auth;
 
 import com.cedric.shoppingrecipes.user.service.UserDetailsServiceImpl;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -62,29 +64,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String email = jwtService.extractUsername(token);
+        try {
+            String email = jwtService.extractUsername(token);
 
-        if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            boolean isValid = jwtService.isTokenValid(token, userDetails);
+                boolean isValid = jwtService.isTokenValid(token, userDetails);
 
-            if (isValid) {
+                if (isValid) {
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                        );
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                            );
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (JwtException | IllegalArgumentException | UsernameNotFoundException e) {
+            // Token invalide, expiré, vide, ou utilisateur supprimé : on n'authentifie personne
+            SecurityContextHolder.clearContext();
         }
+
         filterChain.doFilter(request, response);
     }
 }
