@@ -52,19 +52,24 @@ export class ShoppingList {
       },
       error: (err) => {
         console.error('Erreur lors de la sauvegarde :', err);
+
         setTimeout(() => {
           this.ui.stopLoading();
-          if (err.status === 403 || err.status === 404) {
-            const recipeId = err.error.resourceId;
+
+          if (err.status === 404) {
+            const recipeId = err.error?.resourceId;
             const recipe = this.recipes().find((r) => r.recipeId === recipeId);
 
             if (recipe) {
               this.shoppingListService.deleteRecipeAndItems(recipe.uid);
+              this.ui.showError(
+                `La recette (${recipe.name}) n'existe plus. Elle a été retirée de la liste`,
+              );
+            } else {
+              this.ui.showError(`Une recette de la liste n'existe plus.`);
             }
-
-            this.ui.showError(
-              `La recette (${recipe?.name}) n'existe plus. Elle a été retirée de la liste`,
-            );
+          } else {
+            this.ui.showError('Erreur lors de la sauvegarde de la liste.');
           }
         }, 800);
         return;
