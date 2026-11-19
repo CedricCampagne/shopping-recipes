@@ -70,7 +70,11 @@ export class Login {
         }, 800);
 
         setTimeout(() => {
-          this.ui.showError('Email ou mot de passe incorrect');
+          if (err.status === 401) {
+            this.ui.showError(err.error?.message ?? 'Email ou mot de passe incorrect');
+          } else {
+            this.ui.showError('Erreur de connexion, veuillez réessayer plus tard');
+          }
         }, 1400);
       },
     });
