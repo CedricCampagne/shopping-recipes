@@ -7,6 +7,7 @@ import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
 import com.cedric.shoppingrecipes.recipe.service.RecipeService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,14 +41,14 @@ public class RecipeController {
     }
 
     @PostMapping
-    public RecipeDetailResponse create(@RequestBody CreateRecipeRequest request) {
+    public RecipeDetailResponse create(@Valid @RequestBody CreateRecipeRequest request) {
         return recipeService.create(request);
     }
 
     @PutMapping("/{id}")
     public RecipeDetailResponse update(
             @PathVariable Long id,
-            @RequestBody UpdateRecipeRequest request
+            @Valid @RequestBody UpdateRecipeRequest request
             )
     {
         return recipeService.update(id, request);
