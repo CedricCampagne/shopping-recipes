@@ -38,6 +38,7 @@ export class RecipeForm {
     name: new FormControl('', [
       Validators.required,
       Validators.minLength(5),
+      Validators.maxLength(255),
       Validators.pattern(/^\S.*$/),
     ]),
     description: new FormControl('', [
@@ -47,7 +48,7 @@ export class RecipeForm {
     ]),
     servings: new FormControl(4, [Validators.required, Validators.min(1)]),
     ingredientSelect: new FormControl<number | null>(null),
-    ingredientQuantityPerPerson: new FormControl(null, [Validators.min(1)]),
+    ingredientQuantityPerPerson: new FormControl<number | null>(null, [Validators.min(0.01)]),
   });
 
   constructor() {
@@ -130,8 +131,11 @@ export class RecipeForm {
       error: (err) => {
         setTimeout(() => {
           this.ui.stopLoading();
-          this.ui.showError('Erreur lors de la création de la recette.');
-          console.error(err);
+          if (err.status === 400) {
+            this.ui.showError(err.error?.message ?? 'Erreur lors de la création de la recette.');
+          } else {
+            this.ui.showError('Erreur lors de la création de la recette.');
+          }
         }, 800);
       },
     });
@@ -146,8 +150,8 @@ export class RecipeForm {
       return;
     }
 
-    if (!quantity) {
-      this.ui.showError('Sélectionne une quantité.');
+    if (!quantity || quantity < 0.01) {
+      this.ui.showError('Saisis une quantité supérieure à 0.');
       return;
     }
 
