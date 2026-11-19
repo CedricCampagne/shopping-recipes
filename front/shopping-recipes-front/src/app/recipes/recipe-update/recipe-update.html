@@ -22,6 +22,23 @@
           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
                  focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
+        @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+          <p class="text-danger text-sm">
+            Le nom de la recette est obligatoire
+          </p>
+        } @else if (form.controls.name.touched && form.controls.name.hasError('minlength')) {
+          <p class="text-danger text-sm">
+            Le nom de la recette doit avoir au moins 5 caractères
+          </p>
+        } @else if (form.controls.name.touched && form.controls.name.hasError('maxlength')) {
+          <p class="text-danger text-sm">
+            Le nom de la recette ne doit pas dépasser 255 caractères
+          </p>
+        } @else if (form.controls.name.touched && form.controls.name.hasError('pattern')) {
+          <p class="text-danger text-sm">
+            Le nom ne doit pas commencer par un espace.
+          </p>
+        }
       </div>
 
       <!-- Description -->
@@ -37,6 +54,19 @@
           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface resize-none
                  focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
         ></textarea>
+        @if (form.controls.description.touched && form.controls.description.hasError('required')) {
+          <p class="text-danger text-sm">
+            La description de la recette est obligatoire
+          </p>
+        } @else if (form.controls.description.touched && form.controls.description.hasError('minlength')) {
+          <p class="text-danger text-sm">
+            La description de la recette doit avoir au moins 15 caractères
+          </p>
+        } @else if (form.controls.description.touched && form.controls.description.hasError('pattern')) {
+          <p class="text-danger text-sm">
+            La description ne doit pas commencer par un espace.
+          </p>
+        }
       </div>
 
       <!-- Portions -->
@@ -53,6 +83,15 @@
           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-text bg-surface
                  focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
+        @if (form.controls.servings.touched && form.controls.servings.hasError('required')) {
+          <p class="text-danger text-sm">
+            Le nombre de portions est obligatoire
+          </p>
+        } @else if (form.controls.servings.touched && form.controls.servings.hasError('min')) {
+          <p class="text-danger text-sm">
+            Le nombre de portions doit être au moins 1
+          </p>
+        }
       </div>
 
       <div class="flex flex-col gap-8 pt-5 border-t border-gray-200">
@@ -102,7 +141,7 @@
                   type="button"
                   class="text-danger text-sm font-medium hover:underline cursor-pointer
                          self-start sm:self-auto"
-                  (click)="removeIngredient(ing.id!)"
+                  (click)="removeIngredient($index)"
                 >
                   Supprimer
                 </button>
@@ -147,7 +186,7 @@
 
       <div class="flex items-start gap-4 pt-2">
         <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <app-ui-button type="submit">
+          <app-ui-button type="submit" [disabled]="ui.isLoading()">
             Mettre à jour
           </app-ui-button>
 
@@ -163,4 +202,3 @@
     </form>
   </div>
 </div>
-

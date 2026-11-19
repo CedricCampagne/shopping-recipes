@@ -44,6 +44,7 @@ export class RecipeUpdate {
     name: new FormControl('', [
       Validators.required,
       Validators.minLength(5),
+      Validators.maxLength(255),
       Validators.pattern(/^\S.*$/),
     ]),
     description: new FormControl('', [
@@ -108,34 +109,28 @@ export class RecipeUpdate {
   // Envoi du PUT au backend
   onSubmit() {
     this.ui.clearMessage();
-    this.ui.startLoading();
 
-    //Validation du form
+    // Validation du form
     if (this.form.invalid) {
       this.ui.showError('Le formulaire est incomplet ou invalide.');
       this.form.markAllAsTouched();
       return;
     }
 
-    //Validation liste de RI non vide
+    // Validation liste de RI non vide et quantités valides
     const emptyList = this.updateIngredients().length === 0;
-
-    //validations des quantiés
     const invalidQuantity = this.updateIngredients().some(
-      (ing) => ing.quantityPerPerson === null || ing.quantityPerPerson <= 0,
+      (ing) => ing.quantityPerPerson === null || ing.quantityPerPerson < 0.01,
     );
 
-    const invalid = emptyList || invalidQuantity;
-
-    if (invalid) {
-      setTimeout(() => {
-        this.ui.stopLoading();
-        this.ui.showError(
-          'Veuillez remplir une quantité valide (> 0) et ajouter au moins un ingrédient.',
-        );
-      }, 800);
+    if (emptyList || invalidQuantity) {
+      this.ui.showError(
+        'Veuillez remplir une quantité valide (> 0.01) et ajouter au moins un ingrédient.',
+      );
       return;
     }
+
+    this.ui.startLoading();
 
     const request: UpdateRecipeRequest = {
       name: this.form.value.name!,
@@ -156,9 +151,14 @@ export class RecipeUpdate {
         }, 1400);
       },
       error: (err) => {
+        this.ui.stopLoading();
+
         setTimeout(() => {
-          this.ui.showError('Erreur lors de la mise à jour.');
-          console.error(err);
+          if (err.status === 400) {
+            this.ui.showError(err.error?.message ?? 'Erreur lors de la mise à jour.');
+          } else {
+            this.ui.showError('Erreur lors de la mise à jour.');
+          }
         }, 800);
       },
     });
@@ -175,6 +175,10 @@ export class RecipeUpdate {
 
     const ing = this.allIngredients().find((i) => i.id === id);
     if (!ing) return;
+    if (this.updateIngredients().some((i) => i.ingredientId === ing.id)) {
+      this.ui.showError('Cet ingrédient est déjà ajouté.');
+      return;
+    }
 
     this.updateIngredients.update((list) => [
       ...list,
@@ -190,8 +194,8 @@ export class RecipeUpdate {
     this.selectedIngredient.set(null);
   }
 
-  removeIngredient(id: number) {
-    this.updateIngredients.update((list) => list.filter((ing) => ing.id != id));
+  removeIngredient(index: number) {
+    this.updateIngredients.update((list) => list.filter((_,i) => i !== index));
   }
 
   goToRecipe() {
