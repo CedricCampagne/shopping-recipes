@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -21,6 +23,8 @@ public record UpdateRecipeRequest(
         @Min(value = 1, message = "Le nombre de portions doit être au moins 1")
         Integer servings,
 
+        @NotEmpty(message = "La recette doit contenir au moins un ingrédient")
+        @Valid
         List<UpdateRecipeIngredientRequest> ingredients
 ) {
 }
