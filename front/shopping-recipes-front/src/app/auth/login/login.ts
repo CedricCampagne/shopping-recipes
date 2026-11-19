@@ -32,8 +32,8 @@ export class Login {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.minLength(12),
-        Validators.pattern(/[^A-Za-z0-9]/),
+        // Validators.minLength(12),
+        // Validators.pattern(/[^A-Za-z0-9]/),
       ],
     }),
   });

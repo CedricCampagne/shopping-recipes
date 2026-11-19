@@ -50,7 +50,8 @@
           <p class="text-danger text-sm">
             Le mot de passe est obligatoire
           </p>
-        } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+        } 
+        <!-- @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
           <p class="text-danger text-sm">
             Le mot de passe doit contenir au moins 12 caractères
           </p>
@@ -58,7 +59,7 @@
           <p class="text-danger text-sm">
             Le mot de passe doit contenir au moins un caractère spécial
           </p>
-        }
+        } -->
       </div>
       <div class="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
         <app-ui-button
