@@ -2,14 +2,20 @@ package com.cedric.shoppingrecipes.exception;
 
 import com.cedric.shoppingrecipes.auth.exception.EmailAlreadyUsedException;
 import com.cedric.shoppingrecipes.auth.exception.InvalidCredentialsException;
-import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
+import com.cedric.shoppingrecipes.auth.exception.UsernameAlreadyUsedException;
 
+import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
+
 import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
-import com.cedric.shoppingrecipes.recipeingredient.exception.RecipeIngredientNotFoundException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
+
+import com.cedric.shoppingrecipes.recipeingredient.exception.RecipeIngredientNotFoundException;
+
 import com.cedric.shoppingrecipes.shoppinglist.exception.ShoppingListNotFoundException;
+
 import com.cedric.shoppingrecipes.user.exception.UserNotFoundException;
+
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -110,6 +116,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyUsedException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyUsed(EmailAlreadyUsedException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(UsernameAlreadyUsedException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameAlreadyUsed(
+            UsernameAlreadyUsedException ex
+    ) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage(),
