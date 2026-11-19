@@ -30,16 +30,20 @@ export class Register {
 
   form = new FormGroup(
     {
-      username: new FormControl('', { nonNullable: true, validators: Validators.required }),
+      username: new FormControl('', { 
+        nonNullable: true,
+        validators: [Validators.required, Validators.maxLength(50)]
+      }),
       email: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, Validators.email],
+        validators: [Validators.required, Validators.email, Validators.maxLength(255)],
       }),
       password: new FormControl('', {
         nonNullable: true,
         validators: [
           Validators.required,
           Validators.minLength(12),
+          Validators.maxLength(72),
           Validators.pattern(/[^A-Za-z0-9]/),
         ],
       }),
@@ -79,7 +83,11 @@ export class Register {
         }, 800);
 
         setTimeout(() => {
-          this.ui.showError("Erreur lors de l'inscription");
+          if (err.status === 409 || err.status === 400) {
+            this.ui.showError(err.error?.message ?? "Erreur lors de l'inscription");
+          } else {
+            this.ui.showError("Erreur lors de l'inscription");
+          }
         }, 1400);
       },
     });

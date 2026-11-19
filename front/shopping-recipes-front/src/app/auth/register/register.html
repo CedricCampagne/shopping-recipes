@@ -29,9 +29,13 @@
                  focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
 
-        @if (form.controls.username.touched && form.controls.username.invalid) {
+        @if (form.controls.username.touched && form.controls.username.hasError('required')) {
           <p class="text-danger text-sm">
-            Le nom est obligatoire
+            Le nom d'utilisateur est obligatoire
+          </p>
+        } @else if (form.controls.username.touched && form.controls.username.hasError('maxlength')) {
+          <p class="text-danger text-sm">
+            Le nom d'utilisateur ne doit pas dépasser 50 caractères
           </p>
         }
       </div>
@@ -57,6 +61,10 @@
           <p class="text-danger text-sm">
             Le format de l'email est invalide
           </p>
+        } @else if (form.controls.email.touched && form.controls.email.hasError('maxlength')) {
+          <p class="text-danger text-sm">
+            L'email ne doit pas dépasser 255 caractères
+          </p>
         }
       </div>
 
@@ -80,6 +88,10 @@
         } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
           <p class="text-danger text-sm">
             Le mot de passe doit contenir au moins 12 caractères
+          </p>
+        } @else if (form.controls.password.touched && form.controls.password.hasError('maxlength')) {
+          <p class="text-danger text-sm">
+            Le mot de passe ne doit pas dépasser 72 caractères
           </p>
         } @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
           <p class="text-danger text-sm">
