@@ -79,7 +79,7 @@ public class RecipeService {
                     ri.setRecipe(recipe);
                     ri.setIngredient(ingredient);
                     ri.setQuantityPerPerson(riRequest.quantityPerPerson());
-                    ri.setUnit(riRequest.unit());
+                    ri.setUnit(ingredient.getUnit().name());
 
                     return ri;
                 })
@@ -127,13 +127,13 @@ public class RecipeService {
                                         .findFirst()
                                         .orElseThrow(() -> new RecipeIngredientNotFoundException(riRequest.id()));
 
-                                // Mettre à jour quantité + unité
+                                // Mettre à jour la quantité (l'unité déjà enregistrée est conservée)
                                 existing.setQuantityPerPerson(riRequest.quantityPerPerson());
-                                existing.setUnit(riRequest.unit());
 
-                                // Si l’ingrédient a changé → remplacer
+                                // Si l’ingrédient a changé → remplacer et reprendre l'unité du nouvel ingrédient
                                 if (!existing.getIngredient().getId().equals(riRequest.ingredientId())) {
                                     existing.setIngredient(ingredient);
+                                    existing.setUnit(ingredient.getUnit().name());
                                 }
 
                                 return existing;
@@ -144,7 +144,7 @@ public class RecipeService {
                             ri.setRecipe(recipe);
                             ri.setIngredient(ingredient);
                             ri.setQuantityPerPerson(riRequest.quantityPerPerson());
-                            ri.setUnit(riRequest.unit());
+                            ri.setUnit(ingredient.getUnit().name());
 
                             return ri;
                         })

@@ -1,5 +1,6 @@
 package com.cedric.shoppingrecipes.recipe.service;
 
+import com.cedric.shoppingrecipes.ingredient.Unit;
 import com.cedric.shoppingrecipes.ingredient.entity.Ingredient;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 import com.cedric.shoppingrecipes.ingredient.repository.IngredientRepository;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +114,7 @@ public class RecipeServiceTest {
             Ingredient tomato = new Ingredient();
             tomato.setId(ingredientId);
             tomato.setName("Tomate");
+            tomato.setUnit(Unit.g);
 
             CreateRecipeIngredientRequest createRecipeIngredientRequest =
                     new CreateRecipeIngredientRequest(
@@ -167,10 +170,12 @@ public class RecipeServiceTest {
             Ingredient tomato = new Ingredient();
             tomato.setId(tomatoId);
             tomato.setName("Tomate");
+            tomato.setUnit(Unit.g);
 
             Ingredient onion = new Ingredient();
             onion.setId(onionId);
             onion.setName("Oignon");
+            onion.setUnit(Unit.g);
 
             CreateRecipeIngredientRequest tomatoRequest =
                     new CreateRecipeIngredientRequest(
@@ -259,6 +264,30 @@ public class RecipeServiceTest {
                     () -> recipeService.create(request)
             );
         }
+
+        @Test
+        void shouldUseIngredientUnitInsteadOfRequestedUnit() {
+            Ingredient pasta = new Ingredient();
+            pasta.setId(1L);
+            pasta.setName("Pâtes");
+            pasta.setUnit(Unit.g);
+
+            CreateRecipeRequest request = new CreateRecipeRequest(
+                    "Pâtes au beurre",
+                    "Une recette simple",
+                    4,
+                    List.of(new CreateRecipeIngredientRequest(1L, 100.0, "kg"))
+            );
+
+            when(ingredientRepository.findById(1L)).thenReturn(Optional.of(pasta));
+            when(recipeRepository.save(any(Recipe.class))).thenAnswer(inv -> inv.getArgument(0));
+
+            recipeService.create(request);
+
+            ArgumentCaptor<Recipe> captor = ArgumentCaptor.forClass(Recipe.class);
+            verify(recipeRepository).save(captor.capture());
+            assertEquals("g", captor.getValue().getIngredients().get(0).getUnit());
+        }
     }
 
     @Nested
@@ -336,6 +365,7 @@ public class RecipeServiceTest {
             Ingredient tomato = new Ingredient();
             tomato.setId(ingredientId);
             tomato.setName("Tomate");
+            //tomato.setUnit(Unit.g);
 
             Long recipeIngredientId = 10L;
 
@@ -405,6 +435,7 @@ public class RecipeServiceTest {
             Ingredient tomato = new Ingredient();
             tomato.setId(ingredientId);
             tomato.setName("Tomate");
+            tomato.setUnit(Unit.g);
 
             Long recipeIngredientId = 10L;
 
@@ -422,6 +453,7 @@ public class RecipeServiceTest {
             Ingredient onion = new Ingredient();
             onion.setId(onionId);
             onion.setName("Oignon");
+            onion.setUnit(Unit.g);
 
             UpdateRecipeIngredientRequest onionRequest =
                     new UpdateRecipeIngredientRequest(
@@ -495,6 +527,7 @@ public class RecipeServiceTest {
             Ingredient tomato = new Ingredient();
             tomato.setId(ingredientId);
             tomato.setName("Tomate");
+            tomato.setUnit(Unit.g);
 
             Long recipeIngredientId = 10L;
 
@@ -512,6 +545,7 @@ public class RecipeServiceTest {
             Ingredient onion = new Ingredient();
             onion.setId(onionId);
             onion.setName("Oignon");
+            onion.setUnit(Unit.g);
 
             UpdateRecipeIngredientRequest onionRequest =
                     new UpdateRecipeIngredientRequest(
@@ -557,5 +591,89 @@ public class RecipeServiceTest {
             //Assert
             assertEquals(response, result);
         }
+    }
+
+    @Test
+    void shouldKeepUnitOfExistingLineAndUseIngredientUnitForNewLine() {
+        Ingredient butter = new Ingredient();
+        butter.setId(1L);
+        butter.setName("Beurre");
+        butter.setUnit(Unit.kg);   // l'ingrédient est passé en kg
+
+        Ingredient oil = new Ingredient();
+        oil.setId(2L);
+        oil.setName("Huile");
+        oil.setUnit(Unit.ml);
+
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+
+        RecipeIngredient existing = new RecipeIngredient();
+        existing.setId(10L);
+        existing.setRecipe(recipe);
+        existing.setIngredient(butter);
+        existing.setQuantityPerPerson(100.0);
+        existing.setUnit("g");     // la ligne a été saisie quand c'était des grammes
+        recipe.setIngredients(new ArrayList<>(List.of(existing)));
+
+        UpdateRecipeRequest request = new UpdateRecipeRequest(
+                "Gâteau", "Une description assez longue", 4,
+                List.of(
+                        new UpdateRecipeIngredientRequest(10L, 1L, 150.0, "kg"),
+                        new UpdateRecipeIngredientRequest(null, 2L, 5.0, "g")
+                )
+        );
+
+        when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(recipe);
+        when(ingredientRepository.findById(1L)).thenReturn(Optional.of(butter));
+        when(ingredientRepository.findById(2L)).thenReturn(Optional.of(oil));
+        when(recipeRepository.save(any(Recipe.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        recipeService.update(1L, request);
+
+        ArgumentCaptor<Recipe> captor = ArgumentCaptor.forClass(Recipe.class);
+        verify(recipeRepository).save(captor.capture());
+        List<RecipeIngredient> lines = captor.getValue().getIngredients();
+        assertEquals("g", lines.get(0).getUnit());    // ligne existante : unité conservée
+        assertEquals("ml", lines.get(1).getUnit());   // nouvelle ligne : unité de l'ingrédient
+    }
+
+    @Test
+    void shouldUseNewIngredientUnitWhenIngredientOfExistingLineChanges() {
+        Ingredient pasta = new Ingredient();
+        pasta.setId(1L);
+        pasta.setName("Pâtes");
+        pasta.setUnit(Unit.g);
+
+        Ingredient cream = new Ingredient();
+        cream.setId(4L);
+        cream.setName("Crème fraîche");
+        cream.setUnit(Unit.ml);
+
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+
+        RecipeIngredient existing = new RecipeIngredient();
+        existing.setId(10L);
+        existing.setRecipe(recipe);
+        existing.setIngredient(pasta);
+        existing.setQuantityPerPerson(100.0);
+        existing.setUnit("g");
+        recipe.setIngredients(new ArrayList<>(List.of(existing)));
+
+        UpdateRecipeRequest request = new UpdateRecipeRequest(
+                "Pâtes", "Une description assez longue", 4,
+                List.of(new UpdateRecipeIngredientRequest(10L, 4L, 20.0, "g"))
+        );
+
+        when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(recipe);
+        when(ingredientRepository.findById(4L)).thenReturn(Optional.of(cream));
+        when(recipeRepository.save(any(Recipe.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        recipeService.update(1L, request);
+
+        ArgumentCaptor<Recipe> captor = ArgumentCaptor.forClass(Recipe.class);
+        verify(recipeRepository).save(captor.capture());
+        assertEquals("ml", captor.getValue().getIngredients().get(0).getUnit());
     }
 }
