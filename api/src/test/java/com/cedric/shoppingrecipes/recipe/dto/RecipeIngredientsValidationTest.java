@@ -33,11 +33,11 @@ class RecipeIngredientsValidationTest {
     }
 
     private CreateRecipeRequest createWithLine(Long ingredientId, Double quantity, String unit) {
-        return create(List.of(new CreateRecipeIngredientRequest(ingredientId, quantity, unit)));
+        return create(List.of(new CreateRecipeIngredientRequest(ingredientId, quantity)));
     }
 
-    private UpdateRecipeRequest updateWithLine(Long id, Long ingredientId, Double quantity, String unit) {
-        return update(List.of(new UpdateRecipeIngredientRequest(id, ingredientId, quantity, unit)));
+    private UpdateRecipeRequest updateWithLine(Long id, Long ingredientId, Double quantity) {
+        return update(List.of(new UpdateRecipeIngredientRequest(id, ingredientId, quantity)));
     }
 
     // --- Create ---
@@ -74,18 +74,12 @@ class RecipeIngredientsValidationTest {
         assertTrue(hasViolationAt(createWithLine(null, 1.0, "g"), "ingredients[0].ingredientId"));
     }
 
-    @Test
-    void create_shouldRejectBlankOrTooLongUnit() {
-        assertTrue(hasViolationAt(createWithLine(1L, 1.0, ""), "ingredients[0].unit"));
-        assertTrue(hasViolationAt(createWithLine(1L, 1.0, "a".repeat(51)), "ingredients[0].unit"));
-    }
-
     // --- Update ---
 
     @Test
     void update_shouldAcceptNewLineAndExistingLine() {
-        assertTrue(validator.validate(updateWithLine(null, 1L, 0.5, "g")).isEmpty());
-        assertTrue(validator.validate(updateWithLine(5L, 1L, 0.5, "g")).isEmpty());
+        assertTrue(validator.validate(updateWithLine(null, 1L, 0.5)).isEmpty());
+        assertTrue(validator.validate(updateWithLine(5L, 1L, 0.5)).isEmpty());
     }
 
     @Test
@@ -96,13 +90,12 @@ class RecipeIngredientsValidationTest {
 
     @Test
     void update_shouldRejectInvalidQuantity() {
-        assertTrue(hasViolationAt(updateWithLine(null, 1L, 0.0, "g"), "ingredients[0].quantityPerPerson"));
-        assertTrue(hasViolationAt(updateWithLine(null, 1L, 0.005, "g"), "ingredients[0].quantityPerPerson"));
+        assertTrue(hasViolationAt(updateWithLine(null, 1L, 0.0), "ingredients[0].quantityPerPerson"));
+        assertTrue(hasViolationAt(updateWithLine(null, 1L, 0.005), "ingredients[0].quantityPerPerson"));
     }
 
     @Test
-    void update_shouldRejectMissingIngredientIdAndBlankUnit() {
-        assertTrue(hasViolationAt(updateWithLine(null, null, 1.0, "g"), "ingredients[0].ingredientId"));
-        assertTrue(hasViolationAt(updateWithLine(null, 1L, 1.0, " "), "ingredients[0].unit"));
+    void update_shouldRejectMissingIngredientId() {
+        assertTrue(hasViolationAt(updateWithLine(null, null, 1.0), "ingredients[0].ingredientId"));
     }
 }

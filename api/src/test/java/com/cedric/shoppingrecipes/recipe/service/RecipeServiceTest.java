@@ -119,8 +119,7 @@ public class RecipeServiceTest {
             CreateRecipeIngredientRequest createRecipeIngredientRequest =
                     new CreateRecipeIngredientRequest(
                             ingredientId,
-                            1.0,
-                            "piece"
+                            1.0
                     );
 
             CreateRecipeRequest request =
@@ -180,15 +179,13 @@ public class RecipeServiceTest {
             CreateRecipeIngredientRequest tomatoRequest =
                     new CreateRecipeIngredientRequest(
                             tomatoId,
-                            1.0,
-                            "piece"
+                            1.0
                     );
 
             CreateRecipeIngredientRequest onionRequest =
                     new CreateRecipeIngredientRequest(
                             onionId,
-                            0.5,
-                            "piece"
+                            0.5
                     );
 
             CreateRecipeRequest request =
@@ -243,8 +240,7 @@ public class RecipeServiceTest {
             CreateRecipeIngredientRequest ingredientRequest =
                     new CreateRecipeIngredientRequest(
                             ingredientId,
-                            1.0,
-                            "piece"
+                            1.0
                     );
 
             CreateRecipeRequest request =
@@ -276,7 +272,7 @@ public class RecipeServiceTest {
                     "Pâtes au beurre",
                     "Une recette simple",
                     4,
-                    List.of(new CreateRecipeIngredientRequest(1L, 100.0, "kg"))
+                    List.of(new CreateRecipeIngredientRequest(1L, 100.0))
             );
 
             when(ingredientRepository.findById(1L)).thenReturn(Optional.of(pasta));
@@ -382,8 +378,7 @@ public class RecipeServiceTest {
                     new UpdateRecipeIngredientRequest(
                             recipeIngredientId, // id existant
                             ingredientId,       // tomate
-                            2.0,
-                            "piece"
+                            2.0
                     );
 
             UpdateRecipeRequest request =
@@ -459,16 +454,14 @@ public class RecipeServiceTest {
                     new UpdateRecipeIngredientRequest(
                             null,       // ⭐ nouveau RecipeIngredient
                             onionId,
-                            0.5,
-                            "piece"
+                            0.5
                     );
 
             UpdateRecipeIngredientRequest tomatoRequest =
                     new UpdateRecipeIngredientRequest(
                             recipeIngredientId, // ID existant
                             ingredientId,
-                            1.0,
-                            "piece"
+                            1.0
                     );
 
             UpdateRecipeRequest request =
@@ -551,8 +544,7 @@ public class RecipeServiceTest {
                     new UpdateRecipeIngredientRequest(
                             recipeIngredientId,       // ⭐ nouveau RecipeIngredient
                             onionId,
-                            0.5,
-                            "piece"
+                            0.5
                     );
 
             UpdateRecipeRequest request =
@@ -619,8 +611,8 @@ public class RecipeServiceTest {
         UpdateRecipeRequest request = new UpdateRecipeRequest(
                 "Gâteau", "Une description assez longue", 4,
                 List.of(
-                        new UpdateRecipeIngredientRequest(10L, 1L, 150.0, "kg"),
-                        new UpdateRecipeIngredientRequest(null, 2L, 5.0, "g")
+                        new UpdateRecipeIngredientRequest(10L, 1L, 150.0),
+                        new UpdateRecipeIngredientRequest(null, 2L, 5.0)
                 )
         );
 
@@ -663,7 +655,7 @@ public class RecipeServiceTest {
 
         UpdateRecipeRequest request = new UpdateRecipeRequest(
                 "Pâtes", "Une description assez longue", 4,
-                List.of(new UpdateRecipeIngredientRequest(10L, 4L, 20.0, "g"))
+                List.of(new UpdateRecipeIngredientRequest(10L, 4L, 20.0))
         );
 
         when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(recipe);
