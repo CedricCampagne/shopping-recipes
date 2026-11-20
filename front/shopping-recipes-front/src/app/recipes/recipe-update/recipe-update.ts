@@ -136,7 +136,11 @@ export class RecipeUpdate {
       name: this.form.value.name!,
       description: this.form.value.description!,
       servings: Number(this.form.value.servings),
-      ingredients: this.updateIngredients(),
+      ingredients: this.updateIngredients().map(({ id, ingredientId, quantityPerPerson }) => ({
+        id,
+        ingredientId,
+        quantityPerPerson,
+      })),
     };
 
     this.recipesService.updateRecipe(this.id, request).subscribe({
