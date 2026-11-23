@@ -29,6 +29,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static  org.mockito.Mockito.never;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -390,7 +391,7 @@ public class RecipeServiceTest {
                     );
 
             when(recipeRepository.findByIdWithIngredients(recipeId))
-                    .thenReturn(recipe);
+                    .thenReturn(Optional.of(recipe));
 
             when(ingredientRepository.findById(ingredientId))
                     .thenReturn(Optional.of(tomato));
@@ -476,7 +477,7 @@ public class RecipeServiceTest {
                     );
 
             when(recipeRepository.findByIdWithIngredients(recipeId))
-                    .thenReturn(recipe);
+                    .thenReturn(Optional.of(recipe));
 
             when(ingredientRepository.findById(ingredientId))
                     .thenReturn(Optional.of(tomato));
@@ -558,7 +559,7 @@ public class RecipeServiceTest {
                     );
 
             when(recipeRepository.findByIdWithIngredients(recipeId))
-                    .thenReturn(recipe);
+                    .thenReturn(Optional.of(recipe));
 
             when(ingredientRepository.findById(onionId))
                     .thenReturn(Optional.of(onion));
@@ -583,6 +584,18 @@ public class RecipeServiceTest {
             //Assert
             assertEquals(response, result);
         }
+    }
+
+    @Test
+    void update_shouldThrowRecipeNotFoundException_whenRecipeDoesNotExist() {
+        when(recipeRepository.findByIdWithIngredients(999L)).thenReturn(Optional.empty());
+
+        UpdateRecipeRequest request = new UpdateRecipeRequest(
+                "Nom", "Description", 2, List.of());
+
+        assertThrows(RecipeNotFoundException.class, () -> recipeService.update(999L, request));
+
+        verify(recipeRepository, never()).save(any());
     }
 
     @Test
@@ -616,7 +629,7 @@ public class RecipeServiceTest {
                 )
         );
 
-        when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(recipe);
+        when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(Optional.of(recipe));
         when(ingredientRepository.findById(1L)).thenReturn(Optional.of(butter));
         when(ingredientRepository.findById(2L)).thenReturn(Optional.of(oil));
         when(recipeRepository.save(any(Recipe.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -658,7 +671,7 @@ public class RecipeServiceTest {
                 List.of(new UpdateRecipeIngredientRequest(10L, 4L, 20.0))
         );
 
-        when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(recipe);
+        when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(Optional.of(recipe));
         when(ingredientRepository.findById(4L)).thenReturn(Optional.of(cream));
         when(recipeRepository.save(any(Recipe.class))).thenAnswer(inv -> inv.getArgument(0));
 

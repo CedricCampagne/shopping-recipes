@@ -98,7 +98,8 @@ public class RecipeService {
     @Transactional
     public RecipeDetailResponse update(Long id, UpdateRecipeRequest request) {
 
-        Recipe recipe = recipeRepository.findByIdWithIngredients(id);
+        Recipe recipe = recipeRepository.findByIdWithIngredients(id)
+                        .orElseThrow(() -> new RecipeNotFoundException(id));
 
         recipe.setName(request.name());
         recipe.setDescription(request.description());

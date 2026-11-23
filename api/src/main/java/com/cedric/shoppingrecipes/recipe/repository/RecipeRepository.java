@@ -33,5 +33,5 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         where r.id = :id
         """
     )
-    Recipe findByIdWithIngredients(Long id);
+    Optional<Recipe> findByIdWithIngredients(Long id);
 }
