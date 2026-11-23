@@ -9,6 +9,7 @@ import com.cedric.shoppingrecipes.recipe.dto.CreateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
+import com.cedric.shoppingrecipes.recipe.exception.DuplicateRecipeIngredientException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
@@ -284,6 +285,19 @@ public class RecipeServiceTest {
             ArgumentCaptor<Recipe> captor = ArgumentCaptor.forClass(Recipe.class);
             verify(recipeRepository).save(captor.capture());
             assertEquals("g", captor.getValue().getIngredients().get(0).getUnit());
+        }
+
+        @Test
+        void create_shouldThrowDuplicateRecipeIngredientException_whenSameIngredientTwice() {
+            CreateRecipeRequest request = new CreateRecipeRequest(
+                    "Nom", "Description", 2,
+                    List.of(
+                            new CreateRecipeIngredientRequest(1L, 1.0),
+                            new CreateRecipeIngredientRequest(1L, 2.0)));
+
+            assertThrows(DuplicateRecipeIngredientException.class, () -> recipeService.create(request));
+
+            verify(recipeRepository, never()).save(any());
         }
     }
 
@@ -680,5 +694,20 @@ public class RecipeServiceTest {
         ArgumentCaptor<Recipe> captor = ArgumentCaptor.forClass(Recipe.class);
         verify(recipeRepository).save(captor.capture());
         assertEquals("ml", captor.getValue().getIngredients().get(0).getUnit());
+    }
+
+    @Test
+    void update_shouldThrowDuplicateRecipeIngredientException_whenSameIngredientTwice() {
+        when(recipeRepository.findByIdWithIngredients(1L)).thenReturn(Optional.of(new Recipe()));
+
+        UpdateRecipeRequest request = new UpdateRecipeRequest(
+                "Nom", "Description", 2,
+                List.of(
+                        new UpdateRecipeIngredientRequest(null, 1L, 1.0),
+                        new UpdateRecipeIngredientRequest(null, 1L, 2.0)));
+
+        assertThrows(DuplicateRecipeIngredientException.class, () -> recipeService.update(1L, request));
+
+        verify(recipeRepository, never()).save(any());
     }
 }

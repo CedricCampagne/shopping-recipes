@@ -8,10 +8,13 @@ import com.cedric.shoppingrecipes.recipe.dto.RecipeDetailResponse;
 import com.cedric.shoppingrecipes.recipe.dto.RecipeResponse;
 import com.cedric.shoppingrecipes.recipe.dto.UpdateRecipeRequest;
 import com.cedric.shoppingrecipes.recipe.entity.Recipe;
+import com.cedric.shoppingrecipes.recipe.exception.DuplicateRecipeIngredientException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 import com.cedric.shoppingrecipes.recipe.mapper.RecipeMapper;
 import com.cedric.shoppingrecipes.recipe.repository.RecipeRepository;
+import com.cedric.shoppingrecipes.recipeingredient.dto.CreateRecipeIngredientRequest;
+import com.cedric.shoppingrecipes.recipeingredient.dto.UpdateRecipeIngredientRequest;
 import com.cedric.shoppingrecipes.recipeingredient.entity.RecipeIngredient;
 import com.cedric.shoppingrecipes.recipeingredient.exception.RecipeIngredientNotFoundException;
 import com.cedric.shoppingrecipes.shoppinglist.repository.ShoppingListRepository;
@@ -20,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +34,15 @@ public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final IngredientRepository ingredientRepository;
     private final ShoppingListRepository shoppingListRepository;
+
+    private void checkNoDuplicateIngredients(List<Long> ingredientIds) {
+        Set<Long> seen = new HashSet<>();
+        for (Long ingredientId : ingredientIds) {
+            if (!seen.add(ingredientId)) {
+                throw new DuplicateRecipeIngredientException();
+            }
+        }
+    }
 
     public List<RecipeResponse> findAll() {
 
@@ -62,6 +76,12 @@ public class RecipeService {
     }
 
     public RecipeDetailResponse create(CreateRecipeRequest request) {
+
+        checkNoDuplicateIngredients(
+                request.ingredients().stream()
+                        .map(CreateRecipeIngredientRequest::ingredientId)
+                        .toList());
+
         // Création de la recette
         Recipe recipe = new Recipe();
         recipe.setName(request.name());
@@ -100,6 +120,11 @@ public class RecipeService {
 
         Recipe recipe = recipeRepository.findByIdWithIngredients(id)
                         .orElseThrow(() -> new RecipeNotFoundException(id));
+
+        checkNoDuplicateIngredients(
+                request.ingredients().stream()
+                        .map(UpdateRecipeIngredientRequest::ingredientId)
+                        .toList());
 
         recipe.setName(request.name());
         recipe.setDescription(request.description());

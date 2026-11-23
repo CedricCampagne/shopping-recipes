@@ -7,6 +7,7 @@ import com.cedric.shoppingrecipes.auth.exception.UsernameAlreadyUsedException;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientConflictException;
 import com.cedric.shoppingrecipes.ingredient.exception.IngredientNotFoundException;
 
+import com.cedric.shoppingrecipes.recipe.exception.DuplicateRecipeIngredientException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeConflictException;
 import com.cedric.shoppingrecipes.recipe.exception.RecipeNotFoundException;
 
@@ -157,6 +158,16 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "Le corps de la requête est invalide ou illisible",
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(DuplicateRecipeIngredientException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateRecipeIngredient(DuplicateRecipeIngredientException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
                 null
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
