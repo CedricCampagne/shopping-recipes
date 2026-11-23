@@ -50,7 +50,7 @@ public class ShoppingListController {
     @PutMapping("/{id}/status")
     public ShoppingListResponse updateStatus(
             @PathVariable Long id,
-            @RequestBody UpdateStatusRequest request
+            @Valid @RequestBody UpdateStatusRequest request
     ) {
         return shoppingListService.updateStatus(id, request.status());
     }
