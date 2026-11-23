@@ -41,4 +41,4 @@ build/
 .idea/
 
 ### ficiher edite lors des test curl
-cookies.txt
+cookies**.txt
