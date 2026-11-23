@@ -26,9 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
@@ -41,7 +38,7 @@ class AuthServiceTest {
 
     @Test
     void shouldThrowInvalidCredentialsWhenEmailUnknown() {
-        when(userRepository.findByEmail("inconnu@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByEmailIgnoreCase("inconnu@example.com")).thenReturn(Optional.empty());
 
         assertThrows(InvalidCredentialsException.class,
                 () -> authService.login(new UserLoginRequest("inconnu@example.com", "peu-importe")));
@@ -53,7 +50,7 @@ class AuthServiceTest {
         user.setEmail("test@example.com");
         user.setPassword("hash-en-base");
 
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmailIgnoreCase("test@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("mauvais", "hash-en-base")).thenReturn(false);
 
         assertThrows(InvalidCredentialsException.class,
@@ -62,19 +59,22 @@ class AuthServiceTest {
 
     @Test
     void shouldThrowEmailAlreadyUsedWhenEmailExists() {
-        when(userRepository.findByEmail("existe@example.com"))
-                .thenReturn(Optional.of(new User()));
+        UserRegisterRequest request =
+                new UserRegisterRequest("pseudo", "existe@example.com", "Un-mot-de-passe-12!");
+        when(userRepository.existsByEmailIgnoreCase("existe@example.com")).thenReturn(true);
 
         assertThrows(EmailAlreadyUsedException.class,
-                () -> authService.register(
-                        new UserRegisterRequest("pseudo", "existe@example.com", "Un-mot-de-passe-12!")));
+                () -> authService.register(request));
+
+        verify(passwordEncoder, never()).encode(any());
+        verify(userRepository, never()).save(any());
     }
 
     @Test
     void shouldThrowUsernameAlreadyUsedWhenUsernameExists() {
         UserRegisterRequest request =
                 new UserRegisterRequest("pseudo", "nouveau@example.com", "Un-mot-de-passe-12!");
-        when(userRepository.existsByUsername("pseudo")).thenReturn(true);
+        when(userRepository.existsByUsernameIgnoreCase("pseudo")).thenReturn(true);
 
         assertThrows(UsernameAlreadyUsedException.class,
                 () -> authService.register(request));

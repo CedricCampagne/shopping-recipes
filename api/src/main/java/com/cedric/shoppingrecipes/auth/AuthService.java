@@ -30,13 +30,13 @@ public class AuthService {
     private final UserMapper userMapper;
 
     public UserResponse register(UserRegisterRequest request) {
-        // Verification email déjà présent
-        if (userRepository.findByEmail(request.email()).isPresent()){
+        // Verification email déjà présent (sans tenir compte de la casse)
+        if (userRepository.existsByEmailIgnoreCase(request.email())) {
             throw new EmailAlreadyUsedException();
         }
 
-        // Verification username déjà présent
-        if(userRepository.existsByUsername(request.username())) {
+        // Verification username déjà présent (sans tenir compte de la casse)
+        if (userRepository.existsByUsernameIgnoreCase(request.username())) {
             throw new UsernameAlreadyUsedException();
         }
 
@@ -54,7 +54,7 @@ public class AuthService {
 
     public LoginResult login(UserLoginRequest request) {
         // Vérifier si le user existe
-        User user = userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmailIgnoreCase(request.email())
                 .orElseThrow(InvalidCredentialsException::new);
 
         // Vérifier le mot de pass
